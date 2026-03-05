@@ -1,0 +1,99 @@
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(216, 208, 208, 0.425);
+    font-family: 'Montserrat', sans-serif;
+    gap: 100px;
+    height: 100vh;  
+}
+
+#card {
+    display: flex;
+    flex-direction: column;
+    border: 2px solid rgba(0, 0, 0, 0.685);
+    border-radius: 5%;
+    padding: 10px 50px 30px 50px;
+    align-items: center;
+}
+
+#fields {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.field{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h1 {
+    font-family: 'Inter', sans-serif;
+}
+
+h2 {
+    font-size: 18px;
+    color: #757575e5;
+    margin-bottom: 5px;
+    margin-top: 15px;
+}
+
+h3 {
+    margin-top: 40px;
+    font-size: 13px;
+    color: #757575e5;
+    margin-bottom: 10px;
+}
+
+input{
+    padding: 10px 0px 10px 15px;
+    border: none;
+    border-radius: 5px;
+    background-color: rgba(216, 208, 208, 0.425);
+    width: 230px;
+}
+
+#send {
+    background-color: #00bf63;
+    padding: 20px 50px 20px 50px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+}
+
+#google_btn {
+    display: flex;
+    align-items: center;
+    color: grey;
+    font-size: 11px;
+    justify-content: space-around;
+    width: 250px;
+    margin-top: 50px;
+    background-color: rgba(216, 208, 208, 0.425);
+    border: none;
+    padding: 8px 10px 8px 15px;
+    border-radius: 5px;
+}
+
+button:hover, a:hover{
+    cursor: pointer;
+}
+
+a {
+    text-decoration: none;
+    color: #00bf63c9;
+}
+
+img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}

@@ -1,0 +1,80 @@
+body {
+    display: flex;
+    justify-content: center;
+    margin-top: 2%;
+    background-color: rgba(216, 208, 208, 0.425);
+    font-family: 'Montserrat', sans-serif;
+    gap: 100px;
+}
+
+#card {
+    display: flex;
+    flex-direction: column;
+    border: 2px solid rgba(0, 0, 0, 0.685);
+    border-radius: 5%;
+    padding: 10px 50px 30px 50px;
+    align-items: center;
+}
+
+#fields {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.field{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h1 {
+    font-family: 'Inter', sans-serif;
+    margin-bottom: 0;
+}
+
+h2 {
+    font-size: 15px;
+    color: rgb(90, 92, 92);
+}
+
+h3 {
+    font-size: 18px;
+    color: #757575e5;
+    margin-bottom: 5px;
+    margin-top: 15px;
+}
+
+input {
+    padding: 10px 0px 10px 15px;
+    border: none;
+    border-radius: 5px;
+    background-color: rgba(216, 208, 208, 0.425);
+    width: 230px;
+}
+
+button {
+    margin-top: 40px;
+    background-color: #00bf63;
+    padding: 20px 50px 20px 50px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+}
+
+button:hover{
+    cursor: pointer;
+}
+
+a {
+    text-decoration: none;
+    color: #00bf63c9;
+}
+
+img {
+    height: 300px;
+    align-self: center;
+    border-radius: 5%;
+
+}
