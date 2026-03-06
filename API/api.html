@@ -12,23 +12,79 @@
             <div class="section" id="endpoints">
                 <h1>Endpoints</h1>
                 <button>
-                    Usuarios
+                    Mascotas
                     <img src="https://media-public.canva.com/gHYG4/MAD_glgHYG4/1/tl.png">
                 </button>
                 <button>
-                    Mascotas
+                    <div style="background-color: rgba(255, 0, 0, 0.575); padding: 2px 5px 2px 5px;"><p style="margin:0; font-weight: bold; color: rgba(0, 0, 0, 0.63);">POST</p></div>
+                    <p style="margin:0;">Subir una Publicacion</p>
+                </button>
+                <!--- <button>
+                    Usuarios
                     <img src="https://media-public.canva.com/gHYG4/MAD_glgHYG4/1/tl.png">
                 </button>
                 <button>
                     Otros
                     <img src="https://media-public.canva.com/gHYG4/MAD_glgHYG4/1/tl.png">
-                </button>
+                </button> !-->
             </div>
             <div class="section" id="description">
                 <h1>Descripcion</h1>
+                <div class="publicar">
+                    <h2>Publicar una Mascota</h2>
+                    <p>El usuario debe llenar campos acerca de su mascota:<br>                </p>
+                        <ul>
+                            <li>Especie</li>
+                            <li>Raza</li>
+                            <li>Tamaño</li>
+                            <li>Colores</li>
+                            <li>Ubicacion Aproximada</li>
+                            <li>Fecha Aproximada de Perdida</li>
+                            <li>Horario de Contacto</li>
+                            <li>Fotografia</li>
+                            <li>Descripcion</li>  
+                        </ul>
+                </div>
             </div>
             <div class="section" id="examples">
                 <h1>Ejemplos</h1>
+                <div class="publicar" id="ejemplo">
+                    <div style="background-color: rgb(255, 255, 255); padding: 2px 5px 2px 5px;"><p style="margin:0; font-weight: bold; color: rgba(0, 0, 0, 0.63);">POST</p></div>
+                    <p style="margin:0;">/publicar</p>
+                </div>
+                <br>
+                <h2>Request Sample</h2>
+                <br>
+                <div style="background-color: rgba(0, 0, 0, 0.596);">
+                    <p><p id="llave">{</p>
+                        <ul>
+                            <li>"especie": "perro",</li>
+                            <li>"raza": "mestizo",</li>
+                            <li>"tamaño": "mediano",</li>
+                            <li>"colores":["blanco", "cafe"],</li>
+                            <li>"ubicacion_aproximada": ["Moderna"],</li>
+                            <li>"fecha_aproximada_perdida": "2026/12/08",</li>
+                            <li>"horario_contacto": "9:00-21:00",</li>
+                            <li>"fotografia": "fotografia.jpg",</li>
+                            <li>"descripcion": "Perrito amigable con collar que responde al ser llamado Aldo"</li>  
+                        </ul>
+                        <p id="llave">}</p>
+                    </p>
+                </div>
+                <br>
+                <h2>Response Sample</h2>
+                <br>
+                <div style="background-color: rgb(33, 160, 33); padding: 5px 10px 5px 10px; border-radius: 8px;">200</div>
+                <br>
+                <div style="background-color: rgba(0, 0, 0, 0.596);">
+                    <p><p id="llave">{</p>
+                        <ul>
+                            <li>"id": 2026,</li>
+                            <li>"fecha_creacion": "2026/03/05",</li>
+                        </ul>
+                        <p id="llave">}</p>
+                    </p>
+                </div>
             </div>
         </div>
     </body>
