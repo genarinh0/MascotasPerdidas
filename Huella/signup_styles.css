@@ -84,3 +84,29 @@ img {
     border-radius: 5%;
 
 }
+
+#google_btn {
+    display: flex;
+    align-items: center;
+    color: grey;
+    font-size: 11px;
+    justify-content: space-around;
+    width: 250px;
+    margin-top: 20px;
+    background-color: rgba(216, 208, 208, 0.425);
+    border: none;
+    padding: 8px 10px 8px 15px;
+    border-radius: 5px;
+}
+
+.dog-img { 
+    height: 300px;
+    align-self: center;
+    border-radius: 5%;
+}
+
+#google_btn img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
