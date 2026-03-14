@@ -5,28 +5,64 @@
         <link href="https://fonts.googleapis.com" rel="stylesheet">
     </head>
     <body>
-        <div id="card">
-            <h1>Inicia Sesion</h1>
+        <header>
+            <img src="https://media.canva.com/v2/files/uri:ifs%3A%2F%2FZ%2Fthumbnail-file-zAG195Xdycg.png?csig=AAAAAAAAAAAAAAAAAAAAAM-HA5iOGgsh2FnW8d5dMLYPwUVVqG3lVwJOT4jQk6_x&exp=1773413750&signer=scene-rpc&token=AAIAAVoAHnRodW1ibmFpbC1maWxlLXpBRzE5NVhkeWNnLnBuZwAAAAABnOeyVShr9ra350G2N6vffs5wYOU-Bl2v6TBiRHtKvJTCaFhpxw" id="logo"
+                width="50" height="50"
+            >
+            <h1 id="title">Huella</h1>
+        </header>
+        <main>
+            <section id="details">
+                <p><b>Bienvenido a Huella</b><br>La pagina que te ayuda a encontrar 
+                    mascotas<br>perdidas</p>
+            </section>
 
-            <div id="fields">
-                <div class="field">
-                    <h2>Email</h2>
-                    <input placeholder="Agrega tu email">
+            <section id="card">
+                <h1>Inicia Sesion</h1>
+                <div id="fields">
+                    <div class="field">
+                        <h2>Email</h2>
+                        <input placeholder="Agrega tu email">
+                    </div>
+                    <div class="field">
+                        <h2>Contraseña</h2>
+                        <input placeholder="Agrega tu contraseña">
+                    </div>
+                    
                 </div>
-                <div class="field">
-                    <h2>Contraseña</h2>
-                    <input placeholder="Agrega tu contraseña">
-                </div>
-                
-            </div>
 
-            <button id="google_btn">
-                <img src="https://image.similarpng.com/file/similarpng/very-thumbnail/2020/06/Logo-google-icon-PNG.png">
-                <p>INICIAR SESION CON GOOGLE</p>
-            </button>
-            <h3>¿Olvidaste tu contraseña? Haz clic <a href="SignUp.html">aqui</a></h3>
-            <button id="send">Iniciar Sesion</button>
-        </div>
-        
+                <button id="googleBtn">
+                    <img src="https://image.similarpng.com/file/similarpng/very-thumbnail/2020/06/Logo-google-icon-PNG.png"
+                        width="30" height="30"
+                    >
+                    <p>INICIAR SESION CON GOOGLE</p>
+                </button>
+                <h3 style="margin-bottom: 10px;">¿Olvidaste tu contraseña? Haz clic <a>aqui</a></h3>
+                <button id="sendBtn">Iniciar Sesion</button>
+                <h3>¿No tienes cuenta?</h3>
+                <h3><a href="SignUp.html">Haz clic aqui para Registrarte</a></h3>
+            </section>
+
+            <section id="explore">
+                <p>¿Perdiste o encontraste una mascota?</p>
+                <p>Explora publicaciones cerca de ti y ayuda a reunir familias con sus mascotas</p>
+                <button id="exploreBtn">Explorar publicaciones</button>
+                <ul>
+                    <li>📍Encuentra mascotas perdidas cerca de ti</li>
+                    <li>📍Publica mascotas encontradas</li>
+                    <li>📍Contacta directamente al dueño</li>
+                </ul>
+                <button>
+                    <img src="https://media-public.canva.com/rBKeY/MAG76ArBKeY/1/tl.png" width="30" height="30">
+                    Crear Publicacion
+                </button>
+            </section>
+
+            <section id="showcase">
+                <img src="/imagenes/EjemploTarjeta_1.png" width="250" height="300">
+                <img src="/imagenes/EjemploTarjeta_2.png" width="250" height="300">
+                <img src="/imagenes/EjemploTarjeta_3.png" width="250" height="200">
+            </section>
+        </main>
     </body>
 </html>
