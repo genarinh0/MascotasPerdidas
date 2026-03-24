@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Huella — Encuentra a tu mascota</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;1,9..144,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="login_styles.css">
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav>
+        <div class="nav-brand">
+            <div class="nav-paw">🐾</div>
+            <span>Huella</span>
+        </div>
+        <div class="nav-links">
+            <a href="#">Explorar</a>
+            <a href="#">Publicar</a>
+            <a href="SignUp.html" class="nav-cta">Registrarse</a>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="hero-text">
+            <p class="hero-label">Reuniendo familias desde 2024</p>
+            <h1>Encuentra a tu<br><em>compañero perdido</em></h1>
+            <p class="hero-sub">Huella conecta a personas que perdieron o encontraron una mascota. Juntos, cerramos la distancia.</p>
+            <div class="hero-actions">
+                <a href="#login-section" class="btn-primary">Iniciar sesión</a>
+                <a href="SignUp.html" class="btn-ghost">Crear cuenta</a>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <div class="blob"></div>
+            <div class="stats-card">
+                <div class="stat">
+                    <span class="stat-num">1,240</span>
+                    <span class="stat-label">Mascotas reunidas</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat">
+                    <span class="stat-num">320</span>
+                    <span class="stat-label">En búsqueda activa</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURES STRIP -->
+    <section class="features">
+        <div class="feature-item">
+            <span class="feat-icon">📍</span>
+            <div>
+                <h4>Cerca de ti</h4>
+                <p>Ve publicaciones de mascotas perdidas en tu zona</p>
+            </div>
+        </div>
+        <div class="feature-item">
+            <span class="feat-icon">📣</span>
+            <div>
+                <h4>Publica fácil</h4>
+                <p>Sube una foto y datos en menos de 2 minutos</p>
+            </div>
+        </div>
+        <div class="feature-item">
+            <span class="feat-icon">💬</span>
+            <div>
+                <h4>Contacto directo</h4>
+                <p>Habla con el dueño sin intermediarios</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- LOGIN SECTION -->
+    <section class="login-section" id="login-section">
+        <div class="login-wrapper">
+            <div class="login-info">
+                <h2>Bienvenido de vuelta</h2>
+                <p>Accede a tu cuenta para ver publicaciones, gestionar alertas y ayudar a la comunidad.</p>
+                <div class="trust-badges">
+                    <div class="badge">✅ Sin spam</div>
+                    <div class="badge">🔒 Datos seguros</div>
+                    <div class="badge">🌍 Comunidad activa</div>
+                </div>
+            </div>
+
+            <div class="login-card">
+                <h3>Inicia sesión</h3>
+
+                <button class="google-btn">
+                    <img src="https://image.similarpng.com/file/similarpng/very-thumbnail/2020/06/Logo-google-icon-PNG.png" width="22" height="22" alt="Google">
+                    Continuar con Google
+                </button>
+
+                <div class="divider"><span>o con tu email</span></div>
+
+                <div class="field-group">
+                    <label>Email</label>
+                    <input type="email" placeholder="tu@email.com">
+                </div>
+
+                <div class="field-group">
+                    <label>Contraseña</label>
+                    <input type="password" placeholder="••••••••">
+                    <a href="#" class="forgot-link">¿Olvidaste tu contraseña?</a>
+                </div>
+
+                <button class="submit-btn">Iniciar sesión</button>
+
+                <p class="signup-prompt">¿No tienes cuenta? <a href="SignUp.html">Regístrate gratis</a></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="how-it-works">
+        <h2>¿Cómo funciona?</h2>
+        <p class="section-sub">Tres pasos para ayudar a reunir a una familia con su mascota</p>
+        <div class="steps">
+            <div class="step">
+                <div class="step-num">01</div>
+                <h4>Crea tu cuenta</h4>
+                <p>Regístrate gratis en menos de un minuto</p>
+            </div>
+            <div class="step-arrow">→</div>
+            <div class="step">
+                <div class="step-num">02</div>
+                <h4>Publica o busca</h4>
+                <p>Sube fotos de la mascota o explora reportes cerca de ti</p>
+            </div>
+            <div class="step-arrow">→</div>
+            <div class="step">
+                <div class="step-num">03</div>
+                <h4>Haz contacto</h4>
+                <p>Conecta directamente con el dueño o quien la encontró</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-brand">
+            <span>🐾 Huella</span>
+            <p>Conectando mascotas con sus familias</p>
+        </div>
+        <div class="footer-links">
+            <a href="#">Acerca de</a>
+            <a href="#">Privacidad</a>
+            <a href="#">Términos</a>
+            <a href="#">Contacto</a>
+        </div>
+    </footer>
+
+</body>
+</html>
