@@ -54,6 +54,7 @@ button:hover {
     font-size: 25px;
     color: var(--color-contrast);
     margin: 0;
+    margin-left: 2px;
 }
 
 .site-header__button {
@@ -114,30 +115,11 @@ button:hover {
     font-size: 22px;
 }
 
-.card__btn--google {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    margin-bottom: 15px;
-    padding: 8px 30px;
-    border: 1px solid rgba(128, 128, 128, 0.582);
-    border-radius: 10px;
-    background-color: var(--bg);
-    color: var(--card-font-color);
-    font-family: var(--font-primary);
-    font-size: 14px;
-    width: 250px;
-}
-
-.card__btn-icon {
-    border-radius: 50%;
-}
-
 .card__divider {
   display: flex;
   align-items: center;
   gap: 10px;
+  margin-top: 20px;
   width: 100%;
   margin-bottom: 15px;
 }

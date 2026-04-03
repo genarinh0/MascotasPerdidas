@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="css/login_styles.css">
+        <link href="https://fonts.googleapis.com" rel="stylesheet">
+        <script src="https://accounts.google.com/gsi/client" async defer></script>
+        <script src="config.js"></script>
+    </head>
+
+    <body>
+        <header class="site-header">
+            <div class="site-header__brand">
+                <img src="imagenes/logo.png"
+                    width="25" height="25"
+                >
+                <h1 class="site-header__title">Huella</h1>
+            </div>
+            <button class="site-header__button" id="btnSignup">Registrarse</button>
+        </header>
+
+        <main class="login-section">
+            <section class="login-section__welcome">
+                <img src="imagenes/img_5.png">
+                <p class="welcome__title">¡Bienvenido a Huella!</p>
+                <p class="welcome__subtitle">La pagina que te ayuda a encontrar mascotas perdidas!</p>
+            </section>
+            <section class="login-section__card">
+                <label class="card__title">Inicia Sesión</label>
+                <div id="google-button"></div>
+                <div class="card__divider">
+                    <span class="card__divider-text">o con tu email</span>
+                </div>
+                <div class="card__inputs">
+                    <div class="card__field">
+                        <label class="card__label">Email</label>
+                        <input class="card__input" placeholder="tu@email.com" id="email">
+                    </div>
+                    <div class="card__field">
+                        <label class="card__label">Contraseña</label>
+                        <input class="card__input" placeholder="••••••••" id="password">
+                    </div>
+                </div>
+                <a class="card__link card__link--pwd" href="recuperarPwd.html">¿Olvidaste tu contraseña?</a>
+                <button class="card__btn card__btn--send" id="btnLogin">Iniciar Sesion</button>
+                <p class="card__hint">¿No tienes cuenta?
+                    <a class="card__link" href="signup.html" >Registrate aqui</a>
+                </p>
+            </section>
+        </main>
+        <script>
+            const btnSignup = document.getElementById("btnSignup");
+            btnSignup.addEventListener('click', () => {
+                window.location.href = "signup.html";
+            });
+
+            const btnLogin = document.getElementById("btnLogin");
+            btnLogin.addEventListener('click', tryLogin);
+            
+            function tryLogin(){
+                const email = document.getElementById("email").value;
+                const password = document.getElementById("password").value;
+
+                console.log("Login intentado!");
+                //Agregar el fetch con los datos
+                //Si es autenticado entonces proceder a la siguiente pagina
+                //Sino entonces generar mensaje de error de credenciales en la pagina
+            }
+
+            window.onload = function () {
+                google.accounts.id.initialize({
+                    client_id: CONFIG.GOOGLE_CLIENT_ID,
+                    callback: handleGoogleLogin
+                });
+
+                google.accounts.id.renderButton(
+                    document.getElementById("google-button"),
+                    {
+                        theme: "outline",
+                        size: "large",
+                        width: "250",
+                        text: "continue_with",
+                        locale: "es"
+                    }
+                );
+            };
+
+            function handleGoogleLogin(response) {
+                const idToken = response.credential;
+                const payload = JSON.parse(atob(idToken.split('.')[1]));
+                console.log("Usuario De Google: ", payload);
+                console.log("Email: ", payload.email);
+                console.log("Nombre: ", payload.name);
+
+                //window.location.href = "feed.html";
+            }
+        </script>
+    </body>
+</html>
