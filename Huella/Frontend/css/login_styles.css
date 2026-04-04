@@ -49,12 +49,12 @@ button:hover {
     align-items: center;
 }
 
-.site-header__title {
-    font-family: var(--font-secondary);
-    font-size: 25px;
-    color: var(--color-contrast);
+.site-header__brand-title {
     margin: 0;
     margin-left: 2px;
+    color: white;
+    font-family: var(--font-secondary);
+    font-size: 25px;
 }
 
 .site-header__button {
@@ -62,7 +62,7 @@ button:hover {
     border-radius: 5px;
     padding: 10px 15px;
     background-color: var(--color-primary-light);
-    color: var(--color-contrast);
+    color: white;
     font-size: 15px;
     font-family: var(--font-secondary);
     font-weight: bold;
@@ -71,7 +71,7 @@ button:hover {
 .login-section {
     display: flex;
     justify-content: space-evenly;
-    margin-top: 50px;
+    padding-top: 50px;
 }
 
 .login-section__welcome {
