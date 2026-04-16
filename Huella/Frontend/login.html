@@ -56,12 +56,33 @@
             const btnLogin = document.getElementById("btnLogin");
             btnLogin.addEventListener('click', tryLogin);
             
-            function tryLogin(){
+            async function tryLogin(){
                 const email = document.getElementById("email").value;
                 const password = document.getElementById("password").value;
 
                 console.log("Login intentado!");
-                //Agregar el fetch con los datos
+                try {
+                    const response = await fetch('http://localhost:1984/api/login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            'email': email,
+                            'contrasena': password
+                        })
+                    });
+
+                    if (response.ok){
+                        const data = await response.json();
+                        console.log('Exito: ', data)
+                    }else {
+                        console.error('Error en la respuesta: ', response.status);
+                    }
+                }catch (error){
+                    console.error('Error de red: ', error);
+                }
+                
                 //Si es autenticado entonces proceder a la siguiente pagina
                 //Sino entonces generar mensaje de error de credenciales en la pagina
             }
