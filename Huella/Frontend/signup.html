@@ -1,43 +1,66 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel="stylesheet" href="css/signup_styles.css">
+        <link rel="stylesheet" href="css/login_styles.css"> <link rel="stylesheet" href="css/signup_styles.css">
         <link href="https://fonts.googleapis.com" rel="stylesheet">
+        <script src="https://accounts.google.com" async defer></script>
     </head>
+
     <body>
-        <div id="card">
-            <h1>Crea nueva cuenta</h1>
-            <h2>Ya te registraste? Inicia sesion <a href="Login.html">aqui</a></h2>
-            <div id="fields">
-                <div class="field">
-                    <h3>Nombre</h3>
-                    <input placeholder="Agrega tu nombre">
-                </div>
-                <div class="field">
-                    <h3>Email</h3>
-                    <input placeholder="Agrega tu email">
-                </div>
-                <div class="field">
-                    <h3>Contraseña</h3>
-                    <input placeholder="Agrega tu contraseña">
-                </div>
-                <div class="field">
-                    <h3>Confirma tu contraseña</h3>
-                    <input placeholder="Agrega tu contraseña">
-                </div>
+        <header class="site-header">
+            <div class="site-header__brand">
+                <img src="imagenes/logo.png" width="25" height="25">
+                <h1 class="site-header__brand-title">Huella</h1>
             </div>
-            <button>Registrate</button>
-            <button id="google_btn">
-                <img src="https://image.similarpng.com/file/similarpng/very-thumbnail/2020/06/Logo-google-icon-PNG.png">
-                <p>REGISTRARSE CON GOOGLE</p>
-        </div>
+            <button class="site-header__button" id="btnLoginNav">Iniciar Sesión</button>
+        </header>
 
-        <div style="display: flex; flex-direction: column; gap: 10px; align-items: center; align-self: center;">
-            <img src="/imagenes/img_1.png">
-            <b>q me ves we</b>
-        </div>
-        
+        <main class="login-section">
+            <section class="login-section__welcome">
+                <img src="imagenes/img_5.png" class="welcome__img">
+                <p class="welcome__title">¡Únete a la manada!</p>
+                <p class="welcome__subtitle">¡Ayúdanos a traer a todos a casa!</p>
+            </section>
 
+            <section class="login-section__card">
+                <label class="card__title">Crea nueva cuenta</label>
+                
+                <div id="google-button"></div>
+                
+                <div class="card__divider">
+                    <span class="card__divider-text">o con tu información</span>
+                </div>
 
+                <div class="card__inputs">
+                    <div class="card__field">
+                        <label class="card__label">Nombre</label>
+                        <input class="card__input" placeholder="Tu nombre completo" id="name">
+                    </div>
+                    <div class="card__field">
+                        <label class="card__label">Email</label>
+                        <input class="card__input" placeholder="tu@email.com" id="email">
+                    </div>
+                    <div class="card__field">
+                        <label class="card__label">Contraseña</label>
+                        <input class="card__input" type="password" placeholder="••••••••" id="password">
+                    </div>
+                    <div class="card__field">
+                        <label class="card__label">Confirma tu contraseña</label>
+                        <input class="card__input" type="password" placeholder="••••••••" id="confirm_password">
+                    </div>
+                </div>
+
+                <button class="card__btn card__btn--send" id="btnSignup">Registrate</button>
+                
+                <p class="card__hint">¿Ya tienes cuenta?
+                    <a class="card__link" href="login.html">Inicia sesión aquí</a>
+                </p>
+            </section>
+        </main>
+
+        <script>
+            document.getElementById("btnLoginNav").onclick = () => window.location.href = "login.html";
+            // Logic for registration would go here
+        </script>
     </body>
 </html>

@@ -1,112 +1,34 @@
-html, body {
-    margin: 0;
-    padding: 0;
-}
-
-body {
+.login-section {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: rgba(216, 208, 208, 0.425);
-    font-family: 'Montserrat', sans-serif;
-    gap: 100px;
-    height: 100vh;
+    justify-content: space-evenly;
+    align-items: flex-start;
+    padding-top: 50px;
 }
 
-#card {
-    display: flex;
-    flex-direction: column;
-    border: 2px solid rgba(0, 0, 0, 0.685);
-    border-radius: 5%;
-    padding: 10px 50px 30px 50px;
-    align-items: center;
+.welcome__img {
+    height: 350px;
+    width: auto;
+    border-radius: 20px;
+    box-shadow: 0 4px 24px #1c1a1827;
+    margin-bottom: 20px;
 }
 
-#fields {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+.login-section__card {
+    min-width: 320px;
 }
 
-.field{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+.card__btn--send {
+    margin-top: 25px;
 }
 
-h1 {
-    font-family: 'Inter', sans-serif;
-    margin-bottom: 0;
-}
-
-h2 {
-    font-size: 15px;
-    color: rgb(90, 92, 92);
-}
-
-h3 {
-    font-size: 18px;
-    color: #757575e5;
-    margin-bottom: 5px;
-    margin-top: 15px;
-}
-
-input {
-    padding: 10px 0px 10px 15px;
-    border: none;
-    border-radius: 5px;
-    background-color: rgba(216, 208, 208, 0.425);
-    width: 230px;
-}
-
-button {
-    margin-top: 40px;
-    background-color: #00bf63;
-    padding: 20px 50px 20px 50px;
-    border: none;
-    border-radius: 5px;
-    color: white;
-    font-weight: bold;
-}
-
-button:hover{
-    cursor: pointer;
-}
-
-a {
-    text-decoration: none;
-    color: #00bf63c9;
-}
-
-img {
-    height: 300px;
-    align-self: center;
-    border-radius: 5%;
-
-}
-
-#google_btn {
-    display: flex;
-    align-items: center;
-    color: grey;
-    font-size: 11px;
-    justify-content: space-around;
+.card__input {
     width: 250px;
-    margin-top: 20px;
-    background-color: rgba(216, 208, 208, 0.425);
-    border: none;
-    padding: 8px 10px 8px 15px;
-    border-radius: 5px;
 }
 
-.dog-img { 
-    height: 300px;
-    align-self: center;
-    border-radius: 5%;
-}
-
-#google_btn img {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
+.login-section__welcome b {
+    color: var(--card-font-color);
+    font-family: var(--font-secondary);
+    margin-top: 10px;
+    font-size: 14px;
+    opacity: 0.7;
 }
