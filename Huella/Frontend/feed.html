@@ -18,23 +18,23 @@
 
         <nav class="filter-bar">
             <div class="filter-bar__container">
-                <button class="filter-button">
+                <button class="filter-button" data-selected="" id="btnColor">
                     <img src="https://media-public.canva.com/fQdEg/MAG7OVfQdEg/1/tl.png" class="filter-button__icon">
                     <span class="filter-button__text">Color</span>
                 </button>
-                <button class="filter-button">
+                <button class="filter-button" data-selected="" id="btnEspecie">
                     <img src="https://media-public.canva.com/VHHEA/MAHBQMVHHEA/1/tl.png" class="filter-button__icon">
                     <span class="filter-button__text">Especie</span>
                 </button>
-                <button class="filter-button">
+                <button class="filter-button" data-selected="" id="btnUbicacion">
                     <img src="https://media-public.canva.com/FX0q0/MAEF4sFX0q0/1/tl.png" class="filter-button__icon">
                     <span class="filter-button__text">Ubicación</span>
                 </button>
-                <button class="filter-button">
+                <button class="filter-button" data-selected="" id="btnRaza">
                     <img src="https://media-public.canva.com/Z37ro/MAESOaZ37ro/1/tl.png" class="filter-button__icon">
                     <span class="filter-button__text">Raza</span>
                 </button>
-                <button class="filter-button filter-button--search">
+                <button class="filter-button filter-button--search" id="btnFilter">
                     <img src="https://media-public.canva.com/IS90g/MAHAgWIS90g/1/tl.png" class="filter-button__icon">
                 </button>
             </div>
@@ -59,5 +59,51 @@
         <footer class="site-footer">
             <p>&copy; 2026 Huella - Ayudando a mascotas a volver a casa.</p>
         </footer>
+
+        <script>
+            const btnFiltros = document.getElementById("btnFilter");
+            btnFiltros.addEventListener('click', getFeed);
+
+            function selectFilterValue(btnID, value){
+                const btn = document.getElementById(btnID);
+                btn.dataset.selected = value;
+            }
+
+            async function getFeed(){
+                let url = 'http://localhost:1984/api/publicaciones';
+
+                // son mas filtros
+
+                const filters = {
+                    color: document.getElementById("btnColor").dataset.selected,
+                    especie: document.getElementById("btnEspecie").dataset.selected,
+                    ubicacion: document.getElementById("btnUbicacion").dataset.selected,
+                    raza: document.getElementById("btnRaza").dataset.selected
+                };
+
+                const nonEmptyFilters = [];
+
+                Object.entries(filters).forEach(([key, value]) => {
+                    if (value !== ""){
+                        nonEmptyFilters.push(`${key}=${value}`);
+                    }
+                });
+
+                if (nonEmptyFilters.length > 0){
+                    url += '?' + nonEmptyFilters.join('&');
+                }
+                
+                try{
+                    const response = await fetch(url);
+                    const data = await response.json();
+                    
+                    // con las publicaciones devueltas ahora a meterlas al feed
+                    // no renderizar todas de un jalon (ver que rollo)
+                }catch (error){
+                    console.error('Error de red: ', error);
+                    alert("Error del servidor");
+                }
+            }
+        </script>
     </body>
 </html>

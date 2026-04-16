@@ -74,9 +74,24 @@ app.post('/api/login', async (req, res) => {
 })
 
 app.get('/api/publicaciones', async (req, res) => {
-    // Ver todas las publicaciones
+    // Ver publicaciones con / sin filtros
+    let sql = 'SELECT * FROM publicaciones';
+    const filtros = req.query;
+    const condiciones = [];
+    const valores = [];
+
+    Object.entries(filtros).forEach(([clave, valor]) => {
+        // Filtro de color es distinto porque se busca en otra tabla
+        condiciones.push(`${clave} = ?`);
+        valores.push(valor);
+    });
+
+    if (condiciones.length > 0) {
+        sql += ' WHERE ' + condiciones.join(' AND ');
+    }
+
     try{
-        const [rows] = await db.query('SELECT * FROM publicaciones');
+        const [rows] = await db.execute(sql, valores);
 
         res.status(200).json({
             message: 'Publicaciones recabadas con exito',
