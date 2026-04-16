@@ -1,41 +1,63 @@
 <!DOCTYPE html>
 <html>
     <head>
-
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="css/login_styles.css"> <link rel="stylesheet" href="css/feed_styles.css">
+        <link href="https://fonts.googleapis.com" rel="stylesheet">
     </head>
     <body>
-        <header>
-           <h1>Publicaciones</h1>
-           <nav>
-                <button>
-                    <h2>Color</h2>
-                    <img src="https://media-public.canva.com/fQdEg/MAG7OVfQdEg/1/tl.png">
-                </button>
-                <button>
-                    <h2>Especie</h2>
-                    <img src="https://media-public.canva.com/VHHEA/MAHBQMVHHEA/1/tl.png">
-                </button>
-                <button>
-                    <h2>Ubicacion</h2>
-                    <img src="https://media-public.canva.com/FX0q0/MAEF4sFX0q0/1/tl.png">
-                </button>
-                <button>
-                    <h2>Raza</h2>
-                    <img src="https://media-public.canva.com/Z37ro/MAESOaZ37ro/1/tl.png">
-                </button>
-                <button>
-                    <img src="https://media-public.canva.com/IS90g/MAHAgWIS90g/1/tl.png">
-                </button>
-           </nav> 
-           <hr>
-        </header>
-        <main>
-            <div class="post">
-                
+        <header class="site-header">
+            <div class="site-header__brand">
+                <img src="imagenes/logo.png" width="25" height="25">
+                <h1 class="site-header__brand-title">Huella</h1>
             </div>
-        </main> 
-        <footer>
+            <div class="site-header__user-actions">
+                <button class="site-header__button">Mi Perfil</button>
+            </div>
+        </header>
 
+        <nav class="filter-bar">
+            <div class="filter-bar__container">
+                <button class="filter-button">
+                    <img src="https://media-public.canva.com/fQdEg/MAG7OVfQdEg/1/tl.png" class="filter-button__icon">
+                    <span class="filter-button__text">Color</span>
+                </button>
+                <button class="filter-button">
+                    <img src="https://media-public.canva.com/VHHEA/MAHBQMVHHEA/1/tl.png" class="filter-button__icon">
+                    <span class="filter-button__text">Especie</span>
+                </button>
+                <button class="filter-button">
+                    <img src="https://media-public.canva.com/FX0q0/MAEF4sFX0q0/1/tl.png" class="filter-button__icon">
+                    <span class="filter-button__text">Ubicación</span>
+                </button>
+                <button class="filter-button">
+                    <img src="https://media-public.canva.com/Z37ro/MAESOaZ37ro/1/tl.png" class="filter-button__icon">
+                    <span class="filter-button__text">Raza</span>
+                </button>
+                <button class="filter-button filter-button--search">
+                    <img src="https://media-public.canva.com/IS90g/MAHAgWIS90g/1/tl.png" class="filter-button__icon">
+                </button>
+            </div>
+        </nav>
+
+        <main class="feed-container">
+            <h2 class="feed-container__title">Mascotas Encontradas</h2>
+            <section class="feed-grid">
+                <article class="post-card">
+                    <div class="post-card__image-container">
+                        <img src="./imagenes/img_1.png" class="post-card__img">
+                    </div>
+                    <div class="post-card__content">
+                        <h3 class="post-card__name">Firulais</h3>
+                        <p class="post-card__info">Golden Retriever • Monterrey, NL</p>
+                        <button class="post-card__btn">Ver Detalles</button>
+                    </div>
+                </article>
+            </section>
+        </main> 
+
+        <footer class="site-footer">
+            <p>&copy; 2026 Huella - Ayudando a mascotas a volver a casa.</p>
         </footer>
     </body>
 </html>
