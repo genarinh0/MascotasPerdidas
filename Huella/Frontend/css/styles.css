@@ -428,15 +428,35 @@ a:hover {
     border-bottom: 1px solid #f0f0f0;
 }
 
+/* =========================================
+   REPLACE THE OLD .pub-card__badge WITH THIS
+   ========================================= */
 .pub-card__badge {
-    font-family: var(--font-secondary);
-    font-weight: bold;
-    color: var(--color-primary);
-    font-size: 13px;
+    font-family: var(--font-primary);
+    font-weight: 800;
+    font-size: 11px;
+    padding: 6px 16px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: inline-block;
+}
+
+/* Modificador para mascotas encontradas (Azul) */
+.pub-card__badge--found {
+    background-color: #326295;
+    color: white;
+}
+
+/* Modificador para mascotas perdidas (Rojo) */
+.pub-card__badge--lost {
+    background-color: #F15A5A;
+    color: #1a1a1a;
 }
 
 .pub-card__badge--active {
-    color: var(--color-primary-light);
+    background-color: var(--color-primary-light);
+    color: white;
 }
 
 .pub-card__icon-btn {
