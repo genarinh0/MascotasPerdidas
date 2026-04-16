@@ -15,17 +15,18 @@ app.post('/api/registro', async (req, res) => {
     const parametros = [
         credenciales.email,
         credenciales.contrasena,
-        credenciales.telefono
+        credenciales.telefono ?? null
     ];
 
     try{
         const [result] = await db.query(
-            'INSERT INTO (email, contrasena, telefono), VALUES (?, ?, ?)',
+            'INSERT INTO usuario(email, contrasena, telefono) VALUES (?, ?, ?)',
             parametros
         );
 
         res.status(201).json({
-            message: 'Usuario creado con exito'
+            message: 'Usuario creado con exito',
+            id: result.insertId
         });
 
     }catch (error){
