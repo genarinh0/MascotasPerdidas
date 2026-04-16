@@ -27,26 +27,20 @@
                 
                 <div id="google-button"></div>
                 
-                <div class="card__divider">
-                    <span class="card__divider-text">o con tu información</span>
-                </div>
+                <div class="divider"></div>
 
                 <div class="card__inputs">
-                    <div class="card__field">
-                        <label class="card__label">Nombre</label>
-                        <input class="card__input" placeholder="Tu nombre completo" id="name">
-                    </div>
                     <div class="card__field">
                         <label class="card__label">Email</label>
                         <input class="card__input" placeholder="tu@email.com" id="email">
                     </div>
                     <div class="card__field">
                         <label class="card__label">Contraseña</label>
-                        <input class="card__input" type="password" placeholder="••••••••" id="password">
+                        <input class="card__input" placeholder="••••••••" id="password">
                     </div>
                     <div class="card__field">
                         <label class="card__label">Confirma tu contraseña</label>
-                        <input class="card__input" type="password" placeholder="••••••••" id="confirm_password">
+                        <input class="card__input" placeholder="••••••••" id="confirm_password">
                     </div>
                 </div>
 
@@ -60,7 +54,51 @@
 
         <script>
             document.getElementById("btnLoginNav").onclick = () => window.location.href = "login.html";
-            // Logic for registration would go here
+
+            const btnSignup = document.getElementById("btnSignup");
+            btnSignup.addEventListener('click', trySignup);
+
+            function redirect(page){
+                window.location.href = page;
+            }
+
+            async function trySignup(){
+                const email = document.getElementById("email").value;
+                const password = document.getElementById("password").value;
+                const confirm_password = document.getElementById("confirm_password").value;
+
+                if (confirm_password !== password){
+                    console.log("Contraseñas no son identicas");
+                    alert("Contraseñas No Coinciden");
+                    return;
+                }
+
+                console.log("Signup intentado!");
+                try {
+                    const response = await fetch('http://localhost:1984/api/registro', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            'email': email,
+                            'contrasena': password
+                        })
+                    });
+
+                    if (response.ok){
+                        const data = await response.json();
+                        console.log(data);
+                        redirect("feed.html");
+                    }else {
+                        console.error('Error en la respuesta: ', response.status);
+                        alert("Error indefinido");
+                    }
+                }catch (error){
+                    console.error('Error de red: ', error);
+                    alert("Error del servidor");
+                }
+            }
         </script>
     </body>
 </html>
