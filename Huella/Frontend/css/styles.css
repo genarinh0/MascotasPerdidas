@@ -1,0 +1,540 @@
+/* =========================================
+   1. VARIABLES & RESET
+   ========================================= */
+html, body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+*, *:before, *:after {
+    box-sizing: inherit;
+}
+
+:root {
+    --color-primary: #346739;
+    --color-primary-light: #79AE6F;
+    --color-secondary: #9FCB98;
+    --color-contrast: #F2EDC2;
+    --bg: #F7F5F2;
+    --card-font-color: #4D4A4ACC;
+    --danger-bg: #ffeded;
+    --danger-text: #cc0000;
+    
+    --font-primary: 'Montserrat', sans-serif;
+    --font-secondary: 'Inter', sans-serif;
+    --font-alternate: 'Fraunces', Georgia, serif;
+}
+
+body {
+    background-color: var(--bg);
+    font-family: var(--font-primary);
+    min-height: 100vh;
+}
+
+button {
+    transition: transform 0.2s ease, filter 0.2s ease;
+    cursor: pointer;
+}
+
+button:hover {
+    transform: translateY(-2px);
+}
+
+a {
+    color: var(--color-primary);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* =========================================
+   2. GLOBAL HEADER (site-header)
+   ========================================= */
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 60px;
+    padding: 0 50px;
+    background-color: var(--color-primary);
+    color: white;
+}
+
+.site-header__brand {
+    display: flex;
+    align-items: center;
+}
+
+.site-header__brand-title {
+    margin: 0 0 0 8px;
+    color: white;
+    font-family: var(--font-secondary);
+    font-size: 25px;
+}
+
+.site-header__button {
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    background-color: var(--color-primary-light);
+    color: white;
+    font-size: 15px;
+    font-family: var(--font-secondary);
+    font-weight: bold;
+}
+
+.site-header__heading {
+    padding: 8px 25px;
+    margin: 0;
+    border-radius: 20px;
+    background-color: var(--color-primary-light);
+    font-family: var(--font-alternate);
+    font-size: 1.2rem;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.site-header__profile-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: none;
+    border-radius: 30px;
+    padding: 5px 15px;
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.site-header__profile-btn:hover {
+    background-color: var(--color-primary-light);
+}
+
+/* =========================================
+   3. FORMS & AUTH (Login, Signup, Create)
+   ========================================= */
+.login-section {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: flex-start;
+    padding-top: 50px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.login-section__welcome {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-width: 400px;
+}
+
+.welcome__img {
+    height: 350px;
+    border-radius: 20px;
+    box-shadow: 0 4px 24px #1c1a1827;
+    margin-bottom: 20px;
+}
+
+.welcome__title {
+    padding: 15px 30px;
+    border-radius: 20px;
+    box-shadow: 0 4px 24px #1c1a1827;
+    background-color: var(--color-secondary);
+    color: rgba(0, 0, 0, 0.7);
+    font-size: 35px;
+    font-family: var(--font-alternate);
+    margin: 0 0 10px 0;
+}
+
+.welcome__subtitle {
+    color: var(--card-font-color);
+    font-size: 18px;
+    font-family: var(--font-alternate);
+}
+
+.login-section__card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 40px;
+    border: 2px solid #E4E0DA;
+    box-shadow: 0 4px 24px #1c1a1827;
+    border-radius: 20px;
+    background-color: white;
+    min-width: 320px;
+}
+
+.card__title {
+    margin-bottom: 20px;
+    color: #313030e5;
+    font-size: 22px;
+    font-family: var(--font-secondary);
+    font-weight: bold;
+}
+
+.card__divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    margin: 20px 0 15px;
+}
+
+.card__divider::before, .card__divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #ccc;
+}
+
+.card__divider-text {
+    color: #999;
+    font-size: 13px;
+}
+
+.card__inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+}
+
+.card__field {
+    display: flex;
+    flex-direction: column;
+}
+
+.card__label {
+    color: var(--card-font-color);
+    font-size: 13px;
+    margin-bottom: 5px;
+}
+
+.card__input {
+    width: 250px;
+    padding: 10px 15px;
+    border: 1px solid rgba(128, 128, 128, 0.37);
+    border-radius: 5px;
+    background-color: var(--bg);
+    color: #3a3737;
+    font-family: var(--font-primary);
+    transition: all 0.3s;
+}
+
+.card__input:focus {
+    outline: none;
+    border-color: rgba(37, 37, 37, 0.6);
+    background-color: white;
+}
+
+/* Specific Create Post Form Inputs */
+.card__input--select, .card__input--date {
+    cursor: pointer;
+}
+
+.card__input--textarea {
+    height: 80px;
+    resize: vertical;
+}
+
+.color-selector {
+    width: 250px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    background-color: var(--bg);
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid rgba(128, 128, 128, 0.37);
+}
+
+.color-option {
+    font-size: 13px;
+    color: var(--card-font-color);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.file-upload {
+    width: 250px;
+    border: 2px dashed rgba(128, 128, 128, 0.37);
+    border-radius: 5px;
+    padding: 15px;
+    text-align: center;
+    background-color: var(--bg);
+    transition: all 0.3s;
+}
+
+.file-upload:hover {
+    border-color: var(--color-primary);
+    background-color: white;
+}
+
+.file-upload__input {
+    display: none;
+}
+
+.file-upload__label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    color: var(--color-primary);
+    font-weight: bold;
+    font-size: 13px;
+}
+
+.card__btn {
+    padding: 15px;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    width: 100%;
+}
+
+.card__btn--send {
+    background-color: var(--color-primary);
+    color: white;
+    margin-top: 10px;
+}
+
+.card__hint {
+    margin-top: 20px;
+    color: #757575e5;
+    font-size: 12px;
+}
+
+/* =========================================
+   4. NAVIGATION & TOOLBARS (Feed/Management)
+   ========================================= */
+.filter-bar {
+    background-color: white;
+    border-bottom: 1px solid #E4E0DA;
+    padding: 15px 50px;
+    position: sticky;
+    top: 60px;
+    z-index: 5;
+}
+
+.filter-bar__container {
+    display: flex;
+    gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    align-items: center;
+}
+
+.filter-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: var(--bg);
+    border: 1px solid #E4E0DA;
+    padding: 8px 15px;
+    border-radius: 20px;
+}
+
+.filter-button:hover {
+    background-color: var(--color-secondary);
+    border-color: var(--color-primary-light);
+}
+
+/* Corrected: Added icon sizing back */
+.filter-button__icon {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+.filter-button__text {
+    font-family: var(--font-secondary);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--card-font-color);
+}
+
+.management-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px 50px;
+}
+
+.management-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #E4E0DA;
+    padding-bottom: 20px;
+}
+
+.management-header__stats {
+    color: var(--card-font-color);
+    font-family: var(--font-secondary);
+}
+
+.management-header__add-btn {
+    background-color: var(--color-primary);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 30px;
+    font-weight: bold;
+    font-family: var(--font-secondary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* =========================================
+   5. UNIVERSAL POST SYSTEM (pub-card)
+   ========================================= */
+.post-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 30px;
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 50px;
+}
+
+.pub-card {
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px #1c1a1815;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease;
+}
+
+.pub-card:hover {
+    transform: translateY(-5px);
+}
+
+.pub-card__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.pub-card__badge {
+    font-family: var(--font-secondary);
+    font-weight: bold;
+    color: var(--color-primary);
+    font-size: 13px;
+}
+
+.pub-card__badge--active {
+    color: var(--color-primary-light);
+}
+
+.pub-card__icon-btn {
+    background: none;
+    border: none;
+    padding: 2px;
+    opacity: 0.8;
+}
+
+.pub-card__icon-btn:hover {
+    opacity: 1;
+}
+
+.pub-card__image-container {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    background-color: #eee; /* Fallback for missing images */
+}
+
+.pub-card__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.pub-card__content {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.pub-card__title {
+    margin: 0 0 10px 0;
+    font-family: var(--font-alternate);
+    font-size: 20px;
+    color: #313030;
+}
+
+.pub-card__attributes {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.attribute {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: #555;
+}
+
+.attribute__icon {
+    width: 16px;
+    height: 16px;
+    opacity: 0.7;
+}
+
+/* Base button inside card */
+.pub-card__btn {
+    margin-top: auto;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    font-family: var(--font-secondary);
+    width: 100%;
+    text-align: center;
+}
+
+/* Modifiers for Buttons */
+.pub-card__btn--primary {
+    background-color: var(--color-primary-light);
+    color: white;
+}
+
+.pub-card__btn--secondary {
+    background-color: var(--color-primary);
+    color: white;
+}
+
+.pub-card__btn--success {
+    background-color: var(--color-secondary);
+    color: #346739;
+}
+
+.pub-card__btn--danger {
+    background-color: var(--danger-bg);
+    color: var(--danger-text);
+}
+
+/* For Mis Publicaciones buttons grid */
+.pub-card__actions-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: auto;
+}

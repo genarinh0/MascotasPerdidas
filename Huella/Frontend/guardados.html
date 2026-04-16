@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
     <head>
         <meta charset="UTF-8">
-        <link rel="stylesheet" href="css/login_styles.css"> <link rel="stylesheet" href="css/guardados_styles.css">
+        <link rel="stylesheet" href="css/styles.css">
+        <link href="https://fonts.googleapis.com" rel="stylesheet">
     </head>
 
     <body>
@@ -20,39 +21,74 @@
             </button>
         </header>
 
-        <main class="saved-feed">
+        <main class="post-grid">
             <article class="pub-card">
                 <div class="pub-card__header">
-                    <label class="pub-card__tag">¡Busca a su Familia!</label>
-                    <button class="pub-card__save-btn">
-                        <img src="imagenes/iconos/icono_guardado.png" width="20">
+                    <span class="pub-card__badge">¡Busca a su Familia!</span>
+                    <button class="pub-card__icon-btn" title="Quitar de guardados">
+                        <img src="imagenes/iconos/icono_guardado.png" width="20" alt="Guardado">
                     </button>
                 </div>
-                
+
                 <div class="pub-card__image-container">
-                    <img src="imagenes/img_4.png" class="pub-card__img">
+                    <img src="imagenes/img_4.png" class="pub-card__img" alt="Mascota guardada">
                 </div>
 
-                <div class="pub-card__description">
-                    <div class="attribute">
-                        <img src="imagenes/iconos/icono_huella.png" class="attribute__icon">
-                        <label><b class="attribute__type">Especie:</b> Perro</label>
+                <div class="pub-card__content">
+                    <h3 class="pub-card__title">Pelusa</h3>
+                    
+                    <div class="pub-card__attributes">
+                        <div class="attribute">
+                            <img src="imagenes/iconos/icono_huella.png" class="attribute__icon" alt="Huella">
+                            <label><b class="attribute__type">Especie:</b> Perro</label>
+                        </div>
+                        <div class="attribute">
+                            <img src="imagenes/iconos/icono_color.png" class="attribute__icon" alt="Color">
+                            <label><b class="attribute__type">Color:</b> Café</label>
+                        </div>
+                        <div class="attribute">
+                            <img src="imagenes/iconos/icono_ubicacion.png" class="attribute__icon" alt="Ubicación">
+                            <label><b class="attribute__type">Ubicación:</b> Tlajomulco, GDL</label>
+                        </div>
                     </div>
-                    <div class="attribute">
-                        <img src="imagenes/iconos/icono_color.png" class="attribute__icon">
-                        <label><b class="attribute__type">Color:</b> Café</label>
-                    </div>
-                    <div class="attribute">
-                        <img src="imagenes/iconos/icono_ubicacion.png" class="attribute__icon">
-                        <label><b class="attribute__type">Ubicación:</b> Tlajomulco, GDL</label>
-                    </div>
+                    
+                    <button class="pub-card__btn pub-card__btn--secondary">Contactar</button>
                 </div>
-                <button class="pub-card__action-btn">Contactar</button>
             </article>
 
-            <article class="pub-card pub-card--empty"></article>
-            <article class="pub-card pub-card--empty"></article>
-            <article class="pub-card pub-card--empty"></article>
+            <article class="pub-card">
+                <div class="pub-card__header">
+                    <span class="pub-card__badge">¡Busca a su Familia!</span>
+                    <button class="pub-card__icon-btn" title="Quitar de guardados">
+                        <img src="imagenes/iconos/icono_guardado.png" width="20" alt="Guardado">
+                    </button>
+                </div>
+
+                <div class="pub-card__image-container">
+                    <img src="imagenes/img_5.png" class="pub-card__img" alt="Mascota guardada">
+                </div>
+
+                <div class="pub-card__content">
+                    <h3 class="pub-card__title">Desconocido</h3>
+                    
+                    <div class="pub-card__attributes">
+                        <div class="attribute">
+                            <img src="imagenes/iconos/icono_huella.png" class="attribute__icon" alt="Huella">
+                            <label><b class="attribute__type">Especie:</b> Perro</label>
+                        </div>
+                        <div class="attribute">
+                            <img src="imagenes/iconos/icono_color.png" class="attribute__icon" alt="Color">
+                            <label><b class="attribute__type">Color:</b> Blanco y Negro</label>
+                        </div>
+                        <div class="attribute">
+                            <img src="imagenes/iconos/icono_ubicacion.png" class="attribute__icon" alt="Ubicación">
+                            <label><b class="attribute__type">Ubicación:</b> Zapopan, JAL</label>
+                        </div>
+                    </div>
+                    
+                    <button class="pub-card__btn pub-card__btn--secondary">Contactar</button>
+                </div>
+            </article>
         </main>
     </body>
 </html>
