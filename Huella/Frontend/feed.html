@@ -18,22 +18,77 @@
 
         <nav class="filter-bar">
             <div class="filter-bar__container">
-                <button class="filter-button" data-selected="" id="btnColor">
-                    <img src="https://media-public.canva.com/fQdEg/MAG7OVfQdEg/1/tl.png" class="filter-button__icon">
-                    <span class="filter-button__text">Color</span>
+                <button class="filter-bar__clear">
+                    <img src="imagenes/iconos/icono_borrar.png" width="20">
                 </button>
-                <button class="filter-button" data-selected="" id="btnEspecie">
-                    <img src="https://media-public.canva.com/VHHEA/MAHBQMVHHEA/1/tl.png" class="filter-button__icon">
-                    <span class="filter-button__text">Especie</span>
-                </button>
-                <button class="filter-button" data-selected="" id="btnUbicacion">
-                    <img src="https://media-public.canva.com/FX0q0/MAEF4sFX0q0/1/tl.png" class="filter-button__icon">
-                    <span class="filter-button__text">Ubicación</span>
-                </button>
-                <button class="filter-button" data-selected="" id="btnRaza">
-                    <img src="https://media-public.canva.com/Z37ro/MAESOaZ37ro/1/tl.png" class="filter-button__icon">
-                    <span class="filter-button__text">Raza</span>
-                </button>
+                <div class="dropdown">
+                    <button class="filter-button">
+                        <img src="imagenes/iconos/icono_estatus.png" class="filter-button__icon">
+                        <span class="filter-button__text">Estatus</span>
+                    </button>
+                    <div class="dropdown-options" data-filter-group="estatus" data-selectedValue="">
+                        <button class="dropdown-item" data-value=1>Perdida</button>
+                        <button class="dropdown-item" data-value=2>Refugiada</button>
+                        <button class="dropdown-item" data-value=3>Resuelto</button>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <button class="filter-button">
+                        <img src="imagenes/iconos/icono_color.png" class="filter-button__icon">
+                        <span class="filter-button__text">Color</span>
+                    </button>
+                    <div class="dropdown-options" data-filter-group="color" data-selectedValue="">
+                        <button class="dropdown-item" data-value=1>Perdida</button>
+                        <button class="dropdown-item" data-value=2>Refugiada</button>
+                        <button class="dropdown-item" data-value=3>Resuelto</button>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <button class="filter-button">
+                        <img src="imagenes/iconos/icono_huella.png" class="filter-button__icon">
+                        <span class="filter-button__text">Especie</span>
+                    </button>
+                    <div class="dropdown-options" data-filter-group="especie" data-selectedValue="">
+                        <button class="dropdown-item" data-value='perro'>Perro</button>
+                        <button class="dropdown-item" data-value='gato'>Gato</button>
+                        <button class="dropdown-item" data-value='conejo'>Conejo</button>
+                        <button class="dropdown-item" data-value='ave'>Ave</button>
+                        <button class="dropdown-item" data-value='otro'>Otro</button>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <button class="filter-button">
+                        <img src="imagenes/iconos/icono_ubicacion.png" class="filter-button__icon">
+                        <span class="filter-button__text">Ubicación</span>
+                    </button>
+                    <div class="dropdown-options" data-filter-group="ubicacion" data-selectedValue="">
+                        <button class="dropdown-item" data-value=1>Perdida</button>
+                        <button class="dropdown-item" data-value=2>Refugiada</button>
+                        <button class="dropdown-item" data-value=3>Resuelto</button>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <button class="filter-button">
+                        <img src="imagenes/iconos/icono_tamaño.png" class="filter-button__icon">
+                        <span class="filter-button__text">Tamaño</span>
+                    </button>
+                    <div class="dropdown-options" data-filter-group="tamanio" data-selectedValue="">
+                        <button class="dropdown-item" data-value=1>Chica</button>
+                        <button class="dropdown-item" data-value=2>Mediana</button>
+                        <button class="dropdown-item" data-value=3>Grande</button>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <button class="filter-button">
+                        <img src="imagenes/iconos/icono_fecha.png" class="filter-button__icon">
+                        <span class="filter-button__text">Fecha</span>
+                    </button>
+                    <div class="dropdown-options" data-filter-group="fecha" data-selectedValue="">
+                        <button class="dropdown-item" data-value=1>Perdida</button>
+                        <button class="dropdown-item" data-value=2>Refugiada</button>
+                        <button class="dropdown-item" data-value=3>Resuelto</button>
+                    </div>
+                </div>
                 <button class="filter-button filter-button--search" id="btnFilter">
                     <img src="https://media-public.canva.com/IS90g/MAHAgWIS90g/1/tl.png" class="filter-button__icon">
                 </button>
@@ -109,25 +164,55 @@
         </footer>
 
         <script>
-            const btnFiltros = document.getElementById("btnFilter");
-            btnFiltros.addEventListener('click', getFeed);
+            const btnUsarFiltros = document.getElementById("btnFilter");
+            btnUsarFiltros.addEventListener('click', getFeed);
 
-            function selectFilterValue(btnID, value){
-                const btn = document.getElementById(btnID);
-                btn.dataset.selected = value;
-            }
+            const dropdowns = document.querySelectorAll('.dropdown');
+            dropdowns.forEach(dropdown => {
+                const btnFilter = dropdown.querySelector(".filter-button");
+                const options = dropdown.querySelectorAll(".dropdown-item");
+                const optionsList = dropdown.querySelector(".dropdown-options");
+
+                btnFilter.addEventListener('click', () => {
+                    optionsList.classList.toggle('open');
+                    document.querySelectorAll('.dropdown').forEach(other => {
+                        if (other !== dropdown) {
+                            other.querySelector('.dropdown-options').classList.remove('open');
+                        }
+                    });
+                });
+
+                options.forEach(option => {
+                    const baseText = btnFilter.textContent;
+                    dropdown.dataset.baseText = baseText;
+
+                    option.addEventListener('click', () => {
+                        dropdown.querySelector('.filter-button__text').textContent = baseText + ': ' + option.textContent;
+                        optionsList.dataset.selectedValue = option.dataset.value;
+                    })
+                })
+            })
+
+            const btnClearFilters = document.querySelector('.filter-bar__clear');
+            btnClearFilters.addEventListener('click', () => {
+                dropdowns.forEach(dropdown => {
+                    const baseText = dropdown.dataset.baseText;
+                    dropdown.querySelector('.filter-button__text').textContent = baseText;
+                    dropdown.querySelector('.dropdown-options').classList.remove('open');
+                });
+            })
 
             async function getFeed(){
                 let url = 'http://localhost:1984/api/publicaciones';
 
-                // son mas filtros
+                const filters = {};
 
-                const filters = {
-                    color: document.getElementById("btnColor").dataset.selected,
-                    especie: document.getElementById("btnEspecie").dataset.selected,
-                    ubicacion: document.getElementById("btnUbicacion").dataset.selected,
-                    raza: document.getElementById("btnRaza").dataset.selected
-                };
+                document.querySelectorAll('.dropdown-options').forEach(group => {
+                    const groupName = group.dataset.filterGroup;
+                    const value = group.dataset.selectedValue;
+
+                    filters[groupName] = value ?? "";
+                });
 
                 const nonEmptyFilters = [];
 
@@ -140,7 +225,10 @@
                 if (nonEmptyFilters.length > 0){
                     url += '?' + nonEmptyFilters.join('&');
                 }
+
+                console.log(url);
                 
+                /*
                 try{
                     const response = await fetch(url);
                     const data = await response.json();
@@ -151,6 +239,7 @@
                     console.error('Error de red: ', error);
                     alert("Error del servidor");
                 }
+                */
             }
         </script>
     </body>
