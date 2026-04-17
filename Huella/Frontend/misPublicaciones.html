@@ -4,6 +4,7 @@
         <meta charset="UTF-8">
         <link rel="stylesheet" href="css/styles.css">
         <link href="https://fonts.googleapis.com" rel="stylesheet">
+        <script type="module" src="./componentes/post-card.js"></script>
     </head>
 
     <body>
@@ -12,9 +13,9 @@
                 <img src="imagenes/logo.png" width="25" height="25">
                 <h1 class="site-header__brand-title">Huella</h1>
             </div>
-            
+
             <h2 class="site-header__heading">Mis Publicaciones</h2>
-            
+
             <button class="site-header__profile-btn">
                 <span class="site-header__profile-label">Mi Perfil</span>
                 <img class="site-header__profile-icon" src="imagenes/IconoPerfil.png" width="35" height="35">
@@ -23,87 +24,16 @@
 
         <main class="management-container">
             <div class="management-header">
-                <p class="management-header__stats">Tienes <b>2</b> publicaciones activas</p>
-                <button class="management-header__add-btn">
+                <p class="management-header__stats" id="stats-text">Cargando publicaciones...</p>
+                <button class="management-header__add-btn" onclick="window.location.href='crearPublicacion.html'">
                     <span>+</span> Nueva Publicación
                 </button>
             </div>
 
-            <section class="post-grid" style="padding: 0; margin: 20px 0;">
-                
-                <article class="pub-card">
-                    <div class="pub-card__header">
-                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                            <span class="pub-card__badge pub-card__badge--active">Activa</span>
-                            <span class="pub-card__badge pub-card__badge--found">¡Busca a su familia!</span>
-                        </div>
-                        <button class="pub-card__icon-btn" title="Editar publicación">
-                            <img src="imagenes/iconos/icono_editar.png" width="18" alt="Editar">
-                        </button>
-                    </div>
-
-                    <div class="pub-card__image-container">
-                        <img src="./imagenes/img_1.png" class="pub-card__img" alt="Mi publicación">
-                    </div>
-
-                    <div class="pub-card__content">
-                        <h3 class="pub-card__title">Michi</h3>
-
-                        <div class="pub-card__attributes">
-                            <div class="attribute">
-                                <img src="imagenes/iconos/icono_huella.png" class="attribute__icon" alt="Huella">
-                                <label><b class="attribute__type">Especie:</b> Gato</label>
-                            </div>
-                            <div class="attribute">
-                                <img src="imagenes/iconos/icono_ubicacion.png" class="attribute__icon" alt="Ubicación">
-                                <label><b class="attribute__type">Visto en:</b> Santa Fe, CDMX</label>
-                            </div>
-                        </div>
-
-                        <div class="pub-card__actions-grid">
-                            <button class="pub-card__btn pub-card__btn--success">¡Lo encontré!</button>
-                            <button class="pub-card__btn pub-card__btn--danger">Eliminar</button>
-                        </div>
-                    </div>
-                </article>
-
-                <article class="pub-card">
-                    <div class="pub-card__header">
-                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                            <span class="pub-card__badge pub-card__badge--active">Activa</span>
-                            <span class="pub-card__badge pub-card__badge--lost">¡Perdido!</span>
-                        </div>
-                        <button class="pub-card__icon-btn" title="Editar publicación">
-                            <img src="imagenes/iconos/icono_editar.png" width="18" alt="Editar">
-                        </button>
-                    </div>
-
-                    <div class="pub-card__image-container">
-                        <img src="./imagenes/img_5.png" class="pub-card__img" alt="Mi publicación">
-                    </div>
-
-                    <div class="pub-card__content">
-                        <h3 class="pub-card__title">Fido</h3>
-
-                        <div class="pub-card__attributes">
-                            <div class="attribute">
-                                <img src="imagenes/iconos/icono_huella.png" class="attribute__icon" alt="Huella">
-                                <label><b class="attribute__type">Especie:</b> Perro</label>
-                            </div>
-                            <div class="attribute">
-                                <img src="imagenes/iconos/icono_ubicacion.png" class="attribute__icon" alt="Ubicación">
-                                <label><b class="attribute__type">Perdido en:</b> Tlaquepaque, JAL</label>
-                            </div>
-                        </div>
-
-                        <div class="pub-card__actions-grid">
-                            <button class="pub-card__btn pub-card__btn--success">¡Lo encontré!</button>
-                            <button class="pub-card__btn pub-card__btn--danger">Eliminar</button>
-                        </div>
-                    </div>
-                </article>
-
+            <section class="post-grid" id="grid-mis-pubs" style="padding: 0; margin: 20px 0;">
             </section>
         </main>
+
+        <script src="../Backend/misPublicaciones.js"></script>
     </body>
 </html>

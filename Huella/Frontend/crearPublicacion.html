@@ -18,11 +18,20 @@
         <main class="login-section" style="justify-content: center; padding-bottom: 50px;">
             <section class="login-section__card">
                 <label class="card__title">Crear Publicación</label>
-                
-                <form class="card__inputs">
+
+                <form class="card__inputs" id="formCrearPub">
+                    <div class="card__field">
+                        <label class="card__label">Tipo de Publicación *</label>
+                        <select class="card__input card__input--select" id="inputTipo" required>
+                            <option value="" disabled selected>Selecciona...</option>
+                            <option value="1">Perdido (Busco a mi mascota)</option>
+                            <option value="2">Encontrado (Busca a su familia)</option>
+                        </select>
+                    </div>
+
                     <div class="card__field">
                         <label class="card__label">Especie *</label>
-                        <select class="card__input card__input--select" required>
+                        <select class="card__input card__input--select" id="inputEspecie" required>
                             <option value="" disabled selected>Selecciona...</option>
                             <option value="perro">Perro</option>
                             <option value="gato">Gato</option>
@@ -32,12 +41,12 @@
 
                     <div class="card__field">
                         <label class="card__label">Raza (Opcional)</label>
-                        <input class="card__input" placeholder="Ej: Golden Retriever">
+                        <input class="card__input" id="inputRaza" placeholder="Ej: Golden Retriever">
                     </div>
 
                     <div class="card__field">
                         <label class="card__label">Tamaño *</label>
-                        <select class="card__input card__input--select" required>
+                        <select class="card__input card__input--select" id="inputTamanio" required>
                             <option value="pequeño">Pequeño</option>
                             <option value="mediano">Mediano</option>
                             <option value="grande">Grande</option>
@@ -47,16 +56,16 @@
                     <div class="card__field">
                         <label class="card__label">Color (Selecciona varios) *</label>
                         <div class="color-selector">
-                            <label class="color-option"><input type="checkbox" value="blanco"> Blanco</label>
-                            <label class="color-option"><input type="checkbox" value="negro"> Negro</label>
-                            <label class="color-option"><input type="checkbox" value="cafe"> Café</label>
-                            <label class="color-option"><input type="checkbox" value="gris"> Gris</label>
+                            <label class="color-option"><input type="checkbox" name="colores" value="1"> Blanco</label>
+                            <label class="color-option"><input type="checkbox" name="colores" value="2"> Negro</label>
+                            <label class="color-option"><input type="checkbox" name="colores" value="3"> Café</label>
+                            <label class="color-option"><input type="checkbox" name="colores" value="4"> Gris</label>
                         </div>
                     </div>
 
                     <div class="card__field">
                         <label class="card__label">Ubicación aproximada *</label>
-                        <select class="card__input card__input--select" required>
+                        <select class="card__input card__input--select" id="inputUbicacion" required>
                             <option value="" disabled selected>Selecciona zona...</option>
                             <option value="norte">Zona Norte</option>
                             <option value="sur">Zona Sur</option>
@@ -68,12 +77,12 @@
 
                     <div class="card__field">
                         <label class="card__label">Fecha de pérdida *</label>
-                        <input type="date" class="card__input card__input--date" required>
+                        <input type="date" class="card__input card__input--date" id="inputFecha" required>
                     </div>
 
                     <div class="card__field">
                         <label class="card__label">Horario de contacto (Opcional)</label>
-                        <input class="card__input" placeholder="Ej: 9:00 AM - 6:00 PM">
+                        <input class="card__input" id="inputHorario" placeholder="Ej: 9:00 AM - 6:00 PM">
                     </div>
 
                     <div class="card__field">
@@ -89,12 +98,14 @@
 
                     <div class="card__field">
                         <label class="card__label">Descripción *</label>
-                        <textarea class="card__input card__input--textarea" placeholder="Danos más detalles..." required></textarea>
+                        <textarea class="card__input card__input--textarea" id="inputDescripcion" placeholder="Danos más detalles..." required></textarea>
                     </div>
 
                     <button type="submit" class="card__btn card__btn--send" style="margin-top: 20px; width: 100%;">Publicar</button>
                 </form>
             </section>
         </main>
+
+        <script src="../Backend/crearPublicacion.js"></script>
     </body>
 </html>
