@@ -4,6 +4,7 @@
         <meta charset="UTF-8">
         <link rel="stylesheet" href="css/styles.css">
         <link href="https://fonts.googleapis.com" rel="stylesheet">
+        <script type="module" src="./componentes/post-card.js"></script>
     </head>
     <body>
         <header class="site-header">
@@ -159,88 +160,6 @@
 
         </main> 
 
-        <footer class="site-footer" style="text-align: center; padding: 40px; color: var(--card-font-color); font-size: 12px;">
-            <p>&copy; 2026 Huella - Ayudando a mascotas a volver a casa.</p>
-        </footer>
-
-        <script>
-            const btnUsarFiltros = document.getElementById("btnFilter");
-            btnUsarFiltros.addEventListener('click', getFeed);
-
-            const dropdowns = document.querySelectorAll('.dropdown');
-            dropdowns.forEach(dropdown => {
-                const btnFilter = dropdown.querySelector(".filter-button");
-                const options = dropdown.querySelectorAll(".dropdown-item");
-                const optionsList = dropdown.querySelector(".dropdown-options");
-
-                btnFilter.addEventListener('click', () => {
-                    optionsList.classList.toggle('open');
-                    document.querySelectorAll('.dropdown').forEach(other => {
-                        if (other !== dropdown) {
-                            other.querySelector('.dropdown-options').classList.remove('open');
-                        }
-                    });
-                });
-
-                options.forEach(option => {
-                    const baseText = btnFilter.textContent;
-                    dropdown.dataset.baseText = baseText;
-
-                    option.addEventListener('click', () => {
-                        dropdown.querySelector('.filter-button__text').textContent = baseText + ': ' + option.textContent;
-                        optionsList.dataset.selectedValue = option.dataset.value;
-                    })
-                })
-            })
-
-            const btnClearFilters = document.querySelector('.filter-bar__clear');
-            btnClearFilters.addEventListener('click', () => {
-                dropdowns.forEach(dropdown => {
-                    const baseText = dropdown.dataset.baseText;
-                    dropdown.querySelector('.filter-button__text').textContent = baseText;
-                    dropdown.querySelector('.dropdown-options').classList.remove('open');
-                });
-            })
-
-            async function getFeed(){
-                let url = 'http://localhost:1984/api/publicaciones';
-
-                const filters = {};
-
-                document.querySelectorAll('.dropdown-options').forEach(group => {
-                    const groupName = group.dataset.filterGroup;
-                    const value = group.dataset.selectedValue;
-
-                    filters[groupName] = value ?? "";
-                });
-
-                const nonEmptyFilters = [];
-
-                Object.entries(filters).forEach(([key, value]) => {
-                    if (value !== ""){
-                        nonEmptyFilters.push(`${key}=${value}`);
-                    }
-                });
-
-                if (nonEmptyFilters.length > 0){
-                    url += '?' + nonEmptyFilters.join('&');
-                }
-
-                console.log(url);
-                
-                /*
-                try{
-                    const response = await fetch(url);
-                    const data = await response.json();
-                    
-                    // con las publicaciones devueltas ahora a meterlas al feed
-                    // no renderizar todas de un jalon (ver que rollo)
-                }catch (error){
-                    console.error('Error de red: ', error);
-                    alert("Error del servidor");
-                }
-                */
-            }
-        </script>
+        <script src="js/feed.js"></script>
     </body>
 </html>

@@ -83,7 +83,7 @@ app.get('/api/publicaciones', async (req, res) => {
     if (condiciones.length > 0) {
         sql += ' WHERE ' + condiciones.join(' AND ');
     }
-
+    console.log(sql);
     try {
         const [rows] = await db.query(sql, valores);
 

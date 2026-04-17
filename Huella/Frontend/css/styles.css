@@ -569,7 +569,7 @@ a:hover {
 
 .dropdown-options {
     position: absolute;
-    display: flex;
+    display: none;
     opacity: 0;
     transform: translateY(-5px);
     flex-direction: column;

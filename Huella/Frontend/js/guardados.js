@@ -12,6 +12,8 @@ async function cargarGuardados() {
         const data = await response.json();
         const publicaciones = data.publicaciones;
 
+        console.log(publicaciones[0]);
+
         gridGuardados.innerHTML = '';
         if (publicaciones.length === 0) {
             gridGuardados.innerHTML = '<p style="text-align: center; color: var(--card-font-color); grid-column: 1 / -1;">No tienes publicaciones guardadas por el momento.</p>';
@@ -25,12 +27,17 @@ async function cargarGuardados() {
             const badgeType = isPerdido ? 'lost' : 'found';
 
             tarjeta.setAttribute('nombre', pub.nombre || 'Desconocido');
-            tarjeta.setAttribute('imagen', pub.imagen || 'imagenes/img_4.png');
             tarjeta.setAttribute('especie', pub.especie || 'No especificada');
             tarjeta.setAttribute('ubicacion', pub.ubicacion || 'Sin ubicación');
             tarjeta.setAttribute('badge-text', badgeText);
             tarjeta.setAttribute('badge-type', badgeType);
 
+            if (pub.imagenBase64) {
+                tarjeta.setAttribute('imagen', `data:image/jpeg;base64,${pub.imagenBase64}`);
+            } else {
+                tarjeta.setAttribute('imagen', './imagenes/img_1.png');
+            }
+            
             tarjeta.innerHTML = `
                 <button slot="header-action" class="pub-card__icon-btn btn-quitar" data-id="${pub.id_Publicacion}" title="Quitar de guardados">
                     <img src="imagenes/iconos/icono_guardado.png" width="20" alt="Guardado">
