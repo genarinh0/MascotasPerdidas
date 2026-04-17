@@ -5,12 +5,12 @@ import cors from 'cors';
 const app = express();
 
 app.use(cors());
-app.use(express.json());
+
+//Límites ampliados para permitir las imágenes en Base64
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 app.post('/api/registro', async (req, res) => {
-    // Crear cuenta nueva
-    // Lo ideal es hashear la contrasena
-
     const credenciales = req.body;
     const parametros = [
         credenciales.email,
@@ -18,7 +18,7 @@ app.post('/api/registro', async (req, res) => {
         credenciales.telefono ?? null
     ];
 
-    try{
+    try {
         const [result] = await db.query(
             'INSERT INTO usuario(email, contrasena, telefono) VALUES (?, ?, ?)',
             parametros
@@ -29,33 +29,27 @@ app.post('/api/registro', async (req, res) => {
             id: result.insertId
         });
 
-    }catch (error){
+    } catch (error) {
         console.error(error);
-        res.status(500).json({
-            error: 'Error al crear la cuenta'
-        })
+        res.status(500).json({ error: 'Error al crear la cuenta' })
     }
-})
+});
 
 app.post('/api/login', async (req, res) => {
-    // Autenticar Usuario
-    // Hacer email unique en bd
     const credenciales = req.body;
     const parametros = [
         credenciales.email,
         credenciales.contrasena
-    ]
+    ];
 
-    try{
+    try {
         const [result] = await db.query(
-            'SELECT id_Usuario FROM Usuario WHERE email = ? AND contrasena = ?', 
+            'SELECT id_Usuario FROM usuario WHERE email = ? AND contrasena = ?',
             parametros
-        )
+        );
 
         if (result.length === 0) {
-            return res.status(401).json({
-                error: 'Credenciales incorrectas'
-            });
+            return res.status(401).json({ error: 'Credenciales incorrectas' });
         }
 
         const usuario = result[0];
@@ -65,24 +59,24 @@ app.post('/api/login', async (req, res) => {
             id: usuario.id_Usuario
         });
 
-    }catch (error){
+    } catch (error) {
         console.error(error);
-        res.status(500).json({
-            error: 'Error al autenticar el usuario'
-        })
+        res.status(500).json({ error: 'Error al autenticar el usuario' })
     }
-})
+});
 
 app.get('/api/publicaciones', async (req, res) => {
-    // Ver publicaciones con / sin filtros
-    let sql = 'SELECT * FROM publicaciones';
+    let sql = `
+        SELECT p.*,
+        (SELECT TO_BASE64(fotografia) FROM fotografia f WHERE f.id_Publicacion = p.id_Publicacion LIMIT 1) as imagenBase64
+        FROM publicacion p
+    `;
     const filtros = req.query;
     const condiciones = [];
     const valores = [];
 
     Object.entries(filtros).forEach(([clave, valor]) => {
-        // Filtro de color es distinto porque se busca en otra tabla
-        condiciones.push(`${clave} = ?`);
+        condiciones.push(`p.${clave} = ?`);
         valores.push(valor);
     });
 
@@ -90,167 +84,157 @@ app.get('/api/publicaciones', async (req, res) => {
         sql += ' WHERE ' + condiciones.join(' AND ');
     }
 
-    try{
-        const [rows] = await db.execute(sql, valores);
+    try {
+        const [rows] = await db.query(sql, valores);
 
         res.status(200).json({
             message: 'Publicaciones recabadas con exito',
             publicaciones: rows
         });
 
-    }catch (error){
+    } catch (error) {
         console.error(error);
-        res.status(500).json({
-            error: 'Error al obtener las publicaciones'
-        })
+        res.status(500).json({ error: 'Error al obtener las publicaciones' })
     }
-})
+});
 
 app.post('/api/publicaciones', async (req, res) => {
-    // Nueva Publicacion
-    // Revisar si cumple con el formato, sino retornar un 400
     const nuevaPub = req.body;
+    const fecha_creacion = new Date().toISOString().split('T')[0];
+    const estatus = 1;
 
-    const sql = `
-        INSERT INTO publicacion 
-            (tipo, especie, raza, tamaño, descripcion, fecha_suceso, fecha_creacion, estatus, ubicacion, horario_contacto) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `;
+    try {
+        await db.beginTransaction();
 
-    const parametros = [
-        nuevaPub.tipo,
-        nuevaPub.especie,
-        nuevaPub.raza,
-        nuevaPub.tamaño,
-        nuevaPub.descripcion,
-        nuevaPub.fecha_suceso,
-        nuevaPub.fecha_creacion,
-        nuevaPub.estatus,
-        nuevaPub.ubicacion,
-        nuevaPub.horario_contacto
-    ];
+        const sqlPub = `INSERT INTO publicacion (id_Usuario, tipo, especie, raza, tamanio, descripcion, fecha_suceso, fecha_creacion, estatus, ubicacion, horario_contacto) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+        const parametrosPub = [nuevaPub.id_Usuario, nuevaPub.tipo, nuevaPub.especie, nuevaPub.raza, nuevaPub.tamanio, nuevaPub.descripcion, nuevaPub.fecha_suceso, fecha_creacion, estatus, nuevaPub.ubicacion, nuevaPub.horario_contacto];
+        const [resultPub] = await db.query(sqlPub, parametrosPub);
+        const id_Publicacion = resultPub.insertId;
 
-    try{
-        const [result] = await db.query(sql, parametros);
-
-        res.status(201).json({
-            message: 'Publicacion creada con exito',
-            id: result.insertId
-        });
-        
-    }catch (error){
-        console.error(error);
-        res.status(500).json({
-            error: 'Error al crear la publicacion'
-        })
-    }
-})
-
-app.delete('/api/publicaciones/:id', async (req, res) => {
-    // Borrar publicacion con cierto id si es tuya
-    // Autenticar primero, borrar despues
-    const { id } = req.params;
-
-    try{
-        const [result] = await db.query('DELETE FROM publicaciones WHERE id_Publicacion = ?', [id]);
-
-        if (result.affectedRows === 0) {
-            return res.status(404).json({
-                error: 'Publicación no encontrada'
-            });
+        //Vincular Colores a colormascota
+        if (nuevaPub.colores && nuevaPub.colores.length > 0) {
+            const sqlColor = 'INSERT INTO colormascota (id_Publicacion, id_Color) VALUES (?, ?)';
+            for (let id_Color of nuevaPub.colores) {
+                await db.query(sqlColor, [id_Publicacion, id_Color]);
+            }
         }
 
-        res.status(200).json({
-            message: 'Publicación borrada con exito'
+        //Insertar Fotografías
+        if (nuevaPub.imagenes && nuevaPub.imagenes.length > 0) {
+            const sqlFoto = 'INSERT INTO fotografia (id_Publicacion, fotografia) VALUES (?, FROM_BASE64(?))';
+            for (let base64Image of nuevaPub.imagenes) {
+                const cleanBase64 = base64Image.replace(/^data:image\/\w+;base64,/, "");
+                await db.query(sqlFoto, [id_Publicacion, cleanBase64]);
+            }
+        }
+
+        await db.commit();
+
+        res.status(201).json({
+            message: 'Publicación, colores e imágenes creados con éxito',
+            id: id_Publicacion
         });
 
-    }catch (error){
+    } catch (error) {
+        await db.rollback();
         console.error(error);
-        res.status(500).json({
-            error: 'Error al borrar la publicacion'
-        });
+        res.status(500).json({ error: 'Error al crear la publicación' });
     }
-})
+});
+
+app.delete('/api/publicaciones/:id', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        await db.beginTransaction();
+
+        await db.query('DELETE FROM colormascota WHERE id_Publicacion = ?', [id]);
+        await db.query('DELETE FROM fotografia WHERE id_Publicacion = ?', [id]);
+        await db.query('DELETE FROM guardados WHERE id_Publicacion = ?', [id]);
+        await db.query('DELETE FROM reporte WHERE id_Publicacion = ?', [id]);
+
+        const [result] = await db.query('DELETE FROM publicacion WHERE id_Publicacion = ?', [id]);
+
+        if (result.affectedRows === 0) {
+            await db.rollback();
+            return res.status(404).json({ error: 'Publicación no encontrada' });
+        }
+
+        await db.commit();
+        res.status(200).json({ message: 'Publicación borrada con exito' });
+
+    } catch (error) {
+        await db.rollback();
+        console.error(error);
+        res.status(500).json({ error: 'Error al borrar la publicacion' });
+    }
+});
 
 app.get('/api/guardados/:id', async (req, res) => {
-    // Ver publicaciones guardadas
-    const sql = `SELECT p.* FROM Publicacion AS p 
-        INNER JOIN Guardados AS g 
-        ON p.id_Publicacion = g.id_Publicacion
+    const sql = `
+        SELECT p.*,
+        (SELECT TO_BASE64(fotografia) FROM fotografia f WHERE f.id_Publicacion = p.id_Publicacion LIMIT 1) as imagenBase64
+        FROM publicacion AS p
+        INNER JOIN guardados AS g ON p.id_Publicacion = g.id_Publicacion
         WHERE g.id_Usuario = ?
     `;
 
     const { id } = req.params;
 
-    try{
+    try {
         const [result] = await db.query(sql, [id]);
 
         res.status(200).json({
             message: 'Guardados recabados con exito',
             publicaciones: result
-        })
-
-    }catch (error){
-        console.error(error);
-        res.status(500).json({
-            error: 'Error al recabar publicaciones guardadas'
         });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al recabar publicaciones guardadas' });
     }
-})
+});
 
 app.post('/api/guardados/:id', async (req, res) => {
-    // Guardar cierta publicacion
     const id_Publicacion = req.params.id;
-
     const { id_Usuario } = req.body;
 
-    try{
+    try {
         const [result] = await db.query(
-            'INSERT INTO Guardados (id_Publicacion, id_Usuario) VALUES (?, ?)',
+            'INSERT INTO guardados (id_Publicacion, id_Usuario) VALUES (?, ?)',
             [id_Publicacion, id_Usuario]
         );
 
-        res.status(200).json({
-            message: 'Publicacion guardada con exito'
-        });
+        res.status(200).json({ message: 'Publicacion guardada con exito' });
 
-    }catch (error){
+    } catch (error) {
         console.error(error);
-        res.status(500).json({
-            error: 'Error al guardar la publicacion'
-        });
+        res.status(500).json({ error: 'Error al guardar la publicacion' });
     }
-})
+});
 
 app.delete('/api/guardados/:id', async (req, res) => {
-    // Borrar cierta publicacion de guardados
     const id_Publicacion = req.params.id;
     const { id_Usuario } = req.body;
 
-    try{
+    try {
         const [result] = await db.query(
-            'DELETE FROM Guardados WHERE id_Publicacion = ? AND id_Usuario = ?',
+            'DELETE FROM guardados WHERE id_Publicacion = ? AND id_Usuario = ?',
             [id_Publicacion, id_Usuario]
         );
 
         if (result.affectedRows === 0) {
-            return res.status(404).json({
-                error: 'Publicacion no encontrada en guardados'
-            });
+            return res.status(404).json({ error: 'Publicacion no encontrada en guardados' });
         }
 
-        res.status(200).json({
-            message: 'Publicacion borrada de guardados'
-        });
+        res.status(200).json({ message: 'Publicacion borrada de guardados' });
 
-    }catch (error){
+    } catch (error) {
         console.error(error);
-        res.status(500).json({
-            error: 'Error al quitar publicacion de guardados'
-        });
+        res.status(500).json({ error: 'Error al quitar publicacion de guardados' });
     }
-})
+});
 
 app.listen(1984, () => {
-    console.log("Servidor Corriendo");
-})
+    console.log("Servidor Corriendo en puerto 1984");
+});
