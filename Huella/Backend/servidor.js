@@ -1,6 +1,7 @@
 import express from 'express';
 import db from './db.js';
 import cors from 'cors';
+import bcrypt from 'bcrypt';
 
 const app = express();
 
@@ -11,48 +12,54 @@ app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 app.post('/api/registro', async (req, res) => {
-    const credenciales = req.body;
-    const parametros = [
-        credenciales.email,
-        credenciales.contrasena,
-        credenciales.telefono ?? null
-    ];
+  const { email, contrasena, telefono } = req.body;
 
-    try {
-        const [result] = await db.query(
-            'INSERT INTO usuario(email, contrasena, telefono) VALUES (?, ?, ?)',
-            parametros
-        );
+  if (!email || !contrasena) {
+    return res.status(400).json({ error: 'Email y contraseña son obligatorios' });
+  }
 
-        res.status(201).json({
-            message: 'Usuario creado con exito',
-            id: result.insertId
-        });
+  try {
+    const saltRounds = 12;
+    const hashedPwd = await bcrypt.hash(contrasena, saltRounds);
 
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Error al crear la cuenta' })
+    const [result] = await db.query(
+      'INSERT INTO usuario(email, contrasena, telefono) VALUES (?, ?, ?)',
+      [email, hashedPwd, telefono ?? null]
+    );
+
+    res.status(201).json({ 
+      message: 'Usuario creado con exito', 
+      id: result.insertId 
+    });
+
+  } catch (error) {
+    if (error.errno === 1062) {
+      return res.status(409).json({ error: 'El correo electrónico ya esta registrado' });
     }
+
+    console.error(error);
+    res.status(500).json({ error: 'Error al crear la cuenta' });
+  }
 });
 
 app.post('/api/login', async (req, res) => {
-    const credenciales = req.body;
-    const parametros = [
-        credenciales.email,
-        credenciales.contrasena
-    ];
+    const { email, contrasena } = req.body;
 
     try {
-        const [result] = await db.query(
-            'SELECT id_Usuario FROM usuario WHERE email = ? AND contrasena = ?',
-            parametros
-        );
+        const [rows] = await db.query('SELECT id_Usuario, contrasena FROM usuario WHERE email = ?', [email]);
 
-        if (result.length === 0) {
+        if (rows.length === 0) {
             return res.status(401).json({ error: 'Credenciales incorrectas' });
         }
 
-        const usuario = result[0];
+        const usuario = rows[0];
+
+        const isMatch = await bcrypt.compare(contrasena, usuario.contrasena);
+
+        if (!isMatch) {
+            return res.status(401).json({ error: 'Credenciales incorrectas' });
+        }
+
 
         res.status(200).json({
             message: 'Usuario autenticado correctamente',
