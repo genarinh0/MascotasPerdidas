@@ -311,6 +311,49 @@ a:hover {
     font-size: 12px;
 }
 
+.guest-section {
+    display: flex;
+    justify-content: center;
+    margin: 40px auto 60px;
+}
+
+.guest-section__card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+    padding: 25px 40px;
+    border: 2px solid #E4E0DA;
+    box-shadow: 0 4px 24px #1c1a1827;
+    border-radius: 20px;
+    background-color: white;
+    text-align: center;
+    min-width: 320px;
+}
+
+.guest-section__text {
+    margin: 0;
+    color: var(--card-font-color);
+    font-size: 16px;
+    font-family: var(--font-secondary);
+}
+
+.site-footer {
+    width: 100%;
+    padding: 22px 0;
+    margin-top: 40px;
+    text-align: center;
+    color: #6b6258;
+    font-size: 14px;
+    font-family: var(--font-secondary);
+    border-top: 1px solid #E4E0DA;
+    background-color: #faf8f5;
+}
+
+.site-footer p {
+    margin: 0;
+}
+
 /* =========================================
    4. NAVIGATION & TOOLBARS (Feed/Management)
    ========================================= */

@@ -1,6 +1,52 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Recuperar contraseña | Huella</title>
+        <link rel="stylesheet" href="css/styles.css">
+        <link href="https://fonts.googleapis.com" rel="stylesheet">
+    </head>
+
     <body>
-        Poner aqui html para recuperar contraseña
+        <header class="site-header">
+            <div class="site-header__brand">
+                <img src="imagenes/logo.png" width="25" height="25">
+                <h1 class="site-header__brand-title">Huella</h1>
+            </div>
+        </header>
+
+        <main class="recover-section">
+            <section class="recover-card">
+                <h1 class="recover-card__title">Recuperar contraseña</h1>
+
+                <p class="recover-card__text">
+                    Ingresa el correo asociado a tu cuenta y te enviaremos instrucciones para restablecer tu contraseña.
+                </p>
+
+                <div class="recover-card__field">
+                    <label class="recover-card__label" for="email">Correo electrónico</label>
+                    <input 
+                        class="recover-card__input" 
+                        type="email" 
+                        id="email" 
+                        placeholder="tu@email.com"
+                    >
+                </div>
+
+                <button class="recover-card__btn">Enviar instrucciones</button>
+
+                <p class="recover-card__hint">
+                    ¿Recordaste tu contraseña?
+                    <a class="recover-card__link" href="login.html">Volver al inicio de sesión</a>
+                </p>
+            </section>
+        </main>
+
+        <footer class="site-footer">
+            <p>Proyecto realizado por alumnos del Tec de Monterrey, 2026</p>
+        </footer>
     </body>
 </html>
+
+<!--SCRIPT PENDIENTE, NO SÉ SI EL FEATURE SEA NECESARIO-->

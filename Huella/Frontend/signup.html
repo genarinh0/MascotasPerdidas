@@ -52,11 +52,25 @@
             </section>
         </main>
 
+        <section class="guest-section">
+            <div class="guest-section__card">
+                <p class ="guest-section__text">¿Quieres darle un vistazo al <b>feed sin iniciar sesión</b>?</p>
+                <button class ="card__btn card__btn--send" id="btnGuestFeed">Ver feed sin cuenta</button>
+            </div>
+        </section>
+
+        <footer class ="site-footer">
+            <p>Proyecto realizado por alumnos del Tec de Monterrey, 2026</p>
+        </footer>
+
         <script>
             document.getElementById("btnLoginNav").onclick = () => window.location.href = "login.html";
 
             const btnSignup = document.getElementById("btnSignup");
             btnSignup.addEventListener('click', trySignup);
+
+            const btnGuestFeed = document.getElementById("btnGuestFeed");
+            btnGuestFeed.addEventListener('click', () => redirect ("feed.html"))
 
             function redirect(page){
                 window.location.href = page;
