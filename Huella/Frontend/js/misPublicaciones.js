@@ -4,7 +4,7 @@ const ID_USUARIO_ACTUAL = 1; //Hardcodeado
 
 async function cargarMisPublicaciones() {
     try {
-        const response = await fetch(`http://localhost:1984/api/publicaciones?id_Usuario=${ID_USUARIO_ACTUAL}`);
+        const response = await fetch('http://localhost:1984/api/publicaciones');
         if (!response.ok) throw new Error('Error al obtener tus publicaciones');
 
         const data = await response.json();

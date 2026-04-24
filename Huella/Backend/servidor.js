@@ -2,6 +2,11 @@ import express from 'express';
 import db from './db.js';
 import cors from 'cors';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv'
+import verifyToken from './authMiddleware.js';
+
+dotenv.config();
 
 const app = express();
 
@@ -60,10 +65,19 @@ app.post('/api/login', async (req, res) => {
             return res.status(401).json({ error: 'Credenciales incorrectas' });
         }
 
+        // Usuario Autenticado, ahora creamos el JWT
+        const payload = {
+            id_Usuario: usuario.id_Usuario,
+            email
+        };
+
+        const secretKey = process.env.JWT_SECRET;
+
+        const token = jwt.sign(payload, secretKey, { expiresIn: '1h'});
 
         res.status(200).json({
             message: 'Usuario autenticado correctamente',
-            id: usuario.id_Usuario
+            token
         });
 
     } catch (error) {
@@ -105,7 +119,7 @@ app.get('/api/publicaciones', async (req, res) => {
     }
 });
 
-app.post('/api/publicaciones', async (req, res) => {
+app.post('/api/publicaciones', verifyToken, async (req, res) => {
     const nuevaPub = req.body;
     const fecha_creacion = new Date().toISOString().split('T')[0];
     const estatus = 1;
@@ -113,8 +127,10 @@ app.post('/api/publicaciones', async (req, res) => {
     try {
         await db.beginTransaction();
 
+        const { id_Usuario } = req.user;
+
         const sqlPub = `INSERT INTO publicacion (id_Usuario, tipo, especie, raza, tamanio, descripcion, fecha_suceso, fecha_creacion, estatus, ubicacion, horario_contacto) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-        const parametrosPub = [nuevaPub.id_Usuario, nuevaPub.tipo, nuevaPub.especie, nuevaPub.raza, nuevaPub.tamanio, nuevaPub.descripcion, nuevaPub.fecha_suceso, fecha_creacion, estatus, nuevaPub.ubicacion, nuevaPub.horario_contacto];
+        const parametrosPub = [id_Usuario, nuevaPub.tipo, nuevaPub.especie, nuevaPub.raza, nuevaPub.tamanio, nuevaPub.descripcion, nuevaPub.fecha_suceso, fecha_creacion, estatus, nuevaPub.ubicacion, nuevaPub.horario_contacto];
         const [resultPub] = await db.query(sqlPub, parametrosPub);
         const id_Publicacion = resultPub.insertId;
 
@@ -149,11 +165,20 @@ app.post('/api/publicaciones', async (req, res) => {
     }
 });
 
-app.delete('/api/publicaciones/:id', async (req, res) => {
+app.delete('/api/publicaciones/:id', verifyToken, async (req, res) => {
     const { id } = req.params;
+    const { id_Usuario } = req.user;
 
     try {
         await db.beginTransaction();
+
+        const [rows] = await db.query('SELECT * FROM publicacion WHERE id_Publicacion = ? AND id_Usuario = ?',
+            [id, id_Usuario]
+        );
+
+        if (rows.length === 0){
+            return res.status(403).json({ error: 'No tiene autorizacion para borrar la publicacion'});
+        }
 
         await db.query('DELETE FROM colormascota WHERE id_Publicacion = ?', [id]);
         await db.query('DELETE FROM fotografia WHERE id_Publicacion = ?', [id]);
@@ -177,7 +202,7 @@ app.delete('/api/publicaciones/:id', async (req, res) => {
     }
 });
 
-app.get('/api/guardados/:id', async (req, res) => {
+app.get('/api/guardados', verifyToken, async (req, res) => {
     const sql = `
         SELECT p.*,
         (SELECT TO_BASE64(fotografia) FROM fotografia f WHERE f.id_Publicacion = p.id_Publicacion LIMIT 1) as imagenBase64
@@ -186,10 +211,10 @@ app.get('/api/guardados/:id', async (req, res) => {
         WHERE g.id_Usuario = ?
     `;
 
-    const { id } = req.params;
+    const { id_Usuario } = req.user;
 
     try {
-        const [result] = await db.query(sql, [id]);
+        const [result] = await db.query(sql, [id_Usuario]);
 
         res.status(200).json({
             message: 'Guardados recabados con exito',
@@ -202,9 +227,9 @@ app.get('/api/guardados/:id', async (req, res) => {
     }
 });
 
-app.post('/api/guardados/:id', async (req, res) => {
+app.post('/api/guardados/:id', verifyToken, async (req, res) => {
     const id_Publicacion = req.params.id;
-    const { id_Usuario } = req.body;
+    const { id_Usuario } = req.user;
 
     try {
         const [result] = await db.query(
@@ -220,9 +245,9 @@ app.post('/api/guardados/:id', async (req, res) => {
     }
 });
 
-app.delete('/api/guardados/:id', async (req, res) => {
+app.delete('/api/guardados/:id', verifyToken, async (req, res) => {
     const id_Publicacion = req.params.id;
-    const { id_Usuario } = req.body;
+    const { id_Usuario } = req.user;
 
     try {
         const [result] = await db.query(
