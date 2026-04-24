@@ -245,20 +245,42 @@ a:hover {
 .color-selector {
     width: 250px;
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
     background-color: var(--bg);
     padding: 10px;
     border-radius: 5px;
     border: 1px solid rgba(128, 128, 128, 0.37);
+    justify-items: center;
 }
 
 .color-option {
-    font-size: 13px;
-    color: var(--card-font-color);
     display: flex;
     align-items: center;
-    gap: 5px;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.color-option input[type="checkbox"] {
+    display: none;
+}
+
+.color-circle {
+    display: block;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    cursor: pointer;
+}
+
+.color-circle:hover {
+    transform: scale(1.1);
+}
+
+.color-option input[type="checkbox"]:checked + .color-circle {
+    box-shadow: 0 0 0 3px white, 0 0 0 5px var(--color-primary);
+    transform: scale(1.1);
 }
 
 .file-upload {
@@ -352,6 +374,64 @@ a:hover {
 
 .site-footer p {
     margin: 0;
+}
+
+.input-tipo--perdido {
+    background-color: #F15A5A;
+    color: white;
+    font-weight: 600;
+}
+
+.input-tipo--encontrado {
+    background-color: #326295;
+    color: white;
+    font-weight: 600;
+}
+
+.input-tipo--perdido option,
+.input-tipo--encontrado option {
+    background-color: white;
+    color: #333;
+}
+
+.preview-fotos {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+}
+
+.preview-fotos__img {
+    width: 85px;
+    height: 85px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 2px solid #E4E0DA;
+    box-shadow: 0 3px 10px #1c1a1820;
+}
+
+.preview-fotos__item {
+    position: relative;
+    display: inline-block;
+}
+
+.preview-fotos__delete {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: none;
+    background-color: #cc0000;
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
 }
 
 /* =========================================
