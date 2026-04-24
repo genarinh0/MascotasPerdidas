@@ -63,56 +63,6 @@
             <p>Proyecto realizado por alumnos del Tec de Monterrey, 2026</p>
         </footer>
 
-        <script>
-            document.getElementById("btnLoginNav").onclick = () => window.location.href = "login.html";
-
-            const btnSignup = document.getElementById("btnSignup");
-            btnSignup.addEventListener('click', trySignup);
-
-            const btnGuestFeed = document.getElementById("btnGuestFeed");
-            btnGuestFeed.addEventListener('click', () => redirect ("feed.html"))
-
-            function redirect(page){
-                window.location.href = page;
-            }
-
-            async function trySignup(){
-                const email = document.getElementById("email").value;
-                const password = document.getElementById("password").value;
-                const confirm_password = document.getElementById("confirm_password").value;
-
-                if (confirm_password !== password){
-                    console.log("Contraseñas no son identicas");
-                    alert("Contraseñas No Coinciden");
-                    return;
-                }
-
-                console.log("Signup intentado!");
-                try {
-                    const response = await fetch('http://localhost:1984/api/registro', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            'email': email,
-                            'contrasena': password
-                        })
-                    });
-
-                    if (response.ok){
-                        const data = await response.json();
-                        console.log(data);
-                        redirect("feed.html");
-                    }else {
-                        console.error('Error en la respuesta: ', response.status);
-                        alert("Error indefinido");
-                    }
-                }catch (error){
-                    console.error('Error de red: ', error);
-                    alert("Error del servidor");
-                }
-            }
-        </script>
+        <script src="js/signup.js"></script>
     </body>
 </html>
