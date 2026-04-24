@@ -21,11 +21,53 @@ dropdowns.forEach(dropdown => {
         dropdown.dataset.baseText = baseText;
 
         option.addEventListener('click', () => {
-            dropdown.querySelector('.filter-button__text').textContent = baseText + ': ' + option.textContent;
-            optionsList.dataset.selectedValue = option.dataset.value;
-        })
-    })
-})
+    const baseText = dropdown.dataset.baseText;
+    const filterTextEl = dropdown.querySelector('.filter-button__text');
+    const filterBtn = dropdown.querySelector('.filter-button');
+
+    // Limpiar X previa si existe
+    const prevClear = filterBtn.querySelector('.filter-clear-btn');
+    if (prevClear) prevClear.remove();
+
+    filterTextEl.textContent = baseText + ': ' + option.textContent;
+    optionsList.dataset.selectedValue = option.dataset.value;
+    optionsList.classList.remove('open');
+
+    const clearBtn = document.createElement('button');
+    clearBtn.type = 'button';
+    clearBtn.classList.add('filter-clear-btn');
+    clearBtn.textContent = '✕';
+    clearBtn.style.cssText = `
+        position: absolute;
+        top: -6px;
+        right: -6px;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        border: none;
+        background-color: #cc0000;
+        color: white;
+        font-size: 10px;
+        font-weight: bold;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+    `;
+    clearBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        filterTextEl.textContent = baseText;
+        optionsList.dataset.selectedValue = '';
+        optionsList.classList.remove('open');
+        clearBtn.remove();
+    });
+
+    filterBtn.style.position = 'relative';
+    filterBtn.appendChild(clearBtn);
+        });
+});
+});
 
 const btnClearFilters = document.querySelector('.filter-bar__clear');
 btnClearFilters.addEventListener('click', () => {
@@ -35,7 +77,7 @@ btnClearFilters.addEventListener('click', () => {
         dropdown.querySelector('.dropdown-options').classList.remove('open');
         dropdown.querySelector('.dropdown-options').dataset.selectedValue = "";
     });
-})
+});
 
 function buildURL(){
     let url = 'http://localhost:1984/api/publicaciones';
@@ -79,7 +121,6 @@ async function cargarMisPublicaciones() {
         const publicaciones = data.publicaciones;
 
         if (publicaciones.length === 0) {
-            // poner texto de que no se encontraron con esos filtros
             console.log("Nada de publicaciones broskito");
             return;
         }
@@ -87,7 +128,6 @@ async function cargarMisPublicaciones() {
         publicaciones.forEach(pub => {
             const tarjeta = document.createElement('post-card');
             const isPerdido = pub.tipo === 1;
-            // contemplar que son tres casos de estatus
             const badgeText = isPerdido ? '¡Perdido!' : '¡Busca a su familia!';
             const badgeType = isPerdido ? 'lost' : 'found';
 
