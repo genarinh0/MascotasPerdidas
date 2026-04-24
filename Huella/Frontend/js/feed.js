@@ -17,67 +17,71 @@ dropdowns.forEach(dropdown => {
     });
 
     options.forEach(option => {
-        const baseText = btnFilter.textContent;
+        const baseText = btnFilter.textContent.trim();
         dropdown.dataset.baseText = baseText;
 
         option.addEventListener('click', () => {
-    const baseText = dropdown.dataset.baseText;
-    const filterTextEl = dropdown.querySelector('.filter-button__text');
-    const filterBtn = dropdown.querySelector('.filter-button');
+            const baseText = dropdown.dataset.baseText;
+            const filterTextEl = dropdown.querySelector('.filter-button__text');
+            const filterBtn = dropdown.querySelector('.filter-button');
 
-    // Limpiar X previa si existe
-    const prevClear = filterBtn.querySelector('.filter-clear-btn');
-    if (prevClear) prevClear.remove();
+            // Limpiar X previa si existe
+            const prevClear = filterBtn.querySelector('.filter-clear-btn');
+            if (prevClear) prevClear.remove();
 
-    filterTextEl.textContent = baseText + ': ' + option.textContent;
-    optionsList.dataset.selectedValue = option.dataset.value;
-    optionsList.classList.remove('open');
+            filterTextEl.textContent = baseText + ': ' + option.textContent;
+            optionsList.dataset.selectedValue = option.dataset.value;
+            optionsList.classList.remove('open');
 
-    const clearBtn = document.createElement('button');
-    clearBtn.type = 'button';
-    clearBtn.classList.add('filter-clear-btn');
-    clearBtn.textContent = '✕';
-    clearBtn.style.cssText = `
-        position: absolute;
-        top: -6px;
-        right: -6px;
-        width: 18px;
-        height: 18px;
-        border-radius: 50%;
-        border: none;
-        background-color: #cc0000;
-        color: white;
-        font-size: 10px;
-        font-weight: bold;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0;
-    `;
-    clearBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        filterTextEl.textContent = baseText;
-        optionsList.dataset.selectedValue = '';
-        optionsList.classList.remove('open');
-        clearBtn.remove();
-    });
+            const clearBtn = document.createElement('button');
+            clearBtn.type = 'button';
+            clearBtn.classList.add('filter-clear-btn');
+            clearBtn.textContent = '✕';
+            clearBtn.style.cssText = `
+                position: absolute;
+                top: -6px;
+                right: -6px;
+                width: 18px;
+                height: 18px;
+                border-radius: 50%;
+                border: none;
+                background-color: #cc0000;
+                color: white;
+                font-size: 10px;
+                font-weight: bold;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 0;
+            `;
+            clearBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                filterTextEl.textContent = baseText;
+                optionsList.dataset.selectedValue = '';
+                optionsList.classList.remove('open');
+                clearBtn.remove();
+            });
 
-    filterBtn.style.position = 'relative';
-    filterBtn.appendChild(clearBtn);
+            filterBtn.style.position = 'relative';
+            filterBtn.appendChild(clearBtn);
         });
-});
+    });
 });
 
 const btnClearFilters = document.querySelector('.filter-bar__clear');
-btnClearFilters.addEventListener('click', () => {
-    dropdowns.forEach(dropdown => {
-        const baseText = dropdown.dataset.baseText;
-        dropdown.querySelector('.filter-button__text').textContent = baseText;
-        dropdown.querySelector('.dropdown-options').classList.remove('open');
-        dropdown.querySelector('.dropdown-options').dataset.selectedValue = "";
+if (btnClearFilters) {
+    btnClearFilters.addEventListener('click', () => {
+        dropdowns.forEach(dropdown => {
+            const baseText = dropdown.dataset.baseText;
+            dropdown.querySelector('.filter-button__text').textContent = baseText;
+            dropdown.querySelector('.dropdown-options').classList.remove('open');
+            dropdown.querySelector('.dropdown-options').dataset.selectedValue = "";
+            const prevClear = dropdown.querySelector('.filter-clear-btn');
+            if (prevClear) prevClear.remove();
+        });
     });
-});
+}
 
 function buildURL(){
     let url = 'http://localhost:1984/api/publicaciones';
