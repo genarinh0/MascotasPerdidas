@@ -30,7 +30,6 @@ dropdowns.forEach(dropdown => {
             const filterTextEl = dropdown.querySelector('.filter-button__text');
             const filterBtn = dropdown.querySelector('.filter-button');
 
-            // Limpiar X previa si existe
             const prevClear = filterBtn.querySelector('.filter-clear-btn');
             if (prevClear) prevClear.remove();
 
@@ -90,27 +89,20 @@ if (btnClearFilters) {
 
 function buildURL(){
     let url = 'http://localhost:1984/api/publicaciones';
-
     const filters = {};
 
     document.querySelectorAll('.dropdown-options').forEach(group => {
         const groupName = group.dataset.filterGroup;
         const value = group.dataset.selectedValue;
-
         filters[groupName] = value ?? "";
     });
 
     const nonEmptyFilters = [];
-
     Object.entries(filters).forEach(([key, value]) => {
-        if (value !== ""){
-            nonEmptyFilters.push(`${key}=${value}`);
-        }
+        if (value !== "") nonEmptyFilters.push(`${key}=${value}`);
     });
 
-    if (nonEmptyFilters.length > 0){
-        url += '?' + nonEmptyFilters.join('&');
-    }
+    if (nonEmptyFilters.length > 0) url += '?' + nonEmptyFilters.join('&');
 
     console.log(url);
     return url;
@@ -121,8 +113,21 @@ const gridMisPubs = document.querySelector('.post-grid');
 async function cargarPublicaciones() {
     gridMisPubs.innerHTML = '';
     try {
+        // Primero obtenemos los IDs guardados del usuario
+        let idsGuardados = new Set();
+        try {
+            const resGuardados = await fetch('http://localhost:1984/api/guardados', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            if (resGuardados.ok) {
+                const dataGuardados = await resGuardados.json();
+                dataGuardados.publicaciones.forEach(p => idsGuardados.add(p.id_Publicacion));
+            }
+        } catch (e) {
+            console.warn('No se pudieron cargar guardados:', e);
+        }
+
         const response = await fetch(buildURL());
-        console.log(response);
         if (!response.ok) throw new Error('Error al obtener tus publicaciones');
 
         const data = await response.json();
@@ -144,64 +149,87 @@ async function cargarPublicaciones() {
             tarjeta.setAttribute('badge-text', badgeText);
             tarjeta.setAttribute('badge-type', badgeType);
 
-            tarjeta.innerHTML = `
-                <button slot="header-action" class="pub-card__icon-btn btn-guardar" data-id="${pub.id_Publicacion}" title="Añadir a guardados">
-                    <img src="imagenes/iconos/icono_guardado.png" width="20" alt="Guardado">
-                </button>
-
-                <div slot="extra-attributes" class="attribute">
-                    <img src="imagenes/iconos/icono_color.png" class="attribute__icon" alt="Color/Raza">
-                    <label><b class="attribute__type">Raza:</b> ${pub.raza || 'Mestizo'}</label>
-                </div>
-
-                <button slot="footer-action" class="pub-card__btn pub-card__btn--secondary">Contactar</button>
-            `;
-
             if (pub.imagenBase64) {
                 tarjeta.setAttribute('imagen', `data:image/jpeg;base64,${pub.imagenBase64}`);
             } else {
                 tarjeta.setAttribute('imagen', './imagenes/img_1.png');
             }
 
+            // Inicializar estado según si ya está guardado
+            let guardado = idsGuardados.has(pub.id_Publicacion);
+
+            const btnGuardar = document.createElement('button');
+            btnGuardar.slot = 'header-action';
+            btnGuardar.className = 'pub-card__icon-btn btn-guardar';
+            btnGuardar.setAttribute('data-id', pub.id_Publicacion);
+            btnGuardar.innerHTML = '<img src="imagenes/iconos/icono_guardado.png" width="20" alt="Guardado">';
+            btnGuardar.style.filter = guardado ? 'none' : 'grayscale(100%) opacity(0.4)';
+            btnGuardar.title = guardado ? 'Quitar de guardados' : 'Añadir a guardados';
+
+            btnGuardar.addEventListener('click', async () => {
+                if (!guardado) {
+                    try {
+                        const res = await fetch(`http://localhost:1984/api/guardados/${pub.id_Publicacion}`, {
+                            method: 'POST',
+                            headers: { 'Authorization': 'Bearer ' + token }
+                        });
+                        if (res.ok) {
+                            guardado = true;
+                            btnGuardar.style.filter = 'none';
+                            btnGuardar.title = 'Quitar de guardados';
+                        } else if (res.status === 401) {
+                            window.location.href = 'login.html';
+                        } else {
+                            console.error('Error al guardar.');
+                        }
+                    } catch (error) {
+                        console.error('Error de red al guardar:', error);
+                    }
+                } else {
+                    try {
+                        const res = await fetch(`http://localhost:1984/api/guardados/${pub.id_Publicacion}`, {
+                            method: 'DELETE',
+                            headers: { 'Authorization': 'Bearer ' + token }
+                        });
+                        if (res.ok) {
+                            guardado = false;
+                            btnGuardar.style.filter = 'grayscale(100%) opacity(0.4)';
+                            btnGuardar.title = 'Añadir a guardados';
+                        } else if (res.status === 401) {
+                            window.location.href = 'login.html';
+                        } else {
+                            console.error('Error al quitar de guardados.');
+                        }
+                    } catch (error) {
+                        console.error('Error de red al quitar:', error);
+                    }
+                }
+            });
+
+            const extraAttr = document.createElement('div');
+            extraAttr.slot = 'extra-attributes';
+            extraAttr.className = 'attribute';
+            extraAttr.innerHTML = `
+                <img src="imagenes/iconos/icono_color.png" class="attribute__icon" alt="Color/Raza">
+                <label><b class="attribute__type">Raza:</b> ${pub.raza || 'Mestizo'}</label>
+            `;
+
+            const btnContactar = document.createElement('button');
+            btnContactar.slot = 'footer-action';
+            btnContactar.className = 'pub-card__btn pub-card__btn--secondary';
+            btnContactar.textContent = 'Contactar';
+
+            tarjeta.appendChild(btnGuardar);
+            tarjeta.appendChild(extraAttr);
+            tarjeta.appendChild(btnContactar);
+
             gridMisPubs.appendChild(tarjeta);
         });
-
-        conectarBotonesGuardar();
 
     } catch (error) {
         console.error('Error:', error);
         gridMisPubs.innerHTML = '<p style="text-align: center; color: red;">Error al cargar las publicaciones.</p>';
     }
-}
-
-function conectarBotonesGuardar(){
-    const botonesGuardar = document.querySelectorAll('.btn-guardar');
-
-    botonesGuardar.forEach(boton => {
-        boton.addEventListener('click', async (event) => {
-            const idPublicacion = event.currentTarget.getAttribute('data-id');
-
-            try {
-                const response = await fetch(`http://localhost:1984/api/guardados/${idPublicacion}`, {
-                    method: 'POST',
-                    headers: { 'Authorization': 'Bearer ' + token }
-                });
-
-                if (response.ok) {
-                    alert("Publicacion Guardada con Exito");
-                } else if (response.status === 401){
-                    window.location.href = 'login.html';
-                    return;
-                } else {
-                    console.error('Error al guardar en el servidor.');
-                    alert("Error al Guardar Publicacion");
-                }
-            } catch (error) {
-                console.error('Error de red al guardar:', error);
-                alert("Error con el Servidor");
-            }
-        });
-    })
 }
 
 document.addEventListener('DOMContentLoaded', cargarPublicaciones);
