@@ -32,9 +32,18 @@ app.post('/api/registro', async (req, res) => {
       [email, hashedPwd, telefono ?? null]
     );
 
+    const payload = {
+            id_Usuario: result.insertId,
+            email
+        };
+
+    const secretKey = process.env.JWT_SECRET;
+
+    const token = jwt.sign(payload, secretKey, { expiresIn: '1h'});
+
     res.status(201).json({ 
       message: 'Usuario creado con exito', 
-      id: result.insertId 
+      token
     });
 
   } catch (error) {
@@ -266,6 +275,29 @@ app.delete('/api/guardados/:id', verifyToken, async (req, res) => {
         res.status(500).json({ error: 'Error al quitar publicacion de guardados' });
     }
 });
+
+app.get('/api/mis-publicaciones', verifyToken, async (req, res) => {
+    const { id_Usuario } = req.user;
+    let sql = `
+        SELECT p.*,
+        (SELECT TO_BASE64(fotografia) FROM fotografia f WHERE f.id_Publicacion = p.id_Publicacion LIMIT 1) as imagenBase64
+        FROM publicacion p
+        WHERE p.id_Usuario = ?
+    `;
+
+    try {
+        const [rows] = await db.query(sql, [id_Usuario]);
+
+        res.status(200).json({
+            message: 'Publicaciones recabadas con exito',
+            publicaciones: rows
+        });
+
+    }catch (error){
+        console.error(error);
+        res.status(500).json({ error: 'Error al obtener tus publicaciones' });
+    }
+})
 
 app.listen(1984, () => {
     console.log("Servidor Corriendo en puerto 1984");

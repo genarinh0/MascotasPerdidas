@@ -26,6 +26,10 @@ function validSignUp(email, pwd, confirmPwd){
     return true;
 }
 
+function saveData(token){
+    localStorage.setItem('JWT', token);
+}
+
 async function trySignup(e){
     e.preventDefault();
 
@@ -51,6 +55,12 @@ async function trySignup(e){
         });
 
         if (response.ok){
+            const data = await response.json();
+            const { message, token } = data;
+
+            console.log(message);
+
+            saveData(token);
             redirect("feed.html");
         }else {
             console.error('Error en la respuesta: ', response.status);

@@ -1,10 +1,20 @@
-//Hardcodeamos el usuario por ahora
-const ID_USUARIO_ACTUAL = 1;
 const gridGuardados = document.getElementById('grid-guardados');
+const token = localStorage.getItem('JWT');
+
+if (!token){
+    window.location.href = 'login.html';
+}
 
 async function cargarGuardados() {
     try {
-        const response = await fetch(`http://localhost:1984/api/guardados/${ID_USUARIO_ACTUAL}`);
+        const response = await fetch('http://localhost:1984/api/guardados',{
+            headers: { 'Authorization': 'Bearer ' + token }
+        });
+
+        if (response.status === 401) {
+            window.location.href = 'login.html';
+            return;
+        }
         if (!response.ok) {
             throw new Error('Error de red al obtener guardados');
         }
@@ -22,7 +32,7 @@ async function cargarGuardados() {
 
         publicaciones.forEach(pub => {
             const tarjeta = document.createElement('post-card');
-            const isPerdido = pub.estatus === 'Perdido';
+            const isPerdido = pub.tipo === 1;
             const badgeText = isPerdido ? '¡Perdido!' : '¡Busca a su familia!';
             const badgeType = isPerdido ? 'lost' : 'found';
 
@@ -70,8 +80,7 @@ function conectarBotonesQuitar() {
             try {
                 const response = await fetch(`http://localhost:1984/api/guardados/${idPublicacion}`, {
                     method: 'DELETE',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id_Usuario: ID_USUARIO_ACTUAL })
+                    headers: { 'Authorization': 'Bearer ' + token }
                 });
 
                 if (response.ok) {
@@ -80,9 +89,13 @@ function conectarBotonesQuitar() {
                     if (gridGuardados.children.length === 0) {
                         gridGuardados.innerHTML = '<p style="text-align: center; color: var(--card-font-color); grid-column: 1 / -1;">No tienes publicaciones guardadas por el momento.</p>';
                     }
+                } else if (response.status === 401) {
+                        window.location.href = 'login.html';
+                        return;
                 } else {
                     console.error('Error al borrar de guardados en el servidor.');
                 }
+
             } catch (error) {
                 console.error('Error de red al borrar:', error);
             }

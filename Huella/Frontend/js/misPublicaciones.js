@@ -1,10 +1,21 @@
 const gridMisPubs = document.getElementById('grid-mis-pubs');
 const statsText = document.getElementById('stats-text');
-const ID_USUARIO_ACTUAL = 1; //Hardcodeado
+const token = localStorage.getItem('JWT');
+
+if (!token){
+    window.location.href = 'login.html';
+}
 
 async function cargarMisPublicaciones() {
     try {
-        const response = await fetch('http://localhost:1984/api/publicaciones');
+        const response = await fetch('http://localhost:1984/api/mis-publicaciones', {
+            headers: { 'Authorization': 'Bearer ' + token }
+        });
+
+        if (response.status === 401) {
+            window.location.href = 'login.html';
+            return;
+        }
         if (!response.ok) throw new Error('Error al obtener tus publicaciones');
 
         const data = await response.json();
@@ -67,14 +78,19 @@ function conectarBotones() {
             if (confirm("¿Estás seguro de eliminar esta publicación? Esta acción no se puede deshacer.")) {
                 try {
                     const res = await fetch(`http://localhost:1984/api/publicaciones/${idPub}`, {
-                        method: 'DELETE'
+                        method: 'DELETE',
+                        headers: { 'Authorization': 'Bearer ' + token }
                     });
 
                     if (res.ok) {
                         cargarMisPublicaciones();
-                    } else {
+                    } else if (res.status === 401) {
+                        window.location.href = 'login.html';
+                        return;
+                    }else {
                         alert('Error al borrar la publicación.');
                     }
+                    
                 } catch (err) {
                     console.error('Error al borrar:', err);
                 }
