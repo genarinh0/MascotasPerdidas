@@ -175,7 +175,7 @@ async function cargarPublicaciones() {
 }
 
 function conectarBotonesGuardar(){
-    const botonGuardar = document.querySelectorAll('.btn-guardar');
+    const botonesGuardar = document.querySelectorAll('.btn-guardar');
 
     botonesGuardar.forEach(boton => {
         boton.addEventListener('click', async (event) => {
