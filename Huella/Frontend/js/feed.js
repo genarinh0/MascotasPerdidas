@@ -201,4 +201,4 @@ function conectarBotonesGuardar(){
     });
 }
 
-document.addEventListener('DOMContentLoaded', cargarMisPublicaciones);
+document.addEventListener('DOMContentLoaded', cargarPublicaciones);
