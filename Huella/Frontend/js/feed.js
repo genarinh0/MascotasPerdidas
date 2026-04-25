@@ -1,7 +1,4 @@
 const token = localStorage.getItem('JWT');
-if (!token){
-    window.location.href = 'login.html';
-}
 
 const btnUsarFiltros = document.getElementById("btnFilter");
 btnUsarFiltros.addEventListener('click', cargarPublicaciones);
@@ -232,4 +229,21 @@ async function cargarPublicaciones() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', cargarPublicaciones);
+document.addEventListener('DOMContentLoaded', () => {
+    cargarPublicaciones();
+
+    if (!token){
+        const navBarTags = document.querySelectorAll('a');
+        navBarTags.forEach(tag => {
+            tag.addEventListener('click', (event) => {
+                event.preventDefault();
+
+                if (tag.getAttribute('href') === 'feed.html'){
+                    return;
+                }
+                
+                alert('Para usar esta funcion primero registrate');
+            })
+        })
+    }
+});
