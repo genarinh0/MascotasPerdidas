@@ -4,7 +4,7 @@ if (!token){
 }
 
 const btnUsarFiltros = document.getElementById("btnFilter");
-btnUsarFiltros.addEventListener('click', cargarMisPublicaciones);
+btnUsarFiltros.addEventListener('click', cargarPublicaciones);
 
 const dropdowns = document.querySelectorAll('.dropdown');
 dropdowns.forEach(dropdown => {
@@ -175,30 +175,33 @@ async function cargarPublicaciones() {
 }
 
 function conectarBotonesGuardar(){
-    const botonGuardar = document.querySelector('.btn-guardar');
-    botonGuardar.addEventListener('click', async (event) => {
-        const idPublicacion = event.currentTarget.getAttribute('data-id');
+    const botonGuardar = document.querySelectorAll('.btn-guardar');
 
-        try {
-            const response = await fetch(`http://localhost:1984/api/guardados/${idPublicacion}`, {
-                method: 'POST',
-                headers: { 'Authorization': 'Bearer ' + token }
-            });
+    botonesGuardar.forEach(boton => {
+        boton.addEventListener('click', async (event) => {
+            const idPublicacion = event.currentTarget.getAttribute('data-id');
 
-            if (response.ok) {
-                alert("Publicacion Guardada con Exito");
-            } else if (response.status === 401){
-                window.location.href = 'login.html';
-                return;
-            } else {
-                console.error('Error al guardar en el servidor.');
-                alert("Error al Guardar Publicacion");
+            try {
+                const response = await fetch(`http://localhost:1984/api/guardados/${idPublicacion}`, {
+                    method: 'POST',
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+
+                if (response.ok) {
+                    alert("Publicacion Guardada con Exito");
+                } else if (response.status === 401){
+                    window.location.href = 'login.html';
+                    return;
+                } else {
+                    console.error('Error al guardar en el servidor.');
+                    alert("Error al Guardar Publicacion");
+                }
+            } catch (error) {
+                console.error('Error de red al guardar:', error);
+                alert("Error con el Servidor");
             }
-        } catch (error) {
-            console.error('Error de red al guardar:', error);
-            alert("Error con el Servidor");
-        }
-    });
+        });
+    })
 }
 
 document.addEventListener('DOMContentLoaded', cargarPublicaciones);
