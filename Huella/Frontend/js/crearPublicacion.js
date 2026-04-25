@@ -1,3 +1,8 @@
+const token = localStorage.getItem('JWT');
+
+if (!token){
+    window.location.href = 'login.html';
+}
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('formCrearPub');
     const inputTipo = document.getElementById('inputTipo');
@@ -77,8 +82,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    const ID_USUARIO_ACTUAL = 1; //Hardcodeado
-
     const validarFormulario = () => {
 
         document.getElementById('alertaCampos').style.display = 'none';
@@ -156,7 +159,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const sizeString = document.getElementById('inputTamanio').value;
 
         const nuevaPublicacion = {
-            id_Usuario: ID_USUARIO_ACTUAL,
             tipo: parseInt(document.getElementById('inputTipo').value), // 1 o 2
             especie: document.getElementById('inputEspecie').value,
             raza: document.getElementById('inputRaza').value || 'Desconocida',
@@ -173,13 +175,17 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch('http://localhost:1984/api/publicaciones', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + token
                 },
                 body: JSON.stringify(nuevaPublicacion)
             });
 
             if (response.ok) {
                 window.location.href = 'misPublicaciones.html';
+            } else if (response.status === 401) {
+                window.location.href = 'login.html';
+                return;
             } else {
                 const err = await response.json();
                 console.error('Error del servidor:', err);
