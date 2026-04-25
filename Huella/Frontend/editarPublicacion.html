@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="css/styles.css">
+        <link href="https://fonts.googleapis.com" rel="stylesheet">
+    </head>
+
+    <body>
+        <header class="site-header">
+            <div class="site-header__brand">
+                <img src="imagenes/logo.png" width="25" height="25">
+                <h1 class="site-header__brand-title">Huella</h1>
+            </div>
+            <h2 class="site-header__heading">Editar Publicación</h2>
+            <button class="site-header__button" id="btnCancelNav">Cancelar</button>
+        </header>
+
+        <main class="login-section" style="justify-content: center; padding-bottom: 50px;">
+            <section class="login-section__card" style="width: min(90%, 500px); min-width: unset;">
+                <label class="card__title">Editar Publicación</label>
+
+                <form class="card__inputs" id="formEditarPub" style="width: 100%;" novalidate>
+                    <div class="card__field">
+                        <label class="card__label">Tipo de Publicación *</label>
+                        <select class="card__input card__input--select" id="inputTipo" style="width: 100%;" required>
+                            <option value="" disabled>Selecciona...</option>
+                            <option value="1">Perdido (Busco a mi mascota)</option>
+                            <option value="2">Encontrado (Alguien lo resguardó y busca a su familia)</option>
+                        </select>
+                    </div>
+
+                    <div class="card__field">
+                        <label class="card__label">Especie *</label>
+                        <select class="card__input card__input--select" id="inputEspecie" style="width: 100%;" required>
+                            <option value="" disabled>Selecciona...</option>
+                            <option value="perro">Perro</option>
+                            <option value="gato">Gato</option>
+                            <option value="otro">Otro</option>
+                        </select>
+                    </div>
+
+                    <div class="card__field">
+                        <label class="card__label">Raza (Opcional)</label>
+                        <input class="card__input" id="inputRaza" style="width: 100%;" placeholder="Ej: Golden Retriever">
+                    </div>
+
+                    <div class="card__field">
+                        <label class="card__label">Tamaño *</label>
+                        <select class="card__input card__input--select" id="inputTamanio" style="width: 100%;" required>
+                            <option value="pequeño">Pequeño</option>
+                            <option value="mediano">Mediano</option>
+                            <option value="grande">Grande</option>
+                        </select>
+                    </div>
+
+                    <div class="card__field">
+                        <label class="card__label">Color (Mínimo 1, máximo 3) *</label>
+                        <div class="color-selector" style="width: 100%;">
+                            <label class="color-option"><input type="checkbox" name="colores" value="1"><span class="color-circle" style="background:#1a1a1a"></span></label>
+                            <label class="color-option"><input type="checkbox" name="colores" value="2"><span class="color-circle" style="background:#7e7e7e"></span></label>
+                            <label class="color-option"><input type="checkbox" name="colores" value="3"><span class="color-circle" style="background:#c0c0c0"></span></label>
+                            <label class="color-option"><input type="checkbox" name="colores" value="4"><span class="color-circle" style="background:#f7f7f7; border: 1px solid #ddd"></span></label>
+                            <label class="color-option"><input type="checkbox" name="colores" value="5"><span class="color-circle" style="background:#5f6e7a"></span></label>
+                            <label class="color-option"><input type="checkbox" name="colores" value="6"><span class="color-circle" style="background:#5dade2"></span></label>
+                            <label class="color-option"><input type="checkbox" name="colores" value="7"><span class="color-circle" style="background:#4a2e1a"></span></label>
+                            <label class="color-option"><input type="checkbox" name="colores" value="8"><span class="color-circle" style="background:#b68a60"></span></label>
+                            <label class="color-option"><input type="checkbox" name="colores" value="9"><span class="color-circle" style="background:#e8d5b5"></span></label>
+                            <label class="color-option"><input type="checkbox" name="colores" value="10"><span class="color-circle" style="background:#d88c3a"></span></label>
+                            <label class="color-option"><input type="checkbox" name="colores" value="11"><span class="color-circle" style="background:#f2d024"></span></label>
+                            <label class="color-option"><input type="checkbox" name="colores" value="12"><span class="color-circle" style="background:#4caf50"></span></label>
+                        </div>
+                    </div>
+
+                    <div class="card__field">
+                        <label class="card__label">Ubicación aproximada *</label>
+                        <select class="card__input card__input--select" id="inputUbicacion" style="width: 100%;" required>
+                            <option value="" disabled>Selecciona zona...</option>
+                            <option value="norte">Zona Norte</option>
+                            <option value="sur">Zona Sur</option>
+                            <option value="poniente">Zona Poniente</option>
+                            <option value="oriente">Zona Oriente</option>
+                            <option value="centro">Centro</option>
+                        </select>
+                    </div>
+
+                    <div class="card__field">
+                        <label class="card__label">Fecha de pérdida *</label>
+                        <input type="date" class="card__input card__input--date" id="inputFecha" style="width: 100%;" required>
+                    </div>
+
+                    <div class="card__field">
+                        <label class="card__label">Horario de contacto (Opcional)</label>
+                        <input class="card__input" id="inputHorario" style="width: 100%;" placeholder="Ej: 9:00 AM - 6:00 PM">
+                    </div>
+
+                    <div class="card__field">
+                        <label class="card__label">Fotografía(s) (Máximo 10)*</label>
+                        <div class="file-upload" style="width: 100%;">
+                            <input type="file" id="photos" class="file-upload__input" multiple>
+                            <label for="photos" class="file-upload__label">
+                                <img src="imagenes/iconos/icono_camara.png" width="24">
+                                <span>Subir fotos</span>
+                            </label>
+                        </div>
+                        <div class="preview-fotos" id="previewFotos" style="flex-wrap: wrap; overflow: visible;"></div>
+                    </div>
+
+                    <div class="card__field">
+                        <label class="card__label">Descripción *</label>
+                        <textarea class="card__input card__input--textarea" id="inputDescripcion" style="width: 100%;" placeholder="Danos más detalles..." required></textarea>
+                    </div>
+
+                    <div id="alertaCampos" style="display:none; color:#cc0000; font-size:13px; font-family: var(--font-secondary); background-color:#ffeded; border-radius:5px; padding:10px; text-align:center;">
+                        Favor de llenar los campos obligatorios *
+                    </div>
+
+                    <button type="button" class="card__btn card__btn--send" style="margin-top: 20px; width: 100%;" id="btnGuardar">Guardar Cambios</button>
+                </form>
+            </section>
+        </main>
+
+        <script src="./js/editarPublicacion.js"></script>
+    </body>
+</html>

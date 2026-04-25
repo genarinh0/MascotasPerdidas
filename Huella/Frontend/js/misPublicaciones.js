@@ -46,16 +46,32 @@ async function cargarMisPublicaciones() {
                 tarjeta.setAttribute('imagen', './imagenes/img_1.png');
             }
 
-            tarjeta.innerHTML = `
-                <button slot="header-action" class="pub-card__icon-btn btn-editar" data-id="${pub.id_Publicacion}" title="Editar publicación">
-                    <img src="imagenes/iconos/icono_editar.png" width="18" alt="Editar">
-                </button>
+            const btnEditar = document.createElement('button');
+            btnEditar.slot = 'header-action';
+            btnEditar.className = 'pub-card__icon-btn btn-editar';
+            btnEditar.setAttribute('data-id', pub.id_Publicacion);
+            btnEditar.title = 'Editar publicación';
+            btnEditar.innerHTML = '<img src="imagenes/iconos/icono_BtnEditarPublicacion.png" width="56" alt="Editar">';
 
-                <div slot="footer-action" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%;">
-                    <button class="pub-card__btn pub-card__btn--success btn-encontrado" data-id="${pub.id_Publicacion}">¡Lo encontré!</button>
-                    <button class="pub-card__btn pub-card__btn--danger btn-eliminar" data-id="${pub.id_Publicacion}">Eliminar</button>
-                </div>
-            `;
+            const footerActions = document.createElement('div');
+            footerActions.slot = 'footer-action';
+            footerActions.style.cssText = 'display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%;';
+
+            const btnEncontrado = document.createElement('button');
+            btnEncontrado.className = 'pub-card__btn pub-card__btn--success btn-encontrado';
+            btnEncontrado.setAttribute('data-id', pub.id_Publicacion);
+            btnEncontrado.textContent = '¡Lo encontré!';
+
+            const btnEliminar = document.createElement('button');
+            btnEliminar.className = 'pub-card__btn pub-card__btn--danger btn-eliminar';
+            btnEliminar.setAttribute('data-id', pub.id_Publicacion);
+            btnEliminar.textContent = 'Eliminar';
+
+            footerActions.appendChild(btnEncontrado);
+            footerActions.appendChild(btnEliminar);
+
+            tarjeta.appendChild(btnEditar);
+            tarjeta.appendChild(footerActions);
 
             gridMisPubs.appendChild(tarjeta);
         });
@@ -69,8 +85,15 @@ async function cargarMisPublicaciones() {
 }
 
 function conectarBotones() {
-    const botonesEliminar = document.querySelectorAll('.btn-eliminar');
+    const botonesEditar = document.querySelectorAll('.btn-editar');
+    botonesEditar.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const idPub = e.currentTarget.getAttribute('data-id');
+            window.location.href = `editarPublicacion.html?id=${idPub}`;
+        });
+    });
 
+    const botonesEliminar = document.querySelectorAll('.btn-eliminar');
     botonesEliminar.forEach(btn => {
         btn.addEventListener('click', async (e) => {
             const idPub = e.currentTarget.getAttribute('data-id');
@@ -87,10 +110,9 @@ function conectarBotones() {
                     } else if (res.status === 401) {
                         window.location.href = 'login.html';
                         return;
-                    }else {
+                    } else {
                         alert('Error al borrar la publicación.');
                     }
-                    
                 } catch (err) {
                     console.error('Error al borrar:', err);
                 }

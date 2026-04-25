@@ -12,6 +12,7 @@
                 <img src="imagenes/logo.png" width="25" height="25">
                 <h1 class="site-header__brand-title">Huella</h1>
             </div>
+            <h2 class="site-header__heading">Feed</h2>
             <div class="site-header__user-actions">
                 <button class="site-header__button">Mi Perfil</button>
             </div>
@@ -24,7 +25,7 @@
                         <img src="imagenes/iconos/icono_estatus.png" class="filter-button__icon">
                         <span class="filter-button__text">Estatus</span>
                     </button>
-                    <div class="dropdown-options" data-filter-group="estatus" data-selectedValue="">
+                    <div class="dropdown-options" data-filter-group="tipo" data-selectedValue="">
                         <button class="dropdown-item" data-value=1>Perdida</button>
                         <button class="dropdown-item" data-value=2>Refugiada</button>
                         <button class="dropdown-item" data-value=3>Resuelto</button>
@@ -89,6 +90,7 @@
                 </div>
                 <button class="filter-button filter-button--search" id="btnFilter">
                     <img src="https://media-public.canva.com/IS90g/MAHAgWIS90g/1/tl.png" class="filter-button__icon">
+                    <span id="btnFilterText" style="display:none;">BUSCAR</span>
                 </button>
             </div>
         </nav>

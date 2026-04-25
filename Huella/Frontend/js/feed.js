@@ -1,7 +1,12 @@
 const token = localStorage.getItem('JWT');
+const payload = token ? JSON.parse(atob(token.split('.')[1])) : null;
+const idUsuarioActual = payload?.id_Usuario;
 
 const btnUsarFiltros = document.getElementById("btnFilter");
-btnUsarFiltros.addEventListener('click', cargarPublicaciones);
+btnUsarFiltros.addEventListener('click', () => {
+    console.log('Filtros aplicados:', buildURL());
+    cargarPublicaciones();
+});
 
 const dropdowns = document.querySelectorAll('.dropdown');
 dropdowns.forEach(dropdown => {
@@ -110,7 +115,6 @@ const gridMisPubs = document.querySelector('.post-grid');
 async function cargarPublicaciones() {
     gridMisPubs.innerHTML = '';
     try {
-        // Primero obtenemos los IDs guardados del usuario
         let idsGuardados = new Set();
         try {
             const resGuardados = await fetch('http://localhost:1984/api/guardados', {
@@ -152,57 +156,6 @@ async function cargarPublicaciones() {
                 tarjeta.setAttribute('imagen', './imagenes/img_1.png');
             }
 
-            // Inicializar estado según si ya está guardado
-            let guardado = idsGuardados.has(pub.id_Publicacion);
-
-            const btnGuardar = document.createElement('button');
-            btnGuardar.slot = 'header-action';
-            btnGuardar.className = 'pub-card__icon-btn btn-guardar';
-            btnGuardar.setAttribute('data-id', pub.id_Publicacion);
-            btnGuardar.innerHTML = '<img src="imagenes/iconos/icono_guardado.png" width="20" alt="Guardado">';
-            btnGuardar.style.filter = guardado ? 'none' : 'grayscale(100%) opacity(0.4)';
-            btnGuardar.title = guardado ? 'Quitar de guardados' : 'Añadir a guardados';
-
-            btnGuardar.addEventListener('click', async () => {
-                if (!guardado) {
-                    try {
-                        const res = await fetch(`http://localhost:1984/api/guardados/${pub.id_Publicacion}`, {
-                            method: 'POST',
-                            headers: { 'Authorization': 'Bearer ' + token }
-                        });
-                        if (res.ok) {
-                            guardado = true;
-                            btnGuardar.style.filter = 'none';
-                            btnGuardar.title = 'Quitar de guardados';
-                        } else if (res.status === 401) {
-                            window.location.href = 'login.html';
-                        } else {
-                            console.error('Error al guardar.');
-                        }
-                    } catch (error) {
-                        console.error('Error de red al guardar:', error);
-                    }
-                } else {
-                    try {
-                        const res = await fetch(`http://localhost:1984/api/guardados/${pub.id_Publicacion}`, {
-                            method: 'DELETE',
-                            headers: { 'Authorization': 'Bearer ' + token }
-                        });
-                        if (res.ok) {
-                            guardado = false;
-                            btnGuardar.style.filter = 'grayscale(100%) opacity(0.4)';
-                            btnGuardar.title = 'Añadir a guardados';
-                        } else if (res.status === 401) {
-                            window.location.href = 'login.html';
-                        } else {
-                            console.error('Error al quitar de guardados.');
-                        }
-                    } catch (error) {
-                        console.error('Error de red al quitar:', error);
-                    }
-                }
-            });
-
             const extraAttr = document.createElement('div');
             extraAttr.slot = 'extra-attributes';
             extraAttr.className = 'attribute';
@@ -211,14 +164,122 @@ async function cargarPublicaciones() {
                 <label><b class="attribute__type">Raza:</b> ${pub.raza || 'Mestizo'}</label>
             `;
 
-            const btnContactar = document.createElement('button');
-            btnContactar.slot = 'footer-action';
-            btnContactar.className = 'pub-card__btn pub-card__btn--secondary';
-            btnContactar.textContent = 'Contactar';
+            const esMia = pub.id_Usuario === idUsuarioActual;
 
-            tarjeta.appendChild(btnGuardar);
-            tarjeta.appendChild(extraAttr);
-            tarjeta.appendChild(btnContactar);
+            if (esMia) {
+                // Botón editar
+                const btnEditar = document.createElement('button');
+                btnEditar.slot = 'header-action';
+                btnEditar.className = 'pub-card__icon-btn btn-editar';
+                btnEditar.setAttribute('data-id', pub.id_Publicacion);
+                btnEditar.title = 'Editar publicación';
+                btnEditar.innerHTML = '<img src="imagenes/iconos/icono_BtnEditarPublicacion.png" width="56" alt="Editar">';
+                btnEditar.addEventListener('click', () => {
+                    window.location.href = `editarPublicacion.html?id=${pub.id_Publicacion}`;
+                });
+
+                // Footer con ¡Lo encontré! y Eliminar
+                const footerActions = document.createElement('div');
+                footerActions.slot = 'footer-action';
+                footerActions.style.cssText = 'display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%;';
+
+                const btnEncontrado = document.createElement('button');
+                btnEncontrado.className = 'pub-card__btn pub-card__btn--success btn-encontrado';
+                btnEncontrado.setAttribute('data-id', pub.id_Publicacion);
+                btnEncontrado.textContent = '¡Lo encontré!';
+
+                const btnEliminar = document.createElement('button');
+                btnEliminar.className = 'pub-card__btn pub-card__btn--danger btn-eliminar';
+                btnEliminar.setAttribute('data-id', pub.id_Publicacion);
+                btnEliminar.textContent = 'Eliminar';
+                btnEliminar.addEventListener('click', async () => {
+                    if (confirm("¿Estás seguro de eliminar esta publicación? Esta acción no se puede deshacer.")) {
+                        try {
+                            const res = await fetch(`http://localhost:1984/api/publicaciones/${pub.id_Publicacion}`, {
+                                method: 'DELETE',
+                                headers: { 'Authorization': 'Bearer ' + token }
+                            });
+                            if (res.ok) {
+                                cargarPublicaciones();
+                            } else if (res.status === 401) {
+                                window.location.href = 'login.html';
+                            } else {
+                                alert('Error al borrar la publicación.');
+                            }
+                        } catch (err) {
+                            console.error('Error al borrar:', err);
+                        }
+                    }
+                });
+
+                footerActions.appendChild(btnEncontrado);
+                footerActions.appendChild(btnEliminar);
+
+                tarjeta.appendChild(btnEditar);
+                tarjeta.appendChild(extraAttr);
+                tarjeta.appendChild(footerActions);
+
+            } else {
+                // Botón guardar con toggle
+                let guardado = idsGuardados.has(pub.id_Publicacion);
+
+                const btnGuardar = document.createElement('button');
+                btnGuardar.slot = 'header-action';
+                btnGuardar.className = 'pub-card__icon-btn btn-guardar';
+                btnGuardar.setAttribute('data-id', pub.id_Publicacion);
+                btnGuardar.innerHTML = '<img src="imagenes/iconos/icono_guardado.png" width="20" alt="Guardado">';
+                btnGuardar.style.filter = guardado ? 'none' : 'grayscale(100%) opacity(0.4)';
+                btnGuardar.title = guardado ? 'Quitar de guardados' : 'Añadir a guardados';
+
+                btnGuardar.addEventListener('click', async () => {
+                    if (!guardado) {
+                        try {
+                            const res = await fetch(`http://localhost:1984/api/guardados/${pub.id_Publicacion}`, {
+                                method: 'POST',
+                                headers: { 'Authorization': 'Bearer ' + token }
+                            });
+                            if (res.ok) {
+                                guardado = true;
+                                btnGuardar.style.filter = 'none';
+                                btnGuardar.title = 'Quitar de guardados';
+                            } else if (res.status === 401) {
+                                window.location.href = 'login.html';
+                            } else {
+                                console.error('Error al guardar.');
+                            }
+                        } catch (error) {
+                            console.error('Error de red al guardar:', error);
+                        }
+                    } else {
+                        try {
+                            const res = await fetch(`http://localhost:1984/api/guardados/${pub.id_Publicacion}`, {
+                                method: 'DELETE',
+                                headers: { 'Authorization': 'Bearer ' + token }
+                            });
+                            if (res.ok) {
+                                guardado = false;
+                                btnGuardar.style.filter = 'grayscale(100%) opacity(0.4)';
+                                btnGuardar.title = 'Añadir a guardados';
+                            } else if (res.status === 401) {
+                                window.location.href = 'login.html';
+                            } else {
+                                console.error('Error al quitar de guardados.');
+                            }
+                        } catch (error) {
+                            console.error('Error de red al quitar:', error);
+                        }
+                    }
+                });
+
+                const btnContactar = document.createElement('button');
+                btnContactar.slot = 'footer-action';
+                btnContactar.className = 'pub-card__btn pub-card__btn--secondary';
+                btnContactar.textContent = 'Contactar';
+
+                tarjeta.appendChild(btnGuardar);
+                tarjeta.appendChild(extraAttr);
+                tarjeta.appendChild(btnContactar);
+            }
 
             gridMisPubs.appendChild(tarjeta);
         });
@@ -232,18 +293,14 @@ async function cargarPublicaciones() {
 document.addEventListener('DOMContentLoaded', () => {
     cargarPublicaciones();
 
-    if (!token){
+    if (!token) {
         const navBarTags = document.querySelectorAll('a');
         navBarTags.forEach(tag => {
             tag.addEventListener('click', (event) => {
                 event.preventDefault();
-
-                if (tag.getAttribute('href') === 'feed.html'){
-                    return;
-                }
-                
+                if (tag.getAttribute('href') === 'feed.html') return;
                 alert('Para usar esta funcion primero registrate');
-            })
-        })
+            });
+        });
     }
 });
