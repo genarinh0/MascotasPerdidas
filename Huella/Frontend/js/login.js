@@ -21,6 +21,10 @@ function validLogin(email, pwd){
     return true;
 }
 
+function saveData(token){
+    localStorage.setItem('JWT', token);
+}
+
 async function tryLogin(e){
     e.preventDefault();
 
@@ -45,6 +49,13 @@ async function tryLogin(e){
         });
 
         if (response.ok){
+            const data = await response.json();
+            const { message, token } = data;
+
+            console.log(message);
+
+            saveData(token);
+            
             redirect("feed.html");
         }else {
             console.error('Error en la respuesta: ', response.status);
