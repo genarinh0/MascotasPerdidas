@@ -1,3 +1,8 @@
+const token = localStorage.getItem('JWT');
+if (!token){
+    window.location.href = 'login.html';
+}
+
 const btnUsarFiltros = document.getElementById("btnFilter");
 btnUsarFiltros.addEventListener('click', cargarMisPublicaciones);
 
@@ -112,14 +117,13 @@ function buildURL(){
 }
 
 const gridMisPubs = document.querySelector('.post-grid');
-const ID_USUARIO_ACTUAL = 1;
 
-async function cargarMisPublicaciones() {
+async function cargarPublicaciones() {
     gridMisPubs.innerHTML = '';
     try {
         const response = await fetch(buildURL());
         console.log(response);
-        if (!response.ok) throw new Error('al obtener tus publicaciones');
+        if (!response.ok) throw new Error('Error al obtener tus publicaciones');
 
         const data = await response.json();
         const publicaciones = data.publicaciones;
@@ -178,12 +182,14 @@ function conectarBotonesGuardar(){
         try {
             const response = await fetch(`http://localhost:1984/api/guardados/${idPublicacion}`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id_Usuario: ID_USUARIO_ACTUAL })
+                headers: { 'Authorization': 'Bearer ' + token }
             });
 
             if (response.ok) {
                 alert("Publicacion Guardada con Exito");
+            } else if (response.status === 401){
+                window.location.href = 'login.html';
+                return;
             } else {
                 console.error('Error al guardar en el servidor.');
                 alert("Error al Guardar Publicacion");
