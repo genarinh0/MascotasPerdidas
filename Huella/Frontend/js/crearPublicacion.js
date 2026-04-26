@@ -3,12 +3,60 @@ const token = localStorage.getItem('JWT');
 if (!token){
     window.location.href = 'login.html';
 }
+
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('formCrearPub');
     const inputTipo = document.getElementById('inputTipo');
     const inputFotos = document.getElementById('photos');
     const previewFotos = document.getElementById('previewFotos');
     let archivosAcumulados = [];
+
+    const defaultLat = 20.6767;
+    const defaultLng = -103.3475;
+
+    const map = L.map('map').setView([defaultLat, defaultLng], 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    const marker = L.marker([defaultLat, defaultLng], {
+        draggable: true
+    }).addTo(map);
+
+    function updateCoords(lat, lng) {
+        document.getElementById('inputLat').value = lat;
+        document.getElementById('inputLng').value = lng;
+    }
+
+    // Valores iniciales
+    updateCoords(defaultLat, defaultLng);
+
+    // Actualizar coordenadas al arrastrar el pin
+    marker.on('dragend', function(event) {
+        const position = marker.getLatLng();
+        updateCoords(position.lat, position.lng);
+    });
+
+    // Actualizar coordenadas al hacer clic en el mapa
+    map.on('click', function(e) {
+        marker.setLatLng(e.latlng);
+        updateCoords(e.latlng.lat, e.latlng.lng);
+    });
+
+    // Solicitar ubicación del usuario para centrar el mapa (Opcional pero recomendado)
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(pos => {
+            const userLat = pos.coords.latitude;
+            const userLng = pos.coords.longitude;
+            map.setView([userLat, userLng], 15);
+            marker.setLatLng([userLat, userLng]);
+            updateCoords(userLat, userLng);
+        }, () => {
+            console.log("El usuario no dio permisos de ubicación. Usando coordenadas por defecto.");
+        });
+    }
+    // =========================================
+
 
     inputTipo.addEventListener('change', () => {
         inputTipo.classList.remove('input-tipo--perdido', 'input-tipo--encontrado');
@@ -83,9 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     const validarFormulario = () => {
-
         document.getElementById('alertaCampos').style.display = 'none';
-
         let valido = true;
 
         // Limpiar estilos previos
@@ -97,7 +143,6 @@ document.addEventListener('DOMContentLoaded', () => {
             { el: document.getElementById('inputTipo') },
             { el: document.getElementById('inputEspecie') },
             { el: document.getElementById('inputTamanio') },
-            { el: document.getElementById('inputUbicacion') },
             { el: document.getElementById('inputFecha') },
             { el: document.getElementById('inputDescripcion') },
         ];
@@ -158,6 +203,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const sizeMap = { 'pequeño': 1, 'mediano': 2, 'grande': 3 };
         const sizeString = document.getElementById('inputTamanio').value;
 
+        //Ubicacion
         const nuevaPublicacion = {
             tipo: parseInt(document.getElementById('inputTipo').value), // 1 o 2
             especie: document.getElementById('inputEspecie').value,
@@ -165,7 +211,8 @@ document.addEventListener('DOMContentLoaded', () => {
             tamanio: sizeMap[sizeString] || 2,
             descripcion: document.getElementById('inputDescripcion').value,
             fecha_suceso: document.getElementById('inputFecha').value,
-            ubicacion: document.getElementById('inputUbicacion').value,
+            latitud: parseFloat(document.getElementById('inputLat').value),
+            longitud: parseFloat(document.getElementById('inputLng').value),
             horario_contacto: document.getElementById('inputHorario').value || 'Cualquier hora',
             colores: colores,
             imagenes: imagenesBase64

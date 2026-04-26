@@ -35,7 +35,7 @@ async function cargarMisPublicaciones() {
             const badgeText = isPerdido ? '¡Perdido!' : '¡Busca a su familia!';
             const badgeType = isPerdido ? 'lost' : 'found';
 
-            tarjeta.setAttribute('especie', `${pub.especie} • ${pub.raza || 'Mestizo'}`);
+            tarjeta.setAttribute('especie', `${pub.especie}`);
             tarjeta.setAttribute('ubicacion', pub.ubicacion);
             tarjeta.setAttribute('badge-text', badgeText);
             tarjeta.setAttribute('badge-type', badgeType);

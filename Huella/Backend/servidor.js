@@ -134,8 +134,8 @@ app.post('/api/publicaciones', verifyToken, async (req, res) => {
 
         const { id_Usuario } = req.user;
 
-        const sqlPub = `INSERT INTO publicacion (id_Usuario, tipo, especie, raza, tamanio, descripcion, fecha_suceso, fecha_creacion, estatus, ubicacion, horario_contacto) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-        const parametrosPub = [id_Usuario, nuevaPub.tipo, nuevaPub.especie, nuevaPub.raza, nuevaPub.tamanio, nuevaPub.descripcion, nuevaPub.fecha_suceso, fecha_creacion, estatus, nuevaPub.ubicacion, nuevaPub.horario_contacto];
+        const sqlPub = `INSERT INTO publicacion (id_Usuario, tipo, especie, raza, tamanio, descripcion, fecha_suceso, fecha_creacion, estatus, latitud, longitud, horario_contacto) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+        const parametrosPub = [id_Usuario, nuevaPub.tipo, nuevaPub.especie, nuevaPub.raza, nuevaPub.tamanio, nuevaPub.descripcion, nuevaPub.fecha_suceso, fecha_creacion, estatus, nuevaPub.latitud, nuevaPub.longitud, nuevaPub.horario_contacto];
         const [resultPub] = await conn.query(sqlPub, parametrosPub);
         const id_Publicacion = resultPub.insertId;
 

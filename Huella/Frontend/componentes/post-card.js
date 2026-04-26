@@ -32,8 +32,6 @@ template.innerHTML = `
             <div class="pub-card__attributes">
                 <slot name="extra-attributes"></slot>
                 <div class="attribute">
-                    <img src="imagenes/iconos/icono_ubicacion.png" class="attribute__icon" alt="Ubicación">
-                    <label><b class="attribute__type">Ubicación:</b> <span id="pet-location"></span></label>
                 </div>
             </div>
 
@@ -64,7 +62,7 @@ class PostCard extends HTMLElement {
     }
 
     static get observedAttributes() {
-        return ["titulo", "imagen", "ubicacion", "badge-text", "badge-type"];
+        return ["especie", "imagen", "badge-text", "badge-type"];
     }
 
     attributeChangedCallback(name, oldVal, newVal) {
@@ -88,8 +86,7 @@ class PostCard extends HTMLElement {
         }
 
         this.imgEl.src = this.getAttribute("imagen") || "./imagenes/img_1.png";
-        this.titleEl.textContent = this.getAttribute("titulo") || "Mascota";
-        this.locationEl.textContent = this.getAttribute("ubicacion") || "No especificada";
+        this.titleEl.textContent = this.getAttribute("especie") || "Mascota";
     }
 }
 
