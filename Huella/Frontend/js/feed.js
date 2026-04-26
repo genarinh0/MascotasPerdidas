@@ -199,6 +199,7 @@ async function cargarPublicaciones() {
 
             const esMia = pub.id_Usuario === idUsuarioActual;
 
+            console.log(`Pub ${pub.id_Publicacion}: id_Usuario=${pub.id_Usuario}, idUsuarioActual=${idUsuarioActual}, tipo=${typeof pub.id_Usuario} vs ${typeof idUsuarioActual}`);
             if (esMia) {
                 // Botón editar
                 const btnEditar = document.createElement('button');
@@ -265,6 +266,7 @@ async function cargarPublicaciones() {
                 btnGuardar.title = guardado ? 'Quitar de guardados' : 'Añadir a guardados';
 
                 btnGuardar.addEventListener('click', async () => {
+                    console.log('Click en Guardar pub: ', pub.id_Publicacion);
                     if (!guardado) {
                         try {
                             const res = await fetch(`http://localhost:1984/api/guardados/${pub.id_Publicacion}`, {
