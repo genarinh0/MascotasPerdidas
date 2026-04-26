@@ -137,7 +137,23 @@ function buildURL(){
         nonEmptyFilters.push(`fechaFin=${fechaFin}`);
     }
 
-    if (nonEmptyFilters.length > 0) url += '?' + nonEmptyFilters.join('&');
+    const lat = document.getElementById('filtroLat').value;
+    const long = document.getElementById('filtroLng').value;
+    const radio = document.getElementById('inputRadio').value;
+
+    if (lat){
+        nonEmptyFilters.push(`latitud=${lat}`);
+    }
+    if (long){
+        nonEmptyFilters.push(`longitud=${long}`);
+    }
+    if (radio){
+        nonEmptyFilters.push(`radio=${radio}`);
+    }
+
+    if (nonEmptyFilters.length > 0){
+        url += '?' + nonEmptyFilters.join('&');
+    }
 
     console.log(url);
     return url;
@@ -341,4 +357,50 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     }
+
+    const defaultLat = 20.6767;
+    const defaultLng = -103.3475;
+
+    const mapFiltro = L.map('mapFiltro').setView([defaultLat, defaultLng], 12);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap'
+    }).addTo(mapFiltro);
+
+    const markerFiltro = L.marker([defaultLat, defaultLng], { draggable: true }).addTo(mapFiltro);
+
+    function updateFilterCoords(lat, lng) {
+        document.getElementById('filtroLat').value = lat;
+        document.getElementById('filtroLng').value = lng;
+    }
+    updateFilterCoords(defaultLat, defaultLng);
+
+    markerFiltro.on('dragend', function(event) {
+        const position = markerFiltro.getLatLng();
+        updateFilterCoords(position.lat, position.lng);
+    });
+
+    mapFiltro.on('click', function(e) {
+        markerFiltro.setLatLng(e.latlng);
+        updateFilterCoords(e.latlng.lat, e.latlng.lng);
+    });
+
+    document.getElementById('btnToggleMapa').addEventListener('click', () => {
+        setTimeout(() => {
+            mapFiltro.invalidateSize();
+        }, 300);
+    });
+
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(pos => {
+            const userLat = pos.coords.latitude;
+            const userLng = pos.coords.longitude;
+            mapFiltro.setView([userLat, userLng], 13);
+            markerFiltro.setLatLng([userLat, userLng]);
+            updateFilterCoords(userLat, userLng);
+        });
+    }
+
+    document.querySelector('#dropdownUbicacion .dropdown-options').addEventListener('click', function(e) {
+        e.stopPropagation();
+    });
 });

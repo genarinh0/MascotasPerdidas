@@ -5,6 +5,8 @@
         <link rel="stylesheet" href="css/styles.css">
         <link href="https://fonts.googleapis.com" rel="stylesheet">
         <script type="module" src="./componentes/post-card.js"></script>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     </head>
     <body>
         <header class="site-header">
@@ -101,14 +103,27 @@
                     </div>
                 </div>
                 <div class="dropdown">
-                    <button class="filter-button">
-                        <img src="imagenes/iconos/icono_ubicacion.png" class="filter-button__icon">
-                        <span class="filter-button__text">Ubicación</span>
+                    <button class="filter-button" id="btnToggleMapa">
+                        <img src="imagenes/iconos/icono_estatus.png" class="filter-button__icon"> <span class="filter-button__text">Ubicacion</span>
                     </button>
-                    <div class="dropdown-options" data-filter-group="ubicacion" data-selectedValue="">
-                        <button class="dropdown-item" data-value=1>Perdida</button>
-                        <button class="dropdown-item" data-value=2>Refugiada</button>
-                        <button class="dropdown-item" data-value=3>Resuelto</button>
+                    <div class="dropdown-options" style="padding: 15px; width: 280px; flex-direction: column; gap: 15px; cursor: default;">
+                        <div style="width: 100%;">
+                            <label style="font-size: 14px; font-weight: bold; color: var(--color-primary);">Distancia a la redonda:</label>
+                            <select id="inputRadio" class="card__input card__input--select" style="width: 100%; margin-top: 5px;">
+                                <option value="2">2 Kilómetros</option>
+                                <option value="5" selected>5 Kilómetros</option>
+                                <option value="10">10 Kilómetros</option>
+                                <option value="20">20 Kilómetros</option>
+                            </select>
+                        </div>
+
+                        <div style="width: 100%;">
+                            <label style="font-size: 14px; font-weight: bold; color: var(--color-primary);">Ubicación central:</label>
+                            <div id="mapFiltro" style="height: 200px; width: 100%; border-radius: 5px; border: 1px solid #ccc; margin-top: 5px; z-index: 1;"></div>
+                            <p style="font-size: 11px; color: gray; margin-top: 5px;">Mueve el pin para buscar alrededor de esa zona.</p>
+                        </div>
+                        <input type="hidden" id="filtroLat">
+                        <input type="hidden" id="filtroLng">
                     </div>
                 </div>
                 <div class="dropdown">

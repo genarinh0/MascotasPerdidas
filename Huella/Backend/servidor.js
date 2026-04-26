@@ -76,25 +76,40 @@ app.post('/api/login', async (req, res) => {
 });
 
 app.get('/api/publicaciones', async (req, res) => {
-    let sql = `
-        SELECT p.*,
-        (SELECT TO_BASE64(fotografia) FROM fotografia f WHERE f.id_Publicacion = p.id_Publicacion LIMIT 1) as imagenBase64
-        FROM publicacion p
-    `;
     const filtros = req.query;
-    const condiciones = [];
     const valores = [];
+    const condiciones = [];
+
+    const lat = parseFloat(filtros.latitud);
+    const lng = parseFloat(filtros.longitud);
+    const radio = parseFloat(filtros.radio);
+
+    const usarDistancia = !isNaN(lat) && !isNaN(lng) && !isNaN(radio);
+
+    let sqlSelect = `SELECT p.*,
+        (SELECT TO_BASE64(fotografia) FROM fotografia f WHERE f.id_Publicacion = p.id_Publicacion LIMIT 1) as imagenBase64`;
+
+    if (usarDistancia) {
+        sqlSelect += `, ( 6371 * acos(
+            cos(radians(?)) * cos(radians(p.latitud)) *
+            cos(radians(p.longitud) - radians(?)) +
+            sin(radians(?)) * sin(radians(p.latitud))
+        )) AS distancia`;
+        valores.push(lat, lng, lat);
+    }
+
+    let sqlFrom = ` FROM publicacion p`;
 
     Object.entries(filtros).forEach(([clave, valor]) => {
-        if (clave === 'colores' && valor) {
+        if (['latitud', 'longitud', 'radio', 'lat', 'lng', '_'].includes(clave)) return;
+        if (valor === undefined || valor === null || valor === '' || valor === 'null' || valor === 'undefined') return;
+
+        if (clave === 'colores') {
             const listaColores = valor.split(',');
-            const colores = listaColores.map(() => '?').join(',');
-
+            const placeholders = listaColores.map(() => '?').join(',');
             condiciones.push(`p.id_Publicacion IN (
-                SELECT id_Publicacion FROM colorMascota
-                WHERE id_Color IN (${colores})
+                SELECT id_Publicacion FROM colorMascota WHERE id_Color IN (${placeholders})
             )`);
-
             listaColores.forEach(c => valores.push(c));
         }else if (clave === 'fechaInicio') {
             condiciones.push("p.fecha_suceso >= ?");
@@ -102,24 +117,43 @@ app.get('/api/publicaciones', async (req, res) => {
         }else if (clave === 'fechaFin') {
             condiciones.push("p.fecha_suceso <= ?");
             valores.push(valor);
-        }else if (valor) {
-            condiciones.push(`p.${clave} = ?`);
-            valores.push(valor);
+        }else {
+            const columnasValidas = ['tipo', 'especie', 'raza', 'tamanio', 'estatus'];
+            if (columnasValidas.includes(clave)) {
+                condiciones.push(`p.${clave} = ?`);
+                valores.push(valor);
+            }
         }
-
-
     });
 
-    if (condiciones.length > 0) {
-        sql += ' WHERE ' + condiciones.join(' AND ');
+    if (!filtros.estatus) {
+        condiciones.push("p.estatus = 1");
+    }
+
+    const sqlWhere = condiciones.length > 0 ? ' WHERE ' + condiciones.join(' AND ') : '';
+
+    let sqlFinal = sqlSelect + sqlFrom + sqlWhere;
+
+    if (usarDistancia) {
+        sqlFinal += ` HAVING distancia <= ? ORDER BY distancia ASC`;
+        valores.push(radio);
+    } else {
+        sqlFinal += ` ORDER BY p.fecha_creacion DESC`;
     }
 
     try {
-        const [rows] = await db.query(sql, valores);
-        res.status(200).json({ message: 'Publicaciones recabadas con exito', publicaciones: rows });
+        console.log("¿Usa distancia?:", usarDistancia);
+        console.log("SQL:", sqlFinal);
+        console.log("Valores:", valores);
+
+        const [rows] = await db.query(sqlFinal, valores);
+        res.status(200).json({
+            message: 'Publicaciones recabadas con éxito',
+            publicaciones: rows
+        });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Error al obtener las publicaciones' });
+        console.error("ERROR CRÍTICO EN API FEED:", error);
+        res.status(500).json({ error: 'Error al obtener publicaciones' });
     }
 });
 
