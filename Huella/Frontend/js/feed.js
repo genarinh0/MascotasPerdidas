@@ -177,8 +177,22 @@ async function cargarPublicaciones() {
             const isPerdido = pub.tipo === 1;
             const badgeText = isPerdido ? '¡Perdido!' : '¡Busca a su familia!';
             const badgeType = isPerdido ? 'lost' : 'found';
+            const tamaños = {
+                1: 'Pequeño',
+                2: 'Mediano',
+                3: 'Grande'
+            };
+            const fecha = new Date(pub.fecha_suceso);
+            const fechaFormateada = fecha.toLocaleDateString('es-MX', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });
 
             tarjeta.setAttribute('especie', `${pub.especie}`);
+            tarjeta.setAttribute('raza', `${pub.raza}`);
+            tarjeta.setAttribute('tamaño', tamaños[pub.tamanio]);
+            tarjeta.setAttribute('fecha', fechaFormateada);
             tarjeta.setAttribute('badge-text', badgeText);
             tarjeta.setAttribute('badge-type', badgeType);
 
@@ -187,14 +201,6 @@ async function cargarPublicaciones() {
             } else {
                 tarjeta.setAttribute('imagen', './imagenes/img_1.png');
             }
-
-            const extraAttr = document.createElement('div');
-            extraAttr.slot = 'extra-attributes';
-            extraAttr.className = 'attribute';
-            extraAttr.innerHTML = `
-                <img src="imagenes/iconos/icono_color.png" class="attribute__icon" alt="Color/Raza">
-                <label><b class="attribute__type">Raza:</b> ${pub.raza || 'Mestizo'}</label>
-            `;
 
             const esMia = pub.id_Usuario === idUsuarioActual;
 
@@ -249,7 +255,6 @@ async function cargarPublicaciones() {
                 footerActions.appendChild(btnEliminar);
 
                 tarjeta.appendChild(btnEditar);
-                tarjeta.appendChild(extraAttr);
                 tarjeta.appendChild(footerActions);
 
             } else {
@@ -311,7 +316,6 @@ async function cargarPublicaciones() {
                 btnContactar.textContent = 'Contactar';
 
                 tarjeta.appendChild(btnGuardar);
-                tarjeta.appendChild(extraAttr);
                 tarjeta.appendChild(btnContactar);
             }
 

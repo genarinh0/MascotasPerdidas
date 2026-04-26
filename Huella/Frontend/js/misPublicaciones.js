@@ -34,9 +34,22 @@ async function cargarMisPublicaciones() {
             const isPerdido = pub.tipo === 1;
             const badgeText = isPerdido ? '¡Perdido!' : '¡Busca a su familia!';
             const badgeType = isPerdido ? 'lost' : 'found';
+            const tamaños = {
+                1: 'Pequeño',
+                2: 'Mediano',
+                3: 'Grande'
+            };
+            const fecha = new Date(pub.fecha_suceso);
+            const fechaFormateada = fecha.toLocaleDateString('es-MX', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });
 
             tarjeta.setAttribute('especie', `${pub.especie}`);
-            tarjeta.setAttribute('ubicacion', pub.ubicacion);
+            tarjeta.setAttribute('raza', `${pub.raza}`);
+            tarjeta.setAttribute('tamaño', tamaños[pub.tamanio]);
+            tarjeta.setAttribute('fecha', fechaFormateada);
             tarjeta.setAttribute('badge-text', badgeText);
             tarjeta.setAttribute('badge-type', badgeType);
 

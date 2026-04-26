@@ -32,6 +32,16 @@ template.innerHTML = `
             <div class="pub-card__attributes">
                 <slot name="extra-attributes"></slot>
                 <div class="attribute">
+                    <img src="imagenes/iconos/icono_huella.png" class="attribute__icon" alt="Color/Raza">
+                    <label><b class="attribute__type">Raza:</b> <span id="pet-race"></span></label>
+                </div>
+                <div class="attribute">
+                    <img src="imagenes/iconos/icono_tamaño.png" class="attribute__icon" alt="Color/Raza">
+                    <label><b class="attribute__type">Tamaño:</b> <span id="pet-size"></span></label>
+                </div>
+                <div class="attribute">
+                    <img src="imagenes/iconos/icono_fecha.png" class="attribute__icon" alt="Color/Raza">
+                    <label><b class="attribute__type">Fecha:</b> <span id="pet-date"></span></label>
                 </div>
             </div>
 
@@ -52,7 +62,9 @@ class PostCard extends HTMLElement {
         this.headerEl = templateContent.querySelector("#card-header");
         this.imgEl = templateContent.querySelector("#pet-img");
         this.titleEl = templateContent.querySelector("#pet-title");
-        this.locationEl = templateContent.querySelector("#pet-location");
+        this.razaEl = templateContent.querySelector("#pet-race");
+        this.tamanioEl = templateContent.querySelector("#pet-size");
+        this.fechaEl = templateContent.querySelector("#pet-date");
 
         shadow.append(templateContent);
     }
@@ -62,7 +74,7 @@ class PostCard extends HTMLElement {
     }
 
     static get observedAttributes() {
-        return ["especie", "imagen", "badge-text", "badge-type"];
+        return ["especie", "raza", "tamaño", "fecha", "imagen", "badge-text", "badge-type"];
     }
 
     attributeChangedCallback(name, oldVal, newVal) {
@@ -87,6 +99,9 @@ class PostCard extends HTMLElement {
 
         this.imgEl.src = this.getAttribute("imagen") || "./imagenes/img_1.png";
         this.titleEl.textContent = this.getAttribute("especie") || "Mascota";
+        this.razaEl.textContent = this.getAttribute("raza") || "Mestizo";
+        this.tamanioEl.textContent = this.getAttribute("tamaño") || "No disponible";
+        this.fechaEl.textContent = this.getAttribute("fecha") || "No disponible";
     }
 }
 

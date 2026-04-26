@@ -35,10 +35,22 @@ async function cargarGuardados() {
             const isPerdido = pub.tipo === 1;
             const badgeText = isPerdido ? '¡Perdido!' : '¡Busca a su familia!';
             const badgeType = isPerdido ? 'lost' : 'found';
+            const tamaños = {
+                1: 'Pequeño',
+                2: 'Mediano',
+                3: 'Grande'
+            };
+            const fecha = new Date(pub.fecha_suceso);
+            const fechaFormateada = fecha.toLocaleDateString('es-MX', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });
 
-            tarjeta.setAttribute('nombre', pub.nombre || 'Desconocido');
-            tarjeta.setAttribute('especie', pub.especie || 'No especificada');
-            tarjeta.setAttribute('ubicacion', pub.ubicacion || 'Sin ubicación');
+            tarjeta.setAttribute('especie', `${pub.especie}`);
+            tarjeta.setAttribute('raza', `${pub.raza}`);
+            tarjeta.setAttribute('tamaño', tamaños[pub.tamanio]);
+            tarjeta.setAttribute('fecha', fechaFormateada);
             tarjeta.setAttribute('badge-text', badgeText);
             tarjeta.setAttribute('badge-type', badgeType);
 
@@ -98,21 +110,12 @@ async function cargarGuardados() {
                 }
             });
 
-            const extraAttr = document.createElement('div');
-            extraAttr.slot = 'extra-attributes';
-            extraAttr.className = 'attribute';
-            extraAttr.innerHTML = `
-                <img src="imagenes/iconos/icono_color.png" class="attribute__icon" alt="Color/Raza">
-                <label><b class="attribute__type">Raza:</b> ${pub.raza || 'Mestizo'}</label>
-            `;
-
             const btnContactar = document.createElement('button');
             btnContactar.slot = 'footer-action';
             btnContactar.className = 'pub-card__btn pub-card__btn--secondary';
             btnContactar.textContent = 'Contactar';
 
             tarjeta.appendChild(btnQuitar);
-            tarjeta.appendChild(extraAttr);
             tarjeta.appendChild(btnContactar);
 
             gridGuardados.appendChild(tarjeta);
