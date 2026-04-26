@@ -306,8 +306,8 @@ app.put('/api/publicaciones/:id', verifyToken, async (req, res) => {
         }
 
         await conn.query(
-            `UPDATE publicacion SET tipo=?, especie=?, raza=?, tamanio=?, descripcion=?, fecha_suceso=?, ubicacion=?, horario_contacto=? WHERE id_Publicacion=?`,
-            [pub.tipo, pub.especie, pub.raza, pub.tamanio, pub.descripcion, pub.fecha_suceso, pub.ubicacion, pub.horario_contacto, id]
+            `UPDATE publicacion SET tipo=?, especie=?, raza=?, tamanio=?, descripcion=?, fecha_suceso=?, latitud=?, longitud=?, horario_contacto=? WHERE id_Publicacion=?`,
+            [pub.tipo, pub.especie, pub.raza, pub.tamanio, pub.descripcion, pub.fecha_suceso, pub.latitud, pub.longitud, pub.horario_contacto, id]
         );
 
         await conn.query('DELETE FROM colormascota WHERE id_Publicacion = ?', [id]);

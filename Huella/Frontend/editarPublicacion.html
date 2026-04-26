@@ -4,6 +4,8 @@
         <meta charset="UTF-8">
         <link rel="stylesheet" href="css/styles.css">
         <link href="https://fonts.googleapis.com" rel="stylesheet">
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     </head>
 
     <body>
@@ -34,9 +36,9 @@
                         <label class="card__label">Especie *</label>
                         <select class="card__input card__input--select" id="inputEspecie" style="width: 100%;" required>
                             <option value="" disabled>Selecciona...</option>
-                            <option value="perro">Perro</option>
-                            <option value="gato">Gato</option>
-                            <option value="otro">Otro</option>
+                            <option value="Perro">Perro</option>
+                            <option value="Gato">Gato</option>
+                            <option value="Otro">Otro</option>
                         </select>
                     </div>
 
@@ -73,17 +75,14 @@
                     </div>
 
                     <div class="card__field">
-                        <label class="card__label">Ubicación aproximada *</label>
-                        <select class="card__input card__input--select" id="inputUbicacion" style="width: 100%;" required>
-                            <option value="" disabled>Selecciona zona...</option>
-                            <option value="norte">Zona Norte</option>
-                            <option value="sur">Zona Sur</option>
-                            <option value="poniente">Zona Poniente</option>
-                            <option value="oriente">Zona Oriente</option>
-                            <option value="centro">Centro</option>
-                        </select>
+                        <label class="card__label">Ubicación aproximada (Pin) *</label>
+                        <div id="map" style="height: 300px; border-radius: 5px; margin-bottom: 5px; border: 1px solid rgba(128, 128, 128, 0.37); z-index: 1;"></div>
+                        <p class="card__instruction" style="font-size: 12px; color: var(--card-font-color); margin: 0 0 10px 0;">
+                            Mueve el pin o haz clic en el mapa para corregir dónde viste a la mascota.
+                        </p>
+                        <input type="hidden" id="inputLat" name="latitud">
+                        <input type="hidden" id="inputLng" name="longitud">
                     </div>
-
                     <div class="card__field">
                         <label class="card__label">Fecha de pérdida *</label>
                         <input type="date" class="card__input card__input--date" id="inputFecha" style="width: 100%;" required>

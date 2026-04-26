@@ -9,11 +9,39 @@ if (!idPublicacion) {
 }
 
 let archivosAcumulados = [];
+let map;
+let marker;
 
 document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('btnCancelNav').addEventListener('click', () => {
         window.location.href = 'misPublicaciones.html';
     });
+
+    const defaultLat = 20.6767;
+    const defaultLng = -103.3475;
+
+    map = L.map('map').setView([defaultLat, defaultLng], 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    marker = L.marker([defaultLat, defaultLng], { draggable: true }).addTo(map);
+
+    function updateCoords(lat, lng) {
+        document.getElementById('inputLat').value = lat;
+        document.getElementById('inputLng').value = lng;
+    }
+
+    marker.on('dragend', function(event) {
+        const position = marker.getLatLng();
+        updateCoords(position.lat, position.lng);
+    });
+
+    map.on('click', function(e) {
+        marker.setLatLng(e.latlng);
+        updateCoords(e.latlng.lat, e.latlng.lng);
+    });
+    // =========================================
 
     const inputTipo = document.getElementById('inputTipo');
     inputTipo.addEventListener('change', () => {
@@ -112,6 +140,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const sizeMap = { 'pequeño': 1, 'mediano': 2, 'grande': 3 };
         const sizeString = document.getElementById('inputTamanio').value;
 
+        // SE ENVIAN LATITUD Y LONGITUD
         const pubEditada = {
             tipo: parseInt(document.getElementById('inputTipo').value),
             especie: document.getElementById('inputEspecie').value,
@@ -119,7 +148,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             tamanio: sizeMap[sizeString] || 2,
             descripcion: document.getElementById('inputDescripcion').value,
             fecha_suceso: document.getElementById('inputFecha').value,
-            ubicacion: document.getElementById('inputUbicacion').value,
+            latitud: parseFloat(document.getElementById('inputLat').value),
+            longitud: parseFloat(document.getElementById('inputLng').value),
             horario_contacto: document.getElementById('inputHorario').value || 'Cualquier hora',
             colores: colores,
             imagenes: imagenesBase64
@@ -178,10 +208,19 @@ async function cargarPublicacion() {
         const sizeReverseMap = { 1: 'pequeño', 2: 'mediano', 3: 'grande' };
         document.getElementById('inputTamanio').value = sizeReverseMap[pub.tamanio] || 'mediano';
 
-        document.getElementById('inputUbicacion').value = pub.ubicacion;
         document.getElementById('inputFecha').value = pub.fecha_suceso?.split('T')[0] || '';
         document.getElementById('inputHorario').value = pub.horario_contacto || '';
         document.getElementById('inputDescripcion').value = pub.descripcion;
+
+        const lat = pub.latitud || 20.6767;
+        const lng = pub.longitud || -103.3475;
+        document.getElementById('inputLat').value = lat;
+        document.getElementById('inputLng').value = lng;
+
+        if (map && marker) {
+            map.setView([lat, lng], 15);
+            marker.setLatLng([lat, lng]);
+        }
 
         colores.forEach(idColor => {
             const cb = document.querySelector(`input[name="colores"][value="${idColor}"]`);
@@ -252,7 +291,6 @@ const validarFormulario = () => {
         { el: document.getElementById('inputTipo') },
         { el: document.getElementById('inputEspecie') },
         { el: document.getElementById('inputTamanio') },
-        { el: document.getElementById('inputUbicacion') },
         { el: document.getElementById('inputFecha') },
         { el: document.getElementById('inputDescripcion') },
     ];
