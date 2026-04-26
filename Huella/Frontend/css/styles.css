@@ -698,16 +698,17 @@ a:hover {
     align-items: center;
 }
 
-.dropdown-options {
+.dropdown-options,
+.dropdown-options--grid,
+.dropdown-options--calendar {
     position: absolute;
     display: none;
     opacity: 0;
     transform: translateY(-5px);
-    flex-direction: column;
     top: 110%;
+    z-index: 1000;
     border-radius: 10px;
     background-color: var(--color-contrast);
-    gap: 10px;
     transition: opacity .25s ease, transform .25s ease;
 }
 
@@ -732,7 +733,6 @@ a:hover {
 }
 
 .dropdown-options--grid {
-    display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 8px;
     padding: 12px;
@@ -776,6 +776,12 @@ a:hover {
     min-width: 280px;
     padding: 15px;
     flex-direction: column;
+}
+
+.dropdown-options--calendar.open {
+    display: flex;
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .calendar-inputs {
