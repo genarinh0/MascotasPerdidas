@@ -400,3 +400,48 @@ app.get('/api/publicaciones/:id/fotos', verifyToken, async (req, res) => {
 app.listen(1984, () => {
     console.log("Servidor Corriendo en puerto 1984");
 });
+
+//ENDPOINTS AÑADIDOS PARA MI PERFIL
+
+app.get('/api/perfil', verifyToken, async (req, res) => {
+    const { id_Usuario } = req.user;
+
+    try {
+        const [rows] = await db.query(
+            'SELECT email, telefono FROM usuario WHERE id_Usuario = ?',
+            [id_Usuario]
+        );
+
+        if (rows.length === 0) {
+            return res.status(404).json({ error: 'Usuario no encontrado' });
+        }
+
+        res.status(200).json({ usuario: rows[0] });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al obtener el perfil' });
+    }
+});
+
+app.patch('/api/perfil/telefono', verifyToken, async (req, res) => {
+    const { id_Usuario } = req.user;
+    const { telefono } = req.body;
+
+    if (!telefono) {
+        return res.status(400).json({ error: 'Teléfono es obligatorio' });
+    }
+
+    try {
+        await db.query(
+            'UPDATE usuario SET telefono = ? WHERE id_Usuario = ?',
+            [telefono, id_Usuario]
+        );
+
+        res.status(200).json({ message: 'Teléfono actualizado con éxito' });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al actualizar el teléfono' });
+    }
+});

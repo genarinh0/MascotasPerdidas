@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Huella - Mi Perfil</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/perfil.css">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;700&family=Montserrat:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <header class="site-header">
+        <div class="site-header__brand">
+            <img src="imagenes/logo.png" width="25" height="25" alt="Huella">
+            <h1 class="site-header__brand-title">Huella</h1>
+        </div>
+        <div class="site-header__user-actions">
+            <button class="site-header__button" onclick="window.location.href='feed.html'">Ver Feed</button>
+        </div>
+    </header>
+
+    <section class="perfil-hero">
+        <div class="perfil-hero__avatar">
+            <span class="perfil-hero__avatar-icon">🐾</span>
+        </div>
+        <div class="perfil-hero__info">
+            <p class="perfil-hero__email" id="perfil-email">cargando...</p>
+            <p class="perfil-hero__telefono" id="perfil-telefono">Sin teléfono registrado</p>
+        </div>
+        <button class="perfil-hero__logout" id="btnLogout">Cerrar sesión</button>
+    </section>
+
+    <section class="perfil-section">
+        <div class="perfil-cuenta-card">
+            <h2 class="perfil-cuenta-card__title">Información de Cuenta</h2>
+
+            <div class="perfil-cuenta-field">
+                <label class="perfil-cuenta-field__label">Correo electrónico</label>
+                <p class="perfil-cuenta-field__value" id="cuenta-email">—</p>
+            </div>
+
+            <div class="perfil-cuenta-field">
+                <label class="perfil-cuenta-field__label">Teléfono para notificaciones SMS</label>
+                <div class="perfil-cuenta-field__row">
+                    <input class="perfil-cuenta-field__input" type="tel" id="cuenta-telefono" placeholder="Ej. 3312345678">
+                    <button class="perfil-cuenta-field__save" id="btnGuardarTel">Guardar</button>
+                </div>
+                <p class="perfil-cuenta-field__hint">Te avisaremos cuando alguien interactúe con tus publicaciones.</p>
+            </div>
+
+            <p class="perfil-cuenta__msg" id="cuenta-msg" style="display:none;"></p>
+        </div>
+    </section>
+
+    <section class="perfil-section" style="padding-top: 0;">
+        <div class="perfil-stats-card">
+            <div class="perfil-stat">
+                <span class="perfil-stat__number" id="stat-publicaciones">—</span>
+                <span class="perfil-stat__label">Publicaciones creadas</span>
+            </div>
+            <div class="perfil-stats-divider"></div>
+            <div class="perfil-stat">
+                <span class="perfil-stat__number" id="stat-guardados">—</span>
+                <span class="perfil-stat__label">Publicaciones guardadas</span>
+            </div>
+        </div>
+    </section>
+
+    <nav class="bottom-nav">
+        <a href="feed.html" class="bottom-nav__item">
+            <img src="imagenes/iconos/icono_BtnFeed.png" class="bottom-nav__icon">
+        </a>
+        <a href="guardados.html" class="bottom-nav__item">
+            <img src="imagenes/iconos/icono_BtnGuardados.png" class="bottom-nav__icon">
+        </a>
+        <a href="chats.html" class="bottom-nav__item">
+            <img src="imagenes/iconos/icono_BtnChats.png" class="bottom-nav__icon">
+        </a>
+        <a href="misPublicaciones.html" class="bottom-nav__item">
+            <img src="imagenes/iconos/icono_BtnMisPost.png" class="bottom-nav__icon">
+        </a>
+    </nav>
+
+    <script src="js/perfil.js"></script>
+</body>
+</html>

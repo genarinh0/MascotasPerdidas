@@ -1,0 +1,246 @@
+/* =========================================
+   PERFIL.CSS — Estilos específicos del perfil
+   Complementa styles.css, no lo reemplaza
+   ========================================= */
+
+/* --- HERO DEL PERFIL --- */
+.perfil-hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 30px 20px 30px;
+    background: linear-gradient(160deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+    color: white;
+}
+
+.perfil-hero__avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    border: 3px solid rgba(255, 255, 255, 0.5);
+}
+
+.perfil-hero__info {
+    text-align: center;
+}
+
+.perfil-hero__email {
+    margin: 0;
+    font-family: var(--font-secondary);
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+}
+
+.perfil-hero__telefono {
+    margin: 4px 0 0;
+    font-family: var(--font-secondary);
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.75);
+}
+
+/* --- BOTÓN CERRAR SESIÓN --- */
+.perfil-hero__logout {
+    margin-top: 15px;
+    padding: 8px 24px;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: 20px;
+    background: transparent;
+    color: white;
+    font-family: var(--font-secondary);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.perfil-hero__logout:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: white;
+    transform: translateY(-1px);
+}
+
+/* --- SECCIONES DE CONTENIDO --- */
+.perfil-section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 50px 100px; /* 100px bottom para el nav fijo */
+}
+
+/* --- TARJETA MI CUENTA --- */
+.perfil-cuenta-card {
+    background-color: white;
+    border-radius: 16px;
+    border: 2px solid #E4E0DA;
+    box-shadow: 0 4px 20px #1c1a1812;
+    padding: 30px;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.perfil-cuenta-card__title {
+    margin: 0 0 24px;
+    font-family: var(--font-alternate);
+    font-size: 1.3rem;
+    color: #313030;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #E4E0DA;
+}
+
+.perfil-cuenta-field {
+    margin-bottom: 24px;
+}
+
+.perfil-cuenta-field__label {
+    display: block;
+    font-family: var(--font-secondary);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--card-font-color);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+}
+
+.perfil-cuenta-field__value {
+    margin: 0;
+    font-family: var(--font-secondary);
+    font-size: 15px;
+    color: #313030;
+    padding: 10px 14px;
+    background-color: var(--bg);
+    border-radius: 8px;
+    border: 1px solid #E4E0DA;
+}
+
+.perfil-cuenta-field__row {
+    display: flex;
+    gap: 10px;
+}
+
+.perfil-cuenta-field__input {
+    flex: 1;
+    padding: 10px 14px;
+    border: 1px solid rgba(128, 128, 128, 0.37);
+    border-radius: 8px;
+    background-color: var(--bg);
+    color: #3a3737;
+    font-family: var(--font-primary);
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+.perfil-cuenta-field__input:focus {
+    outline: none;
+    border-color: var(--color-primary-light);
+    background-color: white;
+}
+
+.perfil-cuenta-field__save {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 8px;
+    background-color: var(--color-primary);
+    color: white;
+    font-family: var(--font-secondary);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+
+.perfil-cuenta-field__save:hover {
+    background-color: var(--color-primary-light);
+    transform: translateY(-1px);
+}
+
+.perfil-cuenta-field__hint {
+    margin: 6px 0 0;
+    font-family: var(--font-secondary);
+    font-size: 11px;
+    color: var(--card-font-color);
+}
+
+/* --- MENSAJE DE ÉXITO/ERROR EN CUENTA --- */
+.perfil-cuenta__msg {
+    margin: 0;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-family: var(--font-secondary);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.perfil-cuenta__msg--ok {
+    background-color: #e8f5e9;
+    color: var(--color-primary);
+}
+
+.perfil-cuenta__msg--error {
+    background-color: var(--danger-bg);
+    color: var(--danger-text);
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 768px) {
+    .perfil-section {
+        padding: 16px 16px 100px;
+    }
+
+    .perfil-cuenta-card {
+        padding: 20px 16px;
+    }
+}
+
+.perfil-stats-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    border-radius: 16px;
+    border: 2px solid #E4E0DA;
+    box-shadow: 0 4px 20px #1c1a1812;
+    padding: 24px 30px;
+    max-width: 500px;
+    margin: 0 auto;
+    gap: 0;
+}
+
+.perfil-stat {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.perfil-stat__number {
+    font-family: var(--font-alternate);
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--color-primary);
+}
+
+.perfil-stat__label {
+    font-family: var(--font-secondary);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--card-font-color);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-align: center;
+}
+
+.perfil-stats-divider {
+    width: 1px;
+    height: 50px;
+    background-color: #E4E0DA;
+    margin: 0 20px;
+}
