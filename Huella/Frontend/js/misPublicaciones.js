@@ -60,7 +60,7 @@ async function cargarMisPublicaciones() {
             const btnEncontrado = document.createElement('button');
             btnEncontrado.className = 'pub-card__btn pub-card__btn--success btn-encontrado';
             btnEncontrado.setAttribute('data-id', pub.id_Publicacion);
-            btnEncontrado.textContent = '¡Lo encontré!';
+            btnEncontrado.textContent = 'Marcar como resuelto';
 
             const btnEliminar = document.createElement('button');
             btnEliminar.className = 'pub-card__btn pub-card__btn--danger btn-eliminar';
