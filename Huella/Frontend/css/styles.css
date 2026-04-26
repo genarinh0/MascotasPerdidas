@@ -731,6 +731,47 @@ a:hover {
     background-color: #8b8b833a;
 }
 
+.dropdown-options--grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    padding: 12px;
+    min-width: 140px;
+}
+
+.dropdown-options--grid.open {
+    display: grid;
+}
+
+.color-dot {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    display: block;
+    transition: all 0.2s ease;
+}
+
+.color-dot:hover {
+    transform: scale(1.2);
+}
+
+.color-dot.selected {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px white;
+}
+
+.color-option {
+    cursor: pointer;
+    display: block;
+}
+
+.color-option input:checked + .color-dot {
+    border-color: var(--color-primary);
+    transform: scale(1.1);
+    box-shadow: 0 0 0 2px white, 0 0 0 4px var(--color-primary);
+}
+
 .filter-bar__clear {
     padding: 6px 12px;
     border: none;
@@ -783,4 +824,38 @@ a:hover {
 
 .bottom-nav__label {
     display: none;
+}
+
+/* =========================================
+   7. FLOATING ACTION BUTTON (FAB)
+   ========================================= */
+.fab-btn {
+    position: fixed;
+    bottom: 90px;
+    left: 30px;
+    width: 60px;
+    height: 60px;
+    background-color: var(--color-primary);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 32px;
+    font-family: var(--font-secondary);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+    z-index: 100;
+}
+
+.fab-btn:hover {
+    background-color: var(--color-primary-light);
+    text-decoration: none;
+}
+
+.fab-btn {
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.fab-btn:hover {
+    transform: scale(1.08) translateY(-2px);
 }

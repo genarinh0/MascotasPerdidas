@@ -31,18 +31,62 @@
                         <button class="dropdown-item" data-value=3>Resuelto</button>
                     </div>
                 </div>
-                <div class="dropdown">
+<div class="dropdown">
                     <button class="filter-button">
                         <img src="imagenes/iconos/icono_color.png" class="filter-button__icon">
                         <span class="filter-button__text">Color</span>
                     </button>
-                    <div class="dropdown-options" data-filter-group="color" data-selectedValue="">
-                        <button class="dropdown-item" data-value=1>Perdida</button>
-                        <button class="dropdown-item" data-value=2>Refugiada</button>
-                        <button class="dropdown-item" data-value=3>Resuelto</button>
+                    <div class="dropdown-options dropdown-options--grid" data-filter-group="color">
+                        <label class="color-option">
+                            <input type="checkbox" name="filter-color" value="1" hidden>
+                            <span class="color-dot" style="background:#1a1a1a" title="Negro"></span>
+                        </label>
+                        <label class="color-option">
+                            <input type="checkbox" name="filter-color" value="2" hidden>
+                            <span class="color-dot" style="background:#7e7e7e" title="Gris oscuro"></span>
+                        </label>
+                        <label class="color-option">
+                            <input type="checkbox" name="filter-color" value="3" hidden>
+                            <span class="color-dot" style="background:#c0c0c0" title="Gris claro"></span>
+                        </label>
+                        <label class="color-option">
+                            <input type="checkbox" name="filter-color" value="4" hidden>
+                            <span class="color-dot" style="background:#f7f7f7; border: 1px solid #ddd" title="Blanco"></span>
+                        </label>
+                        <label class="color-option">
+                            <input type="checkbox" name="filter-color" value="5" hidden>
+                            <span class="color-dot" style="background:#5f6e7a" title="Gris azulado"></span>
+                        </label>
+                        <label class="color-option">
+                            <input type="checkbox" name="filter-color" value="6" hidden>
+                            <span class="color-dot" style="background:#5dade2" title="Azul"></span>
+                        </label>
+                        <label class="color-option">
+                            <input type="checkbox" name="filter-color" value="7" hidden>
+                            <span class="color-dot" style="background:#4a2e1a" title="Café oscuro"></span>
+                        </label>
+                        <label class="color-option">
+                            <input type="checkbox" name="filter-color" value="8" hidden>
+                            <span class="color-dot" style="background:#b68a60" title="Café"></span>
+                        </label>
+                        <label class="color-option">
+                            <input type="checkbox" name="filter-color" value="9" hidden>
+                            <span class="color-dot" style="background:#e8d5b5" title="Crema"></span>
+                        </label>
+                        <label class="color-option">
+                            <input type="checkbox" name="filter-color" value="10" hidden>
+                            <span class="color-dot" style="background:#d88c3a" title="Naranja/Siena"></span>
+                        </label>
+                        <label class="color-option">
+                            <input type="checkbox" name="filter-color" value="11" hidden>
+                            <span class="color-dot" style="background:#f2d024" title="Amarillo"></span>
+                        </label>
+                        <label class="color-option">
+                            <input type="checkbox" name="filter-color" value="12" hidden>
+                            <span class="color-dot" style="background:#4caf50" title="Verde"></span>
+                        </label>
                     </div>
-                </div>
-                <div class="dropdown">
+                </div>                <div class="dropdown">
                     <button class="filter-button">
                         <img src="imagenes/iconos/icono_huella.png" class="filter-button__icon">
                         <span class="filter-button__text">Especie</span>
@@ -97,10 +141,13 @@
 
         <main class="post-grid">
 
-        </main> 
+        </main>
 
         <script src="js/feed.js"></script>
 
+        <a href="crearPublicacion.html" class="fab-btn" aria-label="Crear nueva publicación">
+            <span class="fab-btn__icon">+</span>
+        </a>
         <nav class="bottom-nav">
             <a href="feed.html" class="bottom-nav__item bottom-nav__item--active">
                 <img src="imagenes/iconos/icono_BtnFeed.png" class="bottom-nav__icon">

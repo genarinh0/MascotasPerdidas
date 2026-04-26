@@ -75,6 +75,18 @@ dropdowns.forEach(dropdown => {
     });
 });
 
+document.querySelectorAll('.color-option input').forEach(input => {
+    input.addEventListener('change', (e) => {
+        const selected = document.querySelectorAll('.color-option input:checked');
+        if (selected.length > 3) {
+            e.target.checked = false;
+            return;
+        }
+
+        console.log("Selected colors:", Array.from(selected).map(i => i.value));
+    });
+});
+
 const btnClearFilters = document.querySelector('.filter-bar__clear');
 if (btnClearFilters) {
     btnClearFilters.addEventListener('click', () => {
@@ -89,6 +101,11 @@ if (btnClearFilters) {
     });
 }
 
+function getSelectedColors() {
+    const selectedInputs = document.querySelectorAll('input[name="filter-color"]:checked');
+    return Array.from(selectedInputs).map(input => input.value);
+}
+
 function buildURL(){
     let url = 'http://localhost:1984/api/publicaciones';
     const filters = {};
@@ -96,6 +113,7 @@ function buildURL(){
     document.querySelectorAll('.dropdown-options').forEach(group => {
         const groupName = group.dataset.filterGroup;
         const value = group.dataset.selectedValue;
+        if (groupName === 'color') return;
         filters[groupName] = value ?? "";
     });
 
@@ -103,6 +121,11 @@ function buildURL(){
     Object.entries(filters).forEach(([key, value]) => {
         if (value !== "") nonEmptyFilters.push(`${key}=${value}`);
     });
+
+    const colores = getSelectedColors();
+    if (colores.length > 0) {
+        nonEmptyFilters.push(`colores=${colores.join(',')}`);
+    }
 
     if (nonEmptyFilters.length > 0) url += '?' + nonEmptyFilters.join('&');
 

@@ -86,20 +86,33 @@ app.get('/api/publicaciones', async (req, res) => {
     const valores = [];
 
     Object.entries(filtros).forEach(([clave, valor]) => {
-        condiciones.push(`p.${clave} = ?`);
-        valores.push(valor);
+        if (clave === 'colores' && valor) {
+            const listaColores = valor.split(',');
+            const colores = listaColores.map(() => '?').join(',');
+
+            condiciones.push(`p.id_Publicacion IN (
+                SELECT id_Publicacion FROM colorMascota
+                WHERE id_Color IN (${colores})
+            )`);
+
+            listaColores.forEach(c => valores.push(c));
+        }
+        else if (valor) {
+            condiciones.push(`p.${clave} = ?`);
+            valores.push(valor);
+        }
     });
 
     if (condiciones.length > 0) {
         sql += ' WHERE ' + condiciones.join(' AND ');
     }
-    
+
     try {
         const [rows] = await db.query(sql, valores);
         res.status(200).json({ message: 'Publicaciones recabadas con exito', publicaciones: rows });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Error al obtener las publicaciones' })
+        res.status(500).json({ error: 'Error al obtener las publicaciones' });
     }
 });
 
