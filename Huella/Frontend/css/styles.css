@@ -772,6 +772,39 @@ a:hover {
     box-shadow: 0 0 0 2px white, 0 0 0 4px var(--color-primary);
 }
 
+.dropdown-options--calendar {
+    min-width: 280px;
+    padding: 15px;
+    flex-direction: column;
+}
+
+.calendar-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.calendar-field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    font-family: var(--font-secondary);
+    font-size: 14px;
+    color: var(--color-primary);
+}
+
+.calendar-input {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 8px;
+    font-family: var(--font-secondary);
+    outline: none;
+}
+
+.calendar-input:focus {
+    border-color: var(--color-primary);
+}
+
 .filter-bar__clear {
     padding: 6px 12px;
     border: none;

@@ -96,11 +96,18 @@ app.get('/api/publicaciones', async (req, res) => {
             )`);
 
             listaColores.forEach(c => valores.push(c));
-        }
-        else if (valor) {
+        }else if (clave === 'fechaInicio') {
+            condiciones.push("p.fecha_suceso >= ?");
+            valores.push(valor);
+        }else if (clave === 'fechaFin') {
+            condiciones.push("p.fecha_suceso <= ?");
+            valores.push(valor);
+        }else if (valor) {
             condiciones.push(`p.${clave} = ?`);
             valores.push(valor);
         }
+
+
     });
 
     if (condiciones.length > 0) {

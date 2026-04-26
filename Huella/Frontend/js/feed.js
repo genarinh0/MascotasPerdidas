@@ -127,6 +127,16 @@ function buildURL(){
         nonEmptyFilters.push(`colores=${colores.join(',')}`);
     }
 
+    const fechaInicio = document.getElementById('filter-fecha-inicio').value;
+    const fechaFin = document.getElementById('filter-fecha-fin').value;
+
+    if (fechaInicio){
+        nonEmptyFilters.push(`fechaInicio=${fechaInicio}`);
+    }
+    if (fechaFin){
+        nonEmptyFilters.push(`fechaFin=${fechaFin}`);
+    }
+
     if (nonEmptyFilters.length > 0) url += '?' + nonEmptyFilters.join('&');
 
     console.log(url);

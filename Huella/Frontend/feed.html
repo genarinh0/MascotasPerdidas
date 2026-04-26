@@ -31,7 +31,7 @@
                         <button class="dropdown-item" data-value=3>Resuelto</button>
                     </div>
                 </div>
-<div class="dropdown">
+                <div class="dropdown">
                     <button class="filter-button">
                         <img src="imagenes/iconos/icono_color.png" class="filter-button__icon">
                         <span class="filter-button__text">Color</span>
@@ -86,7 +86,8 @@
                             <span class="color-dot" style="background:#4caf50" title="Verde"></span>
                         </label>
                     </div>
-                </div>                <div class="dropdown">
+                </div>
+                <div class="dropdown">
                     <button class="filter-button">
                         <img src="imagenes/iconos/icono_huella.png" class="filter-button__icon">
                         <span class="filter-button__text">Especie</span>
@@ -126,10 +127,17 @@
                         <img src="imagenes/iconos/icono_fecha.png" class="filter-button__icon">
                         <span class="filter-button__text">Fecha</span>
                     </button>
-                    <div class="dropdown-options" data-filter-group="fecha" data-selectedValue="">
-                        <button class="dropdown-item" data-value=1>Perdida</button>
-                        <button class="dropdown-item" data-value=2>Refugiada</button>
-                        <button class="dropdown-item" data-value=3>Resuelto</button>
+                    <div class="dropdown-options dropdown-options--calendar" data-filter-group="fecha">
+                        <div class="calendar-inputs">
+                            <div class="calendar-field">
+                                <label>Desde:</label>
+                                <input type="date" id="filter-fecha-inicio" class="calendar-input">
+                            </div>
+                            <div class="calendar-field">
+                                <label>Hasta:</label>
+                                <input type="date" id="filter-fecha-fin" class="calendar-input">
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <button class="filter-button filter-button--search" id="btnFilter">
