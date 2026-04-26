@@ -142,10 +142,6 @@ app.get('/api/publicaciones', async (req, res) => {
     }
 
     try {
-        console.log("¿Usa distancia?:", usarDistancia);
-        console.log("SQL:", sqlFinal);
-        console.log("Valores:", valores);
-
         const [rows] = await db.query(sqlFinal, valores);
         res.status(200).json({
             message: 'Publicaciones recabadas con éxito',

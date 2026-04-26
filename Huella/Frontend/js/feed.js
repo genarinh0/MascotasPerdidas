@@ -372,7 +372,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('filtroLat').value = lat;
         document.getElementById('filtroLng').value = lng;
     }
-    updateFilterCoords(defaultLat, defaultLng);
+    updateFilterCoords(null, null);
 
     markerFiltro.on('dragend', function(event) {
         const position = markerFiltro.getLatLng();
@@ -399,8 +399,4 @@ document.addEventListener('DOMContentLoaded', () => {
             updateFilterCoords(userLat, userLng);
         });
     }
-
-    document.querySelector('#dropdownUbicacion .dropdown-options').addEventListener('click', function(e) {
-        e.stopPropagation();
-    });
 });
