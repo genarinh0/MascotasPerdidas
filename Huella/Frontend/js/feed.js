@@ -378,7 +378,9 @@ document.addEventListener('DOMContentLoaded', () => {
     cargarPublicaciones();
 
     if (!token || tokenExpirado(token)) {
-        const myProfileBtn = document.querySelector(".site-header__profile-label");
+        const myProfileBtn = document.querySelector(".site-header__profile-btn");
+        myProfileBtn.removeAttribute('onclick');
+
         myProfileBtn.addEventListener('click', (event) => {
             event.preventDefault();
             event.stopPropagation(); // evita bubbling
