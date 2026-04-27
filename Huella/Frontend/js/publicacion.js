@@ -33,6 +33,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     await cargarPublicacion();
 });
 
+function censurarEmail(email) {
+    const [usuario, dominio] = email.split('@');
+    const censurado = usuario.charAt(0) + '*'.repeat(usuario.length - 1);
+    return `${censurado}@${dominio}`;
+}
+
 async function cargarPublicacion() {
     try {
         const response = await fetch(`http://localhost:1984/api/publicacion/${idPublicacion}`);
@@ -178,7 +184,7 @@ async function cargarPublicacion() {
                 <span><b>Especie:</b> ${pub.especie}</span>
             </div>
             <div class="pub-detail__attr">
-                <img src="imagenes/iconos/icono_huella.png" alt="">
+                <img src="imagenes/iconos/icono_raza.png" alt="">
                 <span><b>Raza:</b> ${pub.raza || 'Desconocida'}</span>
             </div>
             <div class="pub-detail__attr">
@@ -195,12 +201,12 @@ async function cargarPublicacion() {
             </div>
             ${pub.horario_contacto ? `
             <div class="pub-detail__attr">
-                <img src="imagenes/iconos/icono_fecha.png" alt="">
+                <img src="imagenes/iconos/icono_horario.png" alt="">
                 <span><b>Horario de contacto:</b> ${pub.horario_contacto}</span>
             </div>` : ''}
             <div class="pub-detail__attr" style="padding-top:8px; border-top:1px solid #E4E0DA; margin-top:4px;">
-                <img src="imagenes/iconos/icono_ubicacion.png" alt="">
-                <span><b>Publicado por:</b> ${pub.email_usuario}</span>
+                <img src="imagenes/IconoPerfil.png" alt="">
+                <span><b>Publicado por:</b> ${censurarEmail(pub.email_usuario)}</span>
             </div>
         `;
 
