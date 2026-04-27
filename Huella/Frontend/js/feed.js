@@ -2,6 +2,10 @@ const token = localStorage.getItem('JWT');
 const payload = token ? JSON.parse(atob(token.split('.')[1])) : null;
 const idUsuarioActual = payload?.id_Usuario;
 
+if (tokenExpirado(token)){
+    localStorage.removeItem('JWT');
+}
+
 const btnUsarFiltros = document.getElementById("btnFilter");
 btnUsarFiltros.addEventListener('click', () => {
     console.log('Filtros aplicados:', buildURL());
@@ -373,13 +377,14 @@ async function cargarPublicaciones() {
 document.addEventListener('DOMContentLoaded', () => {
     cargarPublicaciones();
 
-    if (!token) {
+    if (!token || tokenExpirado(token)) {
         const navBarTags = document.querySelectorAll('a');
         navBarTags.forEach(tag => {
             tag.addEventListener('click', (event) => {
                 event.preventDefault();
+                event.stopPropagation(); // evita bubbling
                 if (tag.getAttribute('href') === 'feed.html') return;
-                alert('Para usar esta funcion primero registrate');
+                alert('Para usar esta función primero regístrate');
             });
         });
     }
@@ -439,3 +444,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+function tokenExpirado(token) {
+    try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const exp = payload.exp * 1000; // exp viene en segundos
+        return Date.now() > exp;
+    } catch (e) {
+        return true; // si falla, lo tratamos como inválido
+    }
+}
