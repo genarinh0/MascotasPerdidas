@@ -20,7 +20,7 @@ html, body {
     --card-font-color: #4D4A4ACC;
     --danger-bg: #ffeded;
     --danger-text: #cc0000;
-    
+
     --font-primary: 'Montserrat', sans-serif;
     --font-secondary: 'Inter', sans-serif;
     --font-alternate: 'Fraunces', Georgia, serif;
@@ -535,7 +535,7 @@ a:hover {
     gap: 30px;
     max-width: 1200px;
     margin: 40px auto;
-    padding: 0 50px;
+    padding: 0 50px 120px;
 }
 
 .pub-card {
