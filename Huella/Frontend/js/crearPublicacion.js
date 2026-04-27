@@ -73,6 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('inputFecha').addEventListener('click', function () {
         this.showPicker();
     });
+    document.getElementById('inputFecha').max = new Date().toISOString().split('T')[0];
 
     document.querySelectorAll('input[name="colores"]').forEach(cb => {
         cb.addEventListener('change', () => {
