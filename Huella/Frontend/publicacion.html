@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Huella - Publicación</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        .pub-detail {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 0 20px 100px;
+        }
+
+        .pub-detail__grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        @media (max-width: 700px) {
+            .pub-detail__grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Carrusel */
+        .pub-detail__carousel {
+            position: relative;
+            border-radius: 15px;
+            overflow: hidden;
+            background: #eee;
+            aspect-ratio: 4/3;
+        }
+
+        .carousel__img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+
+        .carousel__img.active {
+            display: block;
+        }
+
+        .carousel__btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.4);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            font-size: 18px;
+            cursor: pointer;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .carousel__btn--prev { left: 10px; }
+        .carousel__btn--next { right: 10px; }
+
+        .carousel__dots {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 6px;
+        }
+
+        .carousel__dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.5);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .carousel__dot.active {
+            background: white;
+        }
+
+        /* Badge */
+        .pub-detail__badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-family: var(--font-primary);
+            font-weight: 800;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 15px;
+        }
+
+        .pub-detail__badge--lost { background: #F15A5A; color: white; }
+        .pub-detail__badge--found { background: #326295; color: white; }
+
+        /* Info */
+        .pub-detail__info {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .pub-detail__attrs {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background: var(--bg);
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid #E4E0DA;
+        }
+
+        .pub-detail__attr {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .pub-detail__attr img {
+            width: 18px;
+            height: 18px;
+            opacity: 0.7;
+        }
+
+        .pub-detail__desc {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid #E4E0DA;
+        }
+
+        .pub-detail__desc h3 {
+            margin: 0 0 8px;
+            font-family: var(--font-secondary);
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--card-font-color);
+        }
+
+        .pub-detail__desc p {
+            margin: 0;
+            font-size: 14px;
+            color: #313030;
+            line-height: 1.6;
+        }
+
+        /* Mapa */
+        .pub-detail__map {
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #E4E0DA;
+            height: 200px;
+        }
+
+        /* Guardar */
+        .pub-detail__save-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            background: var(--color-primary);
+            color: white;
+            font-family: var(--font-secondary);
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .pub-detail__save-btn:hover {
+            background: var(--color-primary-light);
+        }
+
+        .pub-detail__save-btn--saved {
+            background: var(--color-secondary);
+            color: var(--color-primary);
+        }
+
+        /* Compartir */
+        .pub-detail__share {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid #E4E0DA;
+            text-align: center;
+        }
+
+        .pub-detail__share h3 {
+            margin: 0 0 12px;
+            font-family: var(--font-secondary);
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--card-font-color);
+        }
+
+        .pub-detail__share-btns {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .share-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            font-family: var(--font-secondary);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .share-btn--whatsapp { background: #25D366; color: white; }
+        .share-btn--facebook { background: #1877F2; color: white; }
+        .share-btn--copy { background: var(--bg); color: #313030; border: 1px solid #E4E0DA; }
+
+        /* Volver */
+        .pub-detail__back {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: none;
+            border: none;
+            color: var(--color-primary);
+            font-family: var(--font-secondary);
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            padding: 0;
+        }
+
+        .pub-detail__back:hover {
+            text-decoration: underline;
+        }
+
+        .pub-detail__email {
+            font-family: var(--font-secondary);
+            font-size: 12px;
+            color: var(--card-font-color);
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="site-header__brand">
+            <img src="imagenes/logo.png" width="25" height="25" alt="Huella">
+            <h1 class="site-header__brand-title">Huella</h1>
+        </div>
+        <h2 class="site-header__heading">Publicación</h2>
+        <div class="site-header__user-actions">
+            <button class="site-header__button" onclick="window.location.href='perfil.html'">Mi Perfil</button>
+        </div>
+    </header>
+
+    <main class="pub-detail">
+        <button class="pub-detail__back" id="btnVolver">← Volver</button>
+
+        <div class="pub-detail__grid">
+            <!-- Columna izquierda: carrusel -->
+            <div>
+                <div class="pub-detail__carousel" id="carousel">
+                    <!-- Imágenes se inyectan por JS -->
+                </div>
+            </div>
+
+            <!-- Columna derecha: info -->
+            <div class="pub-detail__info">
+                <div>
+                    <span class="pub-detail__badge" id="badge">Cargando...</span>
+                    <div class="pub-detail__attrs" id="attrs">
+                        <!-- Atributos se inyectan por JS -->
+                    </div>
+                </div>
+
+                <div class="pub-detail__desc">
+                    <h3>Descripción</h3>
+                    <p id="descripcion">Cargando...</p>
+                </div>
+
+                <div class="pub-detail__map" id="mapa"></div>
+
+                <div id="contenedor-guardar"></div>
+
+                <div class="pub-detail__share">
+                    <h3>¡Ayúdanos a compartir!</h3>
+                    <div class="pub-detail__share-btns">
+                        <button class="share-btn share-btn--whatsapp" id="btnWhatsapp">WhatsApp</button>
+                        <button class="share-btn share-btn--facebook" id="btnFacebook">Facebook</button>
+                        <button class="share-btn share-btn--copy" id="btnCopiar">Copiar enlace</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <nav class="bottom-nav">
+        <a href="feed.html" class="bottom-nav__item">
+            <img src="imagenes/iconos/icono_BtnFeed.png" class="bottom-nav__icon">
+        </a>
+        <a href="guardados.html" class="bottom-nav__item">
+            <img src="imagenes/iconos/icono_BtnGuardados.png" class="bottom-nav__icon">
+        </a>
+        <a href="chats.html" class="bottom-nav__item">
+            <img src="imagenes/iconos/icono_BtnChats.png" class="bottom-nav__icon">
+        </a>
+        <a href="misPublicaciones.html" class="bottom-nav__item">
+            <img src="imagenes/iconos/icono_BtnMisPost.png" class="bottom-nav__icon">
+        </a>
+    </nav>
+
+    <script src="js/publicacion.js"></script>
+</body>
+</html>

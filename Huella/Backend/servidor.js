@@ -475,3 +475,45 @@ app.patch('/api/perfil/telefono', verifyToken, async (req, res) => {
         res.status(500).json({ error: 'Error al actualizar el teléfono' });
     }
 });
+
+
+//ENDPOINT PARA VISTA COMPLETA DE PUBLICACIONES
+
+app.get('/api/publicacion/:id', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const [rows] = await db.query(
+            `SELECT p.*, u.email as email_usuario,
+            (SELECT TO_BASE64(fotografia) FROM fotografia f WHERE f.id_Publicacion = p.id_Publicacion LIMIT 1) as imagenBase64
+            FROM publicacion p 
+            JOIN usuario u ON p.id_Usuario = u.id_Usuario
+            WHERE p.id_Publicacion = ?`,
+            [id]
+        );
+
+        if (rows.length === 0) {
+            return res.status(404).json({ error: 'Publicación no encontrada' });
+        }
+
+        const [colores] = await db.query(
+            'SELECT id_Color FROM colormascota WHERE id_Publicacion = ?',
+            [id]
+        );
+
+        const [fotos] = await db.query(
+            'SELECT id_Fotografia, TO_BASE64(fotografia) as imagenBase64 FROM fotografia WHERE id_Publicacion = ?',
+            [id]
+        );
+
+        res.status(200).json({
+            publicacion: rows[0],
+            colores: colores.map(c => c.id_Color),
+            fotos
+        });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al obtener la publicación' });
+    }
+});

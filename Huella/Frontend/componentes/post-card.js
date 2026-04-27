@@ -102,6 +102,13 @@ class PostCard extends HTMLElement {
         this.razaEl.textContent = this.getAttribute("raza") || "Mestizo";
         this.tamanioEl.textContent = this.getAttribute("tamaño") || "No disponible";
         this.fechaEl.textContent = this.getAttribute("fecha") || "No disponible";
+        
+        
+        this.imgEl.style.cursor = 'pointer';
+        const pubId = this.getAttribute('pub-id');
+        if (pubId) {
+        this.imgEl.onclick = () => window.location.href = `publicacion.html?id=${pubId}`;
+}
     }
 }
 

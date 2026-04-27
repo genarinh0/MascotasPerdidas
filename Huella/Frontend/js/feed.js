@@ -211,6 +211,7 @@ async function cargarPublicaciones() {
             tarjeta.setAttribute('fecha', fechaFormateada);
             tarjeta.setAttribute('badge-text', badgeText);
             tarjeta.setAttribute('badge-type', badgeType);
+            tarjeta.setAttribute('pub-id', pub.id_Publicacion);
 
             if (pub.imagenBase64) {
                 tarjeta.setAttribute('imagen', `data:image/jpeg;base64,${pub.imagenBase64}`);
