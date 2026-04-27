@@ -332,6 +332,31 @@ async function cargarPublicaciones() {
                 btnContactar.className = 'pub-card__btn pub-card__btn--secondary';
                 btnContactar.textContent = 'Contactar';
 
+                btnContactar.addEventListener('click', async () => {
+                    const mensaje = `${payload?.email} quiere contactarte sobre tu mascota (${pub.especie})!`;
+                    try {
+                        const response = await fetch(`http://localhost:1984/api/publicaciones/${pub.id_Publicacion}/contactar`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: JSON.stringify({ mensaje })
+                        });
+
+                        if (response.ok) {
+                            alert('¡Tu mensaje ha sido enviado al dueño por correo electrónico!');
+                        } else if (response.status === 401) {
+                            alert('Debes iniciar sesión para contactar al dueño.');
+                            window.location.href = 'login.html';
+                        } else {
+                            alert('Hubo un error al intentar enviar el mensaje.');
+                        }
+                    } catch (error) {
+                        console.error('Error de red al enviar contacto:', error);
+                        alert('Error de conexión al servidor.');
+                    }
+                });
                 tarjeta.appendChild(btnGuardar);
                 tarjeta.appendChild(btnContactar);
             }
