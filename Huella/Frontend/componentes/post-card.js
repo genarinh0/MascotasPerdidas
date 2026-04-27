@@ -32,7 +32,7 @@ template.innerHTML = `
             <div class="pub-card__attributes">
                 <slot name="extra-attributes"></slot>
                 <div class="attribute">
-                    <img src="imagenes/iconos/icono_huella.png" class="attribute__icon" alt="Color/Raza">
+                    <img src="imagenes/iconos/icono_raza.png" class="attribute__icon" alt="Color/Raza">
                     <label><b class="attribute__type">Raza:</b> <span id="pet-race"></span></label>
                 </div>
                 <div class="attribute">
