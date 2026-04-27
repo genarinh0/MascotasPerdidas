@@ -378,6 +378,13 @@ document.addEventListener('DOMContentLoaded', () => {
     cargarPublicaciones();
 
     if (!token || tokenExpirado(token)) {
+        const myProfileBtn = document.querySelector(".site-header__profile-label");
+        myProfileBtn.addEventListener('click', (event) => {
+            event.preventDefault();
+            event.stopPropagation(); // evita bubbling
+            alert('Para usar esta función primero regístrate');
+        });
+
         const navBarTags = document.querySelectorAll('a');
         navBarTags.forEach(tag => {
             tag.addEventListener('click', (event) => {
