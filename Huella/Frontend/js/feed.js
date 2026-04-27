@@ -398,7 +398,20 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('filtroLat').value = lat;
         document.getElementById('filtroLng').value = lng;
     }
-    updateFilterCoords(null, null);
+
+    function resetLocationFilter() {
+        updateFilterCoords(null, null);
+        markerFiltro.setLatLng([defaultLat, defaultLng]);
+        mapFiltro.setView([defaultLat, defaultLng], 12);
+    }
+
+    resetLocationFilter();
+
+    document.getElementById('btnResetLocation').addEventListener('click', () => {
+        updateFilterCoords(null, null);
+        markerFiltro.setLatLng([defaultLat, defaultLng]);
+        mapFiltro.setView([defaultLat, defaultLng], 12);
+    });
 
     markerFiltro.on('dragend', function(event) {
         const position = markerFiltro.getLatLng();
