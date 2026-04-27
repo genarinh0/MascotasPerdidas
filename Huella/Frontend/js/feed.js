@@ -443,6 +443,14 @@ document.addEventListener('DOMContentLoaded', () => {
             updateFilterCoords(userLat, userLng);
         });
     }
+
+    document.getElementById('filter-fecha-inicio').addEventListener('click', function () {
+        this.showPicker();
+    });
+
+    document.getElementById('filter-fecha-fin').addEventListener('click', function () {
+        this.showPicker();
+    });
 });
 
 function tokenExpirado(token) {
