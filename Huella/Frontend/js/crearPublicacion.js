@@ -271,4 +271,8 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error de red:', error);
         }
     });
+
+    document.getElementById('btnCancelNav').addEventListener('click', () => {
+        window.location.href = 'feed.html';
+    });
 });
