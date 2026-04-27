@@ -11,6 +11,23 @@ if (!idPublicacion) {
 let archivosAcumulados = [];
 let map;
 let marker;
+let sliderDesde, sliderHasta, valorDesde, valorHasta, inputHorario;
+
+function formatHora(h) {
+    return `${String(h).padStart(2, '0')}:00`;
+}
+
+function actualizarHorario() {
+    const tipo = document.querySelector('input[name="horarioTipo"]:checked').value;
+    const horarioRango = document.getElementById('horarioRango');
+    if (tipo === 'cualquier') {
+        inputHorario.value = 'Cualquier hora';
+        horarioRango.style.display = 'none';
+    } else {
+        inputHorario.value = `${formatHora(sliderDesde.value)} - ${formatHora(sliderHasta.value)}`;
+        horarioRango.style.display = 'flex';
+    }
+}
 
 document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('btnCancelNav').addEventListener('click', () => {
@@ -41,7 +58,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         marker.setLatLng(e.latlng);
         updateCoords(e.latlng.lat, e.latlng.lng);
     });
-    // =========================================
 
     const inputTipo = document.getElementById('inputTipo');
     inputTipo.addEventListener('change', () => {
@@ -67,6 +83,37 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         });
     });
+
+    // Horario
+    const radiosHorario = document.querySelectorAll('input[name="horarioTipo"]');
+    const horarioRango = document.getElementById('horarioRango');
+    sliderDesde = document.getElementById('horarioDesde');
+    sliderHasta = document.getElementById('horarioHasta');
+    valorDesde = document.getElementById('horarioDesdeValor');
+    valorHasta = document.getElementById('horarioHastaValor');
+    inputHorario = document.getElementById('inputHorario');
+
+    radiosHorario.forEach(r => r.addEventListener('change', actualizarHorario));
+
+    sliderDesde.addEventListener('input', () => {
+        if (parseInt(sliderDesde.value) > parseInt(sliderHasta.value)) {
+            sliderHasta.value = sliderDesde.value;
+            valorHasta.textContent = formatHora(sliderHasta.value);
+        }
+        valorDesde.textContent = formatHora(sliderDesde.value);
+        inputHorario.value = `${formatHora(sliderDesde.value)} - ${formatHora(sliderHasta.value)}`;
+    });
+
+    sliderHasta.addEventListener('input', () => {
+        if (parseInt(sliderHasta.value) < parseInt(sliderDesde.value)) {
+            sliderDesde.value = sliderHasta.value;
+            valorDesde.textContent = formatHora(sliderDesde.value);
+        }
+        valorHasta.textContent = formatHora(sliderHasta.value);
+        inputHorario.value = `${formatHora(sliderDesde.value)} - ${formatHora(sliderHasta.value)}`;
+    });
+
+    actualizarHorario();
 
     const inputFotos = document.getElementById('photos');
     const previewFotos = document.getElementById('previewFotos');
@@ -141,7 +188,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         const sizeMap = { 'pequeño': 1, 'mediano': 2, 'grande': 3 };
         const sizeString = document.getElementById('inputTamanio').value;
 
-        // SE ENVIAN LATITUD Y LONGITUD
         const pubEditada = {
             tipo: parseInt(document.getElementById('inputTipo').value),
             especie: document.getElementById('inputEspecie').value,
@@ -151,7 +197,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             fecha_suceso: document.getElementById('inputFecha').value,
             latitud: parseFloat(document.getElementById('inputLat').value),
             longitud: parseFloat(document.getElementById('inputLng').value),
-            horario_contacto: document.getElementById('inputHorario').value || 'Cualquier hora',
+            horario_contacto: inputHorario.value || 'Cualquier hora',
             colores: colores,
             imagenes: imagenesBase64
         };
@@ -210,7 +256,6 @@ async function cargarPublicacion() {
         document.getElementById('inputTamanio').value = sizeReverseMap[pub.tamanio] || 'mediano';
 
         document.getElementById('inputFecha').value = pub.fecha_suceso?.split('T')[0] || '';
-        document.getElementById('inputHorario').value = pub.horario_contacto || '';
         document.getElementById('inputDescripcion').value = pub.descripcion;
 
         const lat = pub.latitud || 20.6767;
@@ -227,6 +272,22 @@ async function cargarPublicacion() {
             const cb = document.querySelector(`input[name="colores"][value="${idColor}"]`);
             if (cb) cb.checked = true;
         });
+
+        // Pre-llenar horario
+        const horario = pub.horario_contacto || 'Cualquier hora';
+        if (horario === 'Cualquier hora' || !horario.includes('-')) {
+            document.querySelector('input[name="horarioTipo"][value="cualquier"]').checked = true;
+        } else {
+            document.querySelector('input[name="horarioTipo"][value="rango"]').checked = true;
+            const partes = horario.split(' - ');
+            const desdeH = parseInt(partes[0].split(':')[0]);
+            const hastaH = parseInt(partes[1].split(':')[0]);
+            sliderDesde.value = desdeH;
+            sliderHasta.value = hastaH;
+            valorDesde.textContent = formatHora(desdeH);
+            valorHasta.textContent = formatHora(hastaH);
+        }
+        actualizarHorario();
 
         // Traer todas las fotos
         const resF = await fetch(`http://localhost:1984/api/publicaciones/${idPublicacion}/fotos`, {

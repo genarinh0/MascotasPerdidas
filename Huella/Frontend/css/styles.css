@@ -434,6 +434,84 @@ a:hover {
     padding: 0;
 }
 
+.horario-selector__opciones {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.horario-opcion {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+}
+
+.horario-opcion input[type="radio"] {
+    display: none;
+}
+
+.horario-opcion__label {
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1px solid #E4E0DA;
+    background: var(--bg);
+    font-family: var(--font-secondary);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--card-font-color);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.horario-opcion input[type="radio"]:checked + .horario-opcion__label {
+    background: var(--color-primary);
+    color: white;
+    border-color: var(--color-primary);
+}
+
+.horario-rango {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    background: var(--bg);
+    border-radius: 10px;
+    padding: 14px;
+    border: 1px solid #E4E0DA;
+}
+
+.horario-rango__field {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.horario-rango__label {
+    font-family: var(--font-secondary);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--card-font-color);
+    width: 45px;
+    flex-shrink: 0;
+}
+
+.horario-rango__slider {
+    flex: 1;
+    accent-color: var(--color-primary);
+    height: 6px;
+    cursor: pointer;
+}
+
+.horario-rango__valor {
+    font-family: var(--font-secondary);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--color-primary);
+    width: 45px;
+    text-align: right;
+    flex-shrink: 0;
+}
+
 /* =========================================
    4. NAVIGATION & TOOLBARS (Feed/Management)
    ========================================= */

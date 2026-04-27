@@ -76,7 +76,7 @@
                     <div class="card__field">
                         <label class="card__label">Ubicación aproximada (Pin) *</label>
                         <div id="map" style="height: 300px; border-radius: 5px; margin-bottom: 5px; border: 1px solid rgba(128, 128, 128, 0.37); z-index: 1;"></div>
-                        <p class="card__instruction" style="font-size: 12px; color: var(--card-font-color); margin: 0 0 10px 0;">
+                        <p style="font-size: 12px; color: var(--card-font-color); margin: 0 0 10px 0;">
                             Mueve el pin o haz clic en el mapa para señalar dónde viste a la mascota por última vez.
                         </p>
                         <input type="hidden" id="inputLat" name="latitud">
@@ -90,7 +90,31 @@
 
                     <div class="card__field">
                         <label class="card__label">Horario de contacto (Opcional)</label>
-                        <input class="card__input" id="inputHorario" style="width: 100%;" placeholder="Ej: 9:00 AM - 6:00 PM">
+                        <div class="horario-selector" style="width: 100%;">
+                            <div class="horario-selector__opciones">
+                                <label class="horario-opcion">
+                                    <input type="radio" name="horarioTipo" value="cualquier" checked>
+                                    <span class="horario-opcion__label">Cualquier hora</span>
+                                </label>
+                                <label class="horario-opcion">
+                                    <input type="radio" name="horarioTipo" value="rango">
+                                    <span class="horario-opcion__label">Definir rango</span>
+                                </label>
+                            </div>
+                            <div class="horario-rango" id="horarioRango" style="display:none;">
+                                <div class="horario-rango__field">
+                                    <label class="horario-rango__label">Desde</label>
+                                    <input type="range" min="0" max="23" value="8" id="horarioDesde" class="horario-rango__slider">
+                                    <span class="horario-rango__valor" id="horarioDesdeValor">08:00</span>
+                                </div>
+                                <div class="horario-rango__field">
+                                    <label class="horario-rango__label">Hasta</label>
+                                    <input type="range" min="0" max="23" value="20" id="horarioHasta" class="horario-rango__slider">
+                                    <span class="horario-rango__valor" id="horarioHastaValor">20:00</span>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="hidden" id="inputHorario" value="Cualquier hora">
                     </div>
 
                     <div class="card__field">

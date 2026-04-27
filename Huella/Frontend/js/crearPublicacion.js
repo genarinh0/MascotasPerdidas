@@ -19,31 +19,25 @@ document.addEventListener('DOMContentLoaded', () => {
         attribution: '© OpenStreetMap contributors'
     }).addTo(map);
 
-    const marker = L.marker([defaultLat, defaultLng], {
-        draggable: true
-    }).addTo(map);
+    const marker = L.marker([defaultLat, defaultLng], { draggable: true }).addTo(map);
 
     function updateCoords(lat, lng) {
         document.getElementById('inputLat').value = lat;
         document.getElementById('inputLng').value = lng;
     }
 
-    // Valores iniciales
     updateCoords(defaultLat, defaultLng);
 
-    // Actualizar coordenadas al arrastrar el pin
     marker.on('dragend', function(event) {
         const position = marker.getLatLng();
         updateCoords(position.lat, position.lng);
     });
 
-    // Actualizar coordenadas al hacer clic en el mapa
     map.on('click', function(e) {
         marker.setLatLng(e.latlng);
         updateCoords(e.latlng.lat, e.latlng.lng);
     });
 
-    // Solicitar ubicación del usuario para centrar el mapa (Opcional pero recomendado)
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(pos => {
             const userLat = pos.coords.latitude;
@@ -55,18 +49,14 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log("El usuario no dio permisos de ubicación. Usando coordenadas por defecto.");
         });
     }
-    // =========================================
-
 
     inputTipo.addEventListener('change', () => {
         inputTipo.classList.remove('input-tipo--perdido', 'input-tipo--encontrado');
-
         if (inputTipo.value === '1') {
             inputTipo.classList.add('input-tipo--perdido');
         } else if (inputTipo.value === '2') {
             inputTipo.classList.add('input-tipo--encontrado');
         }
-
         inputTipo.blur();
     });
 
@@ -83,6 +73,52 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+
+    // Horario
+    const radiosHorario = document.querySelectorAll('input[name="horarioTipo"]');
+    const horarioRango = document.getElementById('horarioRango');
+    const sliderDesde = document.getElementById('horarioDesde');
+    const sliderHasta = document.getElementById('horarioHasta');
+    const valorDesde = document.getElementById('horarioDesdeValor');
+    const valorHasta = document.getElementById('horarioHastaValor');
+    const inputHorario = document.getElementById('inputHorario');
+
+    function formatHora(h) {
+        return `${String(h).padStart(2, '0')}:00`;
+    }
+
+    function actualizarHorario() {
+        const tipo = document.querySelector('input[name="horarioTipo"]:checked').value;
+        if (tipo === 'cualquier') {
+            inputHorario.value = 'Cualquier hora';
+            horarioRango.style.display = 'none';
+        } else {
+            inputHorario.value = `${formatHora(sliderDesde.value)} - ${formatHora(sliderHasta.value)}`;
+            horarioRango.style.display = 'flex';
+        }
+    }
+
+    radiosHorario.forEach(r => r.addEventListener('change', actualizarHorario));
+
+    sliderDesde.addEventListener('input', () => {
+        if (parseInt(sliderDesde.value) > parseInt(sliderHasta.value)) {
+            sliderHasta.value = sliderDesde.value;
+            valorHasta.textContent = formatHora(sliderHasta.value);
+        }
+        valorDesde.textContent = formatHora(sliderDesde.value);
+        inputHorario.value = `${formatHora(sliderDesde.value)} - ${formatHora(sliderHasta.value)}`;
+    });
+
+    sliderHasta.addEventListener('input', () => {
+        if (parseInt(sliderHasta.value) < parseInt(sliderDesde.value)) {
+            sliderDesde.value = sliderHasta.value;
+            valorDesde.textContent = formatHora(sliderDesde.value);
+        }
+        valorHasta.textContent = formatHora(sliderHasta.value);
+        inputHorario.value = `${formatHora(sliderDesde.value)} - ${formatHora(sliderHasta.value)}`;
+    });
+
+    actualizarHorario();
 
     inputFotos.addEventListener('change', () => {
         const formatosValidos = ['image/jpeg', 'image/jpg', 'image/png', 'image/heic', 'image/heif', 'image/webp'];
@@ -135,7 +171,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('alertaCampos').style.display = 'none';
         let valido = true;
 
-        // Limpiar estilos previos
         document.querySelectorAll('.card__label').forEach(label => {
             label.style.color = '';
         });
@@ -156,7 +191,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Validar colores
         const coloresSeleccionados = document.querySelectorAll('input[name="colores"]:checked');
         if (coloresSeleccionados.length === 0) {
             valido = false;
@@ -164,7 +198,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (campoColores) campoColores.querySelector('.card__label').style.color = '#cc0000';
         }
 
-        // Validar fotos
         if (archivosAcumulados.length === 0) {
             valido = false;
             const campoFotos = document.getElementById('photos').closest('.card__field');
@@ -179,10 +212,8 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     document.getElementById('btnPublicar').addEventListener('click', async () => {
-
         if (!validarFormulario()) return;
 
-        //Convertir a Base64
         const fileToBase64 = (file) => new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.readAsDataURL(file);
@@ -190,23 +221,20 @@ document.addEventListener('DOMContentLoaded', () => {
             reader.onerror = error => reject(error);
         });
 
-        //Imagenes
         const imagenesBase64 = [];
         for (let file of archivosAcumulados) {
             const base64 = await fileToBase64(file);
             imagenesBase64.push(base64);
         }
 
-        //Colores
         const checkboxesColores = document.querySelectorAll('input[name="colores"]:checked');
         const colores = Array.from(checkboxesColores).map(cb => parseInt(cb.value));
 
         const sizeMap = { 'pequeño': 1, 'mediano': 2, 'grande': 3 };
         const sizeString = document.getElementById('inputTamanio').value;
 
-        //Ubicacion
         const nuevaPublicacion = {
-            tipo: parseInt(document.getElementById('inputTipo').value), // 1 o 2
+            tipo: parseInt(document.getElementById('inputTipo').value),
             especie: document.getElementById('inputEspecie').value,
             raza: document.getElementById('inputRaza').value || 'Desconocida',
             tamanio: sizeMap[sizeString] || 2,
@@ -214,7 +242,7 @@ document.addEventListener('DOMContentLoaded', () => {
             fecha_suceso: document.getElementById('inputFecha').value,
             latitud: parseFloat(document.getElementById('inputLat').value),
             longitud: parseFloat(document.getElementById('inputLng').value),
-            horario_contacto: document.getElementById('inputHorario').value || 'Cualquier hora',
+            horario_contacto: inputHorario.value || 'Cualquier hora',
             colores: colores,
             imagenes: imagenesBase64
         };
