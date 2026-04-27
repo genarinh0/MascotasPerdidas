@@ -5,7 +5,7 @@ let chatActual = null;
 if (!token) {
     window.location.href = "login.html";
 }
-
+ 
 // Elementos inventados (luego los conectas al HTML)
 const btnConectar = document.getElementById('btnConectar');
 const btnUnirseChat = document.getElementById('btnUnirseChat');
