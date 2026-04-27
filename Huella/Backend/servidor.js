@@ -5,6 +5,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv'
 import verifyToken from './authMiddleware.js';
+import { Resend } from 'resend';
 
 dotenv.config();
 
@@ -14,6 +15,9 @@ app.use(cors());
 
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
+
+const resend = new Resend(process.env.RESEND_API_KEY); //Añadir el la API key al .env
+const EMAIL = process.env.EMAIL; //Añadir el correo con el registraste la API en el .env
 
 app.post('/api/registro', async (req, res) => {
   const { email, contrasena, telefono } = req.body;
@@ -515,5 +519,63 @@ app.get('/api/publicacion/:id', async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Error al obtener la publicación' });
+    }
+});
+
+app.post('/api/publicaciones/:id/contactar', verifyToken, async (req, res) => {
+    const { id } = req.params; //ID de la publicación a contactar
+    const { mensaje } = req.body; //Mensaje escrito por el usuario interesado
+
+    if (!mensaje) {
+        return res.status(400).json({ error: 'El mensaje no puede estar vacío' });
+    }
+
+    try {
+        //Obtener el correo del dueño de la publicación
+        const [rows] = await db.query(
+            `SELECT u.email, p.especie, p.tipo
+             FROM usuario u
+             JOIN publicacion p ON u.id_Usuario = p.id_Usuario
+             WHERE p.id_Publicacion = ?`,
+            [id]
+        );
+
+        if (rows.length === 0) {
+            return res.status(404).json({ error: 'Publicación no encontrada' });
+        }
+
+        const dueno = rows[0];
+        const correoDestino = dueno.email;
+        const tipoAlerta = dueno.tipo === 1 ? 'perdida' : 'encontrada';
+
+        // 2. Usar Resend para despachar el correo
+        const { data, error } = await resend.emails.send({
+            from: 'Huella Notificaciones <onboarding@resend.dev>', //Correo por defecto de prueba de Resend
+            to: [EMAIL], //Correo por defecto en el .env porque no tenemos dominio
+            subject: `¡Alguien tiene información sobre tu mascota ${tipoAlerta}!`,
+            html: `
+                <div style="font-family: Arial, sans-serif; color: #333;">
+                    <h2>Hola,</h2>
+                    <p>Un miembro de la comunidad quiere contactarte respecto a tu publicación de un(a) <b>${dueno.especie}</b>.</p>
+                    <div style="background-color: #f4f4f4; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                        <p style="margin: 0;"><strong>Mensaje:</strong></p>
+                        <p style="margin-top: 5px; font-style: italic;">"${mensaje}"</p>
+                    </div>
+                    <p>¡Inicia sesión en la plataforma para responder!</p>
+                </div>
+            `
+        });
+
+        if (error) {
+            console.error('Error al enviar el correo con Resend:', error);
+            return res.status(500).json({ error: 'No se pudo enviar la notificación' });
+        }
+
+        console.log('ID del correo enviado:', data.id);
+        res.status(200).json({ message: 'Correo enviado con éxito' });
+
+    } catch (error) {
+        console.error('Error en el servidor al contactar:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
     }
 });
