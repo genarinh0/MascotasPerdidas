@@ -14,10 +14,8 @@ const colorMap = {
 const sizeMap = { 1: 'Pequeño', 2: 'Mediano', 3: 'Grande' };
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // Volver
     document.getElementById('btnVolver').addEventListener('click', () => history.back());
 
-    // Compartir
     const url = window.location.href;
     document.getElementById('btnWhatsapp').addEventListener('click', () => {
         window.open(`https://wa.me/?text=${encodeURIComponent('Mira esta publicación en Huella: ' + url)}`, '_blank');
@@ -27,8 +25,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
     document.getElementById('btnCopiar').addEventListener('click', () => {
         navigator.clipboard.writeText(url).then(() => {
-            document.getElementById('btnCopiar').textContent = '¡Copiado!';
-            setTimeout(() => document.getElementById('btnCopiar').textContent = 'Copiar enlace', 2000);
+            document.getElementById('btnCopiar').textContent = '¡Enlace Copiado!';
+            setTimeout(() => document.getElementById('btnCopiar').textContent = '🔗 Copiar enlace', 2000);
         });
     });
 
@@ -38,11 +36,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 async function cargarPublicacion() {
     try {
         const response = await fetch(`http://localhost:1984/api/publicacion/${idPublicacion}`);
-
-        if (!response.ok) {
-            window.location.href = 'feed.html';
-            return;
-        }
+        if (!response.ok) { window.location.href = 'feed.html'; return; }
 
         const data = await response.json();
         const pub = data.publicacion;
@@ -50,134 +44,24 @@ async function cargarPublicacion() {
         const fotos = data.fotos;
 
         // Badge
-        const badge = document.getElementById('badge');
         const esPerdido = pub.tipo === 1;
+        const badge = document.getElementById('badge');
         badge.textContent = esPerdido ? '¡Perdido!' : '¡Busca a su familia!';
         badge.classList.add(esPerdido ? 'pub-detail__badge--lost' : 'pub-detail__badge--found');
 
-        // Descripción
-        document.getElementById('descripcion').textContent = pub.descripcion || 'Sin descripción.';
-
-        // Fecha formateada
-        const fecha = new Date(pub.fecha_suceso);
-        const fechaFormateada = fecha.toLocaleDateString('es-MX', {
-            day: 'numeric', month: 'long', year: 'numeric'
-        });
-
-        // Colores como círculos
-        const circulos = colores.map(id => `
-            <span style="
-                display:inline-block;
-                width:16px; height:16px;
-                border-radius:50%;
-                background:${colorMap[id] || '#ccc'};
-                border:1px solid #ddd;
-                margin-right:4px;
-            "></span>
-        `).join('');
-
-        // Atributos
-        document.getElementById('attrs').innerHTML = `
-            <div class="pub-detail__attr">
-                <img src="imagenes/iconos/icono_huella.png" alt="Especie">
-                <span><b>Especie:</b> ${pub.especie}</span>
-            </div>
-            <div class="pub-detail__attr">
-                <img src="imagenes/iconos/icono_huella.png" alt="Raza">
-                <span><b>Raza:</b> ${pub.raza || 'Desconocida'}</span>
-            </div>
-            <div class="pub-detail__attr">
-                <img src="imagenes/iconos/icono_tamaño.png" alt="Tamaño">
-                <span><b>Tamaño:</b> ${sizeMap[pub.tamanio] || 'No especificado'}</span>
-            </div>
-            <div class="pub-detail__attr">
-                <img src="imagenes/iconos/icono_fecha.png" alt="Fecha">
-                <span><b>Fecha:</b> ${fechaFormateada}</span>
-            </div>
-            <div class="pub-detail__attr">
-                <img src="imagenes/iconos/icono_color.png" alt="Colores">
-                <span><b>Colores:</b> ${circulos}</span>
-            </div>
-            ${pub.horario_contacto ? `
-            <div class="pub-detail__attr">
-                <img src="imagenes/iconos/icono_fecha.png" alt="Horario">
-                <span><b>Horario de contacto:</b> ${pub.horario_contacto}</span>
-            </div>` : ''}
-            <div class="pub-detail__attr" style="padding-top:4px; border-top: 1px solid #E4E0DA; margin-top:4px;">
-                <img src="imagenes/iconos/icono_ubicacion.png" alt="Publicado por">
-                <span><b>Publicado por:</b> ${pub.email_usuario}</span>
-            </div>
-        `;
-
-        // Carrusel
-        const carousel = document.getElementById('carousel');
-        if (fotos.length > 0) {
-            fotos.forEach((foto, i) => {
-                const img = document.createElement('img');
-                img.src = `data:image/jpeg;base64,${foto.imagenBase64}`;
-                img.classList.add('carousel__img');
-                if (i === 0) img.classList.add('active');
-                carousel.appendChild(img);
-            });
-
-            if (fotos.length > 1) {
-                const btnPrev = document.createElement('button');
-                btnPrev.className = 'carousel__btn carousel__btn--prev';
-                btnPrev.textContent = '‹';
-
-                const btnNext = document.createElement('button');
-                btnNext.className = 'carousel__btn carousel__btn--next';
-                btnNext.textContent = '›';
-
-                const dots = document.createElement('div');
-                dots.className = 'carousel__dots';
-
-                fotos.forEach((_, i) => {
-                    const dot = document.createElement('div');
-                    dot.className = 'carousel__dot' + (i === 0 ? ' active' : '');
-                    dot.addEventListener('click', () => goToSlide(i));
-                    dots.appendChild(dot);
-                });
-
-                carousel.appendChild(btnPrev);
-                carousel.appendChild(btnNext);
-                carousel.appendChild(dots);
-
-                let current = 0;
-                const imgs = carousel.querySelectorAll('.carousel__img');
-                const dotEls = carousel.querySelectorAll('.carousel__dot');
-
-                function goToSlide(n) {
-                    imgs[current].classList.remove('active');
-                    dotEls[current].classList.remove('active');
-                    current = (n + fotos.length) % fotos.length;
-                    imgs[current].classList.add('active');
-                    dotEls[current].classList.add('active');
-                }
-
-                btnPrev.addEventListener('click', () => goToSlide(current - 1));
-                btnNext.addEventListener('click', () => goToSlide(current + 1));
-            }
-        } else {
-            carousel.innerHTML = '<img src="imagenes/img_1.png" class="carousel__img active" style="width:100%;height:100%;object-fit:cover;">';
-        }
-
-        // Mapa
-        if (pub.latitud && pub.longitud) {
-            const map = L.map('mapa', { zoomControl: false, dragging: false, scrollWheelZoom: false })
-                .setView([pub.latitud, pub.longitud], 15);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-            L.marker([pub.latitud, pub.longitud]).addTo(map);
-        } else {
-            document.getElementById('mapa').style.display = 'none';
-        }
-
-        // Botón guardar (solo si no es propia y hay sesión)
-        const contenedorGuardar = document.getElementById('contenedor-guardar');
+        // Botón acción (guardar o editar)
+        const contenedorAccion = document.getElementById('contenedor-accion');
         const esMia = pub.id_Usuario === idUsuarioActual;
 
-        if (token && !esMia) {
-            // Verificar si ya está guardada
+        if (esMia) {
+            const btnEditar = document.createElement('button');
+            btnEditar.className = 'pub-detail__action-btn pub-detail__action-btn--edit';
+            btnEditar.textContent = 'Editar';
+            btnEditar.addEventListener('click', () => {
+                window.location.href = `editarPublicacion.html?id=${pub.id_Publicacion}`;
+            });
+            contenedorAccion.appendChild(btnEditar);
+        } else if (token) {
             let guardado = false;
             try {
                 const resG = await fetch('http://localhost:1984/api/guardados', {
@@ -190,8 +74,8 @@ async function cargarPublicacion() {
             } catch {}
 
             const btnGuardar = document.createElement('button');
-            btnGuardar.className = 'pub-detail__save-btn' + (guardado ? ' pub-detail__save-btn--saved' : '');
-            btnGuardar.textContent = guardado ? '✓ Guardado' : '+ Guardar publicación';
+            btnGuardar.className = 'pub-detail__action-btn pub-detail__action-btn--save' + (guardado ? ' saved' : '');
+            btnGuardar.textContent = guardado ? 'Publicación Guardada' : '+ Guardar';
 
             btnGuardar.addEventListener('click', async () => {
                 if (!guardado) {
@@ -201,8 +85,8 @@ async function cargarPublicacion() {
                     });
                     if (res.ok) {
                         guardado = true;
-                        btnGuardar.textContent = '✓ Guardado';
-                        btnGuardar.classList.add('pub-detail__save-btn--saved');
+                        btnGuardar.textContent = 'Publicación Guardada';
+                        btnGuardar.classList.add('saved');
                     }
                 } else {
                     const res = await fetch(`http://localhost:1984/api/guardados/${pub.id_Publicacion}`, {
@@ -211,13 +95,130 @@ async function cargarPublicacion() {
                     });
                     if (res.ok) {
                         guardado = false;
-                        btnGuardar.textContent = '+ Guardar publicación';
-                        btnGuardar.classList.remove('pub-detail__save-btn--saved');
+                        btnGuardar.textContent = '+ Guardar';
+                        btnGuardar.classList.remove('saved');
                     }
                 }
             });
 
-            contenedorGuardar.appendChild(btnGuardar);
+            contenedorAccion.appendChild(btnGuardar);
+        }
+
+        // Carrusel
+        const carousel = document.getElementById('carousel');
+        const fotosList = fotos.length > 0 ? fotos : [{ imagenBase64: null }];
+
+        fotosList.forEach((foto, i) => {
+            const img = document.createElement('img');
+            img.src = foto.imagenBase64
+                ? `data:image/jpeg;base64,${foto.imagenBase64}`
+                : './imagenes/img_1.png';
+            img.classList.add('carousel__img');
+            if (i === 0) img.classList.add('active');
+            carousel.appendChild(img);
+        });
+
+        if (fotosList.length > 1) {
+            const btnPrev = document.createElement('button');
+            btnPrev.className = 'carousel__btn carousel__btn--prev';
+            btnPrev.textContent = '‹';
+
+            const btnNext = document.createElement('button');
+            btnNext.className = 'carousel__btn carousel__btn--next';
+            btnNext.textContent = '›';
+
+            const dots = document.createElement('div');
+            dots.className = 'carousel__dots';
+            fotosList.forEach((_, i) => {
+                const dot = document.createElement('div');
+                dot.className = 'carousel__dot' + (i === 0 ? ' active' : '');
+                dot.addEventListener('click', () => goToSlide(i));
+                dots.appendChild(dot);
+            });
+
+            carousel.appendChild(btnPrev);
+            carousel.appendChild(btnNext);
+            carousel.appendChild(dots);
+
+            let current = 0;
+            const imgs = carousel.querySelectorAll('.carousel__img');
+            const dotEls = carousel.querySelectorAll('.carousel__dot');
+
+            function goToSlide(n) {
+                imgs[current].classList.remove('active');
+                dotEls[current].classList.remove('active');
+                current = (n + fotosList.length) % fotosList.length;
+                imgs[current].classList.add('active');
+                dotEls[current].classList.add('active');
+            }
+
+            btnPrev.addEventListener('click', () => goToSlide(current - 1));
+            btnNext.addEventListener('click', () => goToSlide(current + 1));
+        }
+
+        // Fecha
+        const fecha = new Date(pub.fecha_suceso);
+        const fechaFormateada = fecha.toLocaleDateString('es-MX', {
+            day: 'numeric', month: 'long', year: 'numeric'
+        });
+
+        // Colores como círculos
+        const circulos = colores.map(id => `
+            <span style="
+                display:inline-block; width:16px; height:16px;
+                border-radius:50%; background:${colorMap[id] || '#ccc'};
+                border:1px solid #ddd; margin-right:3px; vertical-align:middle;
+            "></span>
+        `).join('');
+
+        // Atributos
+        document.getElementById('attrs').innerHTML = `
+            <div class="pub-detail__attr">
+                <img src="imagenes/iconos/icono_huella.png" alt="">
+                <span><b>Especie:</b> ${pub.especie}</span>
+            </div>
+            <div class="pub-detail__attr">
+                <img src="imagenes/iconos/icono_huella.png" alt="">
+                <span><b>Raza:</b> ${pub.raza || 'Desconocida'}</span>
+            </div>
+            <div class="pub-detail__attr">
+                <img src="imagenes/iconos/icono_tamaño.png" alt="">
+                <span><b>Tamaño:</b> ${sizeMap[pub.tamanio] || 'No especificado'}</span>
+            </div>
+            <div class="pub-detail__attr">
+                <img src="imagenes/iconos/icono_fecha.png" alt="">
+                <span><b>Fecha:</b> ${fechaFormateada}</span>
+            </div>
+            <div class="pub-detail__attr">
+                <img src="imagenes/iconos/icono_color.png" alt="">
+                <span><b>Colores:</b> ${circulos}</span>
+            </div>
+            ${pub.horario_contacto ? `
+            <div class="pub-detail__attr">
+                <img src="imagenes/iconos/icono_fecha.png" alt="">
+                <span><b>Horario de contacto:</b> ${pub.horario_contacto}</span>
+            </div>` : ''}
+            <div class="pub-detail__attr" style="padding-top:8px; border-top:1px solid #E4E0DA; margin-top:4px;">
+                <img src="imagenes/iconos/icono_ubicacion.png" alt="">
+                <span><b>Publicado por:</b> ${pub.email_usuario}</span>
+            </div>
+        `;
+
+        // Descripción
+        document.getElementById('descripcion').textContent = pub.descripcion || 'Sin descripción.';
+
+        // Mapa
+        if (pub.latitud && pub.longitud) {
+            document.getElementById('card-mapa').style.display = 'block';
+            const map = L.map('mapa', {
+                zoomControl: false,
+                dragging: false,
+                scrollWheelZoom: false,
+                doubleClickZoom: false,
+                touchZoom: false
+            }).setView([pub.latitud, pub.longitud], 15);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+            L.marker([pub.latitud, pub.longitud]).addTo(map);
         }
 
     } catch (error) {
