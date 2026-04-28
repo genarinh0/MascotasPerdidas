@@ -2,6 +2,18 @@ const template = document.createElement("template");
 template.innerHTML = `
     <link rel="stylesheet" href="css/styles.css">
     <style>
+        :host {
+            display: block; /* Asegura que el componente ocupe su espacio */
+            margin-bottom: 1.5rem;
+        }
+            
+        .pub-card {
+            content-visibility: auto;
+
+            /* Reserva un tamaño estimado para que el scroll sea fluido */
+            contain-intrinsic-size: auto 500px; 
+        }
+
         ::slotted(button) {
             cursor: pointer;
         }
@@ -23,7 +35,7 @@ template.innerHTML = `
         </div>
 
         <div class="pub-card__image-container">
-            <img class="pub-card__img" id="pet-img" alt="Mascota">
+            <img class="pub-card__img" id="pet-img" alt="Mascota" loading="lazy">
         </div>
 
         <div class="pub-card__content">
