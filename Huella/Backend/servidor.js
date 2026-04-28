@@ -431,10 +431,6 @@ app.get('/api/publicaciones/:id/fotos', verifyToken, async (req, res) => {
     }
 });
 
-app.listen(1984, () => {
-    console.log("Servidor Corriendo en puerto 1984");
-});
-
 //ENDPOINTS AÑADIDOS PARA MI PERFIL
 
 app.get('/api/perfil', verifyToken, async (req, res) => {
@@ -578,4 +574,110 @@ app.post('/api/publicaciones/:id/contactar', verifyToken, async (req, res) => {
         console.error('Error en el servidor al contactar:', error);
         res.status(500).json({ error: 'Error interno del servidor' });
     }
+});
+
+app.post('/api/chats/crear', verifyToken, async (req, res) => {
+    const { id_Usuario: id_usuario_1 } = req.user; // Del token
+    const { id_usuario_2, id_publicacion } = req.body;
+
+    if (!id_usuario_2) {
+        return res.status(400).json({ error: "Falta el usuario destino" });
+    }
+
+    if (!id_publicacion) {
+        return res.status(400).json({ error: "Falta el ID de la publicación" });
+    }
+
+    // Verificar que no sea el mismo usuario
+    if (id_usuario_1 === id_usuario_2) {
+        return res.status(400).json({ error: "No puedes crear un chat contigo mismo" });
+    }
+
+    try {
+        // Verificar si ya existe un chat entre ellos para esta publicación
+        const sqlBuscar = `
+            SELECT c.id_Chat
+            FROM chat c
+            JOIN chat_usuario cu1 ON cu1.id_Chat = c.id_Chat AND cu1.id_Usuario = ?
+            JOIN chat_usuario cu2 ON cu2.id_Chat = c.id_Chat AND cu2.id_Usuario = ?
+            WHERE c.id_Publicacion = ?
+            LIMIT 1
+        `;
+        
+        const [rows] = await db.query(sqlBuscar, [id_usuario_1, id_usuario_2, id_publicacion]);
+        
+        if (rows.length > 0) {
+            return res.json({ id_chat: rows[0].id_Chat, nuevo: false });
+        }
+        
+        // Crear nuevo chat
+        const sqlCrearChat = `INSERT INTO chat (id_Publicacion, fecha_creacion) VALUES (?, NOW())`;
+        const [resultChat] = await db.query(sqlCrearChat, [id_publicacion]);
+        const id_chat = resultChat.insertId;
+        
+        // Insertar usuarios en chat_usuario
+        const sqlInsertUsuarios = `
+            INSERT INTO chat_usuario (id_Chat, id_Usuario)
+            VALUES (?, ?), (?, ?)
+        `;
+        await db.query(sqlInsertUsuarios, [id_chat, id_usuario_1, id_chat, id_usuario_2]);
+        
+        return res.json({ id_chat, nuevo: true });
+        
+    } catch (error) {
+        console.error('Error al crear chat:', error);
+        res.status(500).json({ error: 'Error al crear el chat' });
+    }
+});
+
+// Endpoint para obtener lista de chats del usuario autenticado
+// Endpoint para obtener lista de chats del usuario autenticado (sin columna leido)
+app.get('/api/chats/lista', verifyToken, async (req, res) => {
+    const { id_Usuario } = req.user;
+    
+    try {
+        const sql = `
+            SELECT 
+                c.id_Chat,
+                u.id_Usuario as id_otro_usuario,
+                u.email as nombre_otro_usuario,
+                (SELECT texto_mensaje FROM mensaje WHERE id_Chat = c.id_Chat ORDER BY fecha_envio DESC LIMIT 1) as ultimo_mensaje,
+                (SELECT fecha_envio FROM mensaje WHERE id_Chat = c.id_Chat ORDER BY fecha_envio DESC LIMIT 1) as fecha_ultimo_mensaje,
+                0 as no_leidos
+            FROM chat c
+            JOIN chat_usuario cu ON c.id_Chat = cu.id_Chat
+            JOIN usuario u ON cu.id_Usuario = u.id_Usuario
+            WHERE c.id_Chat IN (
+                SELECT id_Chat FROM chat_usuario WHERE id_Usuario = ?
+            ) AND u.id_Usuario != ?
+            ORDER BY fecha_ultimo_mensaje DESC
+        `;
+        
+        const [rows] = await db.query(sql, [id_Usuario, id_Usuario]);
+        res.json(rows);
+        
+    } catch (error) {
+        console.error('Error al obtener chats:', error);
+        res.status(500).json({ error: 'Error al obtener chats' });
+    }
+});
+
+app.post('/api/chats/:id/leidos', verifyToken, async (req, res) => {
+    const { id } = req.params;
+    const { id_Usuario } = req.user;
+    
+    try {
+        await db.query(
+            'UPDATE mensaje SET leido = 1 WHERE id_Chat = ? AND id_Remitente != ?',
+            [id, id_Usuario]
+        );
+        res.status(200).json({ message: 'Mensajes marcados como leídos' });
+    } catch (error) {
+        console.error('Error al marcar mensajes como leídos:', error);
+        res.status(500).json({ error: 'Error al marcar mensajes' });
+    }
+});
+
+app.listen(1984, () => {
+    console.log("Servidor Corriendo en puerto 1984");
 });

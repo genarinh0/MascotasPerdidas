@@ -186,10 +186,15 @@ async function isUserChat(chatID, userID){
 
 async function obtenerHistorial(id_chat) {
     const sql = `
-        SELECT id_Mensaje, id_Chat, id_Remitente, texto_mensaje, fecha_envio
-        FROM mensaje
-        WHERE id_Chat = ?
-        ORDER BY fecha_envio ASC
+        SELECT 
+            m.id_Mensaje, 
+            m.id_Chat, 
+            m.id_Remitente as id_usuario_emisor, 
+            m.texto_mensaje as contenido, 
+            m.fecha_envio
+        FROM mensaje m
+        WHERE m.id_Chat = ?
+        ORDER BY m.fecha_envio ASC
     `;
     const [rows] = await db.query(sql, [id_chat]);
     return rows;
