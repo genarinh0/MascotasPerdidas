@@ -493,3 +493,109 @@
         display: block;
     }
 }
+/* Estilos adicionales para mensajes */
+.mensaje-item {
+    margin-bottom: 16px;
+    display: flex;
+}
+
+.mensaje-item--own {
+    justify-content: flex-end;
+}
+
+.mensaje-item--other {
+    justify-content: flex-start;
+}
+
+.mensaje-item__content {
+    max-width: 70%;
+    padding: 10px 14px;
+    border-radius: 18px;
+    background-color: var(--card-bg, #f0f0f0);
+}
+
+.mensaje-item--own .mensaje-item__content {
+    background-color: var(--color-primary, #4a6fa5);
+    color: white;
+}
+
+.mensaje-item__header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    margin-bottom: 4px;
+    opacity: 0.7;
+}
+
+.mensaje-item__author {
+    font-weight: 600;
+}
+
+.mensaje-item__text {
+    font-size: 14px;
+    word-wrap: break-word;
+}
+
+.mensaje-empty {
+    text-align: center;
+    padding: 40px;
+    color: var(--card-font-color, #666);
+    font-style: italic;
+}
+
+/* Badge de no leídos */
+.chats-list__badge {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: var(--color-primary, #4a6fa5);
+    color: white;
+    font-size: 11px;
+    font-weight: bold;
+    min-width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 6px;
+}
+
+.chats-list__item {
+    position: relative;
+    cursor: pointer;
+}
+
+.chats-list__item--active {
+    background-color: rgba(74, 111, 165, 0.1);
+}
+
+.chats-list__time {
+    font-size: 10px;
+    color: var(--card-font-color, #888);
+    margin-top: 2px;
+    display: block;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .chats-sidebar {
+        display: none;
+    }
+    
+    .chats-sidebar--visible {
+        display: block;
+        width: 100%;
+    }
+    
+    .chats-conversation--active {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .mensaje-item__content {
+        max-width: 85%;
+    }
+}

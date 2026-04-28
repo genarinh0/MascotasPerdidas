@@ -337,27 +337,44 @@ async function cargarPublicaciones() {
                 btnContactar.textContent = 'Contactar';
 
                 btnContactar.addEventListener('click', async () => {
-                    const mensaje = `${payload?.email} quiere contactarte sobre tu mascota (${pub.especie})!`;
                     try {
-                        const response = await fetch(`http://localhost:1984/api/publicaciones/${pub.id_Publicacion}/contactar`, {
+                        // Obtener el ID del dueño de la publicación
+                        const pubResponse = await fetch(`http://localhost:1984/api/publicacion/${pub.id_Publicacion}`);
+                        const pubData = await pubResponse.json();
+                        const idDueno = pubData.publicacion.id_Usuario;
+                        
+                        // Crear o recuperar el chat - AHORA CON ID_PUBLICACION
+                        const chatResponse = await fetch('http://localhost:1984/api/chats/crear', {
                             method: 'POST',
-                            headers: {
+                            headers: { 
                                 'Content-Type': 'application/json',
                                 'Authorization': `Bearer ${token}`
                             },
-                            body: JSON.stringify({ mensaje })
+                            body: JSON.stringify({
+                                id_usuario_2: idDueno,
+                                id_publicacion: pub.id_Publicacion  // <-- AGREGAR ESTO
+                            })
                         });
-
-                        if (response.ok) {
-                            alert('¡Tu mensaje ha sido enviado al dueño por correo electrónico!');
-                        } else if (response.status === 401) {
-                            alert('Debes iniciar sesión para contactar al dueño.');
+                        
+                        if (chatResponse.status === 401) {
                             window.location.href = 'login.html';
-                        } else {
-                            alert('Hubo un error al intentar enviar el mensaje.');
+                            return;
                         }
+                        
+                        const chatData = await chatResponse.json();
+                        
+                        if (chatResponse.ok) {
+                            localStorage.setItem('chatSeleccionado', JSON.stringify({
+                                id_chat: chatData.id_chat,
+                                nombre_usuario: pubData.publicacion.email_usuario || 'Usuario'
+                            }));
+                            window.location.href = 'chats.html';
+                        } else {
+                            alert('Error al crear el chat: ' + (chatData.error || 'Intenta de nuevo'));
+                        }
+                        
                     } catch (error) {
-                        console.error('Error de red al enviar contacto:', error);
+                        console.error('Error al crear el chat:', error);
                         alert('Error de conexión al servidor.');
                     }
                 });
