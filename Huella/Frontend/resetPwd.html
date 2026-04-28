@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Nueva contraseña | Huella</title>
+        <link rel="stylesheet" href="css/styles.css">
+        <link href="https://fonts.googleapis.com" rel="stylesheet">
+    </head>
+    <body>
+        <header class="site-header">
+            <div class="site-header__brand">
+                <img src="imagenes/logo.png" width="25" height="25">
+                <h1 class="site-header__brand-title">Huella</h1>
+            </div>
+        </header>
+
+        <main class="login-section" style="justify-content: center;">
+            <section class="login-section__card">
+                <label class="card__title">Nueva contraseña</label>
+                <div class="card__inputs">
+                    <div class="card__field">
+                        <label class="card__label">Nueva contraseña</label>
+                        <input class="card__input" type="password" id="password" placeholder="••••••••">
+                    </div>
+                    <div class="card__field">
+                        <label class="card__label">Confirmar contraseña</label>
+                        <input class="card__input" type="password" id="confirm_password" placeholder="••••••••">
+                    </div>
+                </div>
+                <button class="card__btn card__btn--send" id="btnReset" style="margin-top: 20px;">Guardar contraseña</button>
+            </section>
+        </main>
+
+        <script src="js/resetPwd.js"></script>
+    </body>
+</html>

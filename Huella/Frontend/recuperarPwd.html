@@ -14,39 +14,41 @@
                 <img src="imagenes/logo.png" width="25" height="25">
                 <h1 class="site-header__brand-title">Huella</h1>
             </div>
+            <h2 class="site-header__heading">Recuperar contraseña</h2>
+            <button class="site-header__button" onclick="window.location.href='login.html'">Iniciar Sesión</button>
         </header>
 
-        <main class="recover-section">
-            <section class="recover-card">
-                <h1 class="recover-card__title">Recuperar contraseña</h1>
+        <main class="login-section" style="justify-content: center; padding-top: 60px;">
+            <section class="login-section__card">
+                <label class="card__title">¿Olvidaste tu contraseña?</label>
 
-                <p class="recover-card__text">
-                    Ingresa el correo asociado a tu cuenta y te enviaremos instrucciones para restablecer tu contraseña.
+                <p style="text-align: center; color: var(--card-font-color); font-size: 14px; font-family: var(--font-secondary); margin: 0 0 20px 0; max-width: 280px;">
+                    Ingresa tu correo y te enviaremos un enlace para restablecerla.
                 </p>
 
-                <div class="recover-card__field">
-                    <label class="recover-card__label" for="email">Correo electrónico</label>
-                    <input 
-                        class="recover-card__input" 
-                        type="email" 
-                        id="email" 
-                        placeholder="tu@email.com"
-                    >
+                <div class="card__inputs" style="width: 100%;">
+                    <div class="card__field">
+                        <label class="card__label">Correo electrónico</label>
+                        <input
+                            class="card__input"
+                            type="email"
+                            id="email"
+                            placeholder="tu@email.com"
+                        >
+                    </div>
                 </div>
 
-                <button class="recover-card__btn">Enviar instrucciones</button>
+                <button class="card__btn card__btn--send" id="btnRecuperar" style="margin-top: 20px;">
+                    Enviar instrucciones
+                </button>
 
-                <p class="recover-card__hint">
+                <p class="card__hint">
                     ¿Recordaste tu contraseña?
-                    <a class="recover-card__link" href="login.html">Volver al inicio de sesión</a>
+                    <a class="card__link" href="login.html">Volver al inicio de sesión</a>
                 </p>
             </section>
         </main>
 
-        <footer class="site-footer">
-            <p>Proyecto realizado por alumnos del Tec de Monterrey, 2026</p>
-        </footer>
+        <script src="js/recuperarPwd.js"></script>
     </body>
 </html>
-
-<!--SCRIPT PENDIENTE, NO SÉ SI EL FEATURE SEA NECESARIO-->

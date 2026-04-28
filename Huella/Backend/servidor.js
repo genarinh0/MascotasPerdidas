@@ -18,6 +18,7 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 const resend = new Resend(process.env.RESEND_API_KEY); //Añadir el la API key al .env
 const EMAIL = process.env.EMAIL; //Añadir el correo con el registraste la API en el .env
+const HUELLA_URL = process.env.HUELLA_URL; //Temporal, porque mi URL es diferente.
 
 app.post('/api/registro', async (req, res) => {
   const { email, contrasena, telefono } = req.body;
@@ -680,4 +681,65 @@ app.post('/api/chats/:id/leidos', verifyToken, async (req, res) => {
 
 app.listen(1984, () => {
     console.log("Servidor Corriendo en puerto 1984");
+});
+app.post('/api/recuperar-password', async (req, res) => {
+    const { email } = req.body;
+    if (!email) return res.status(400).json({ error: 'Email requerido' });
+
+    try {
+        const [rows] = await db.query('SELECT id_Usuario FROM usuario WHERE email = ?', [email]);
+
+        // Always respond OK to avoid exposing which emails are registered
+        if (rows.length === 0) return res.status(200).json({ message: 'OK' });
+
+        const usuario = rows[0];
+        const resetToken = jwt.sign(
+            { id_Usuario: usuario.id_Usuario, email, tipo: 'reset' },
+            process.env.JWT_SECRET,
+            { expiresIn: '15m' }
+        );
+
+        const resetLink = `${HUELLA_URL}resetPwd.html?token=${resetToken}`;
+
+        await resend.emails.send({
+            from: 'Huella Notificaciones <onboarding@resend.dev>',
+            to: [EMAIL], //Temporal, para que sirva con el registrado
+            subject: 'Restablecer tu contraseña | Huella 🐾',
+            html: `
+                <div style="font-family: Arial, sans-serif; color: #333;">
+                    <h2>Recuperar contraseña</h2>
+                    <p>Recibimos una solicitud para restablecer la contraseña de tu cuenta.</p>
+                    <p>Haz clic en el siguiente botón. El enlace expira en <strong>15 minutos</strong>.</p>
+                    <a href="${resetLink}" style="display:inline-block; padding: 12px 24px; background-color: #346739; color: white; border-radius: 5px; text-decoration: none; font-weight: bold;">
+                        Restablecer contraseña
+                    </a>
+                    <p style="margin-top: 20px; font-size: 12px; color: gray;">Si no solicitaste esto, ignora este correo.</p>
+                </div>
+            `
+        });
+
+        res.status(200).json({ message: 'OK' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al procesar la solicitud' });
+    }
+});
+
+app.post('/api/reset-password', async (req, res) => {
+    const { token, nuevaContrasena } = req.body;
+    if (!token || !nuevaContrasena) return res.status(400).json({ error: 'Datos incompletos' });
+
+    try {
+        const payload = jwt.verify(token, process.env.JWT_SECRET);
+
+        if (payload.tipo !== 'reset') return res.status(400).json({ error: 'Token inválido' });
+
+        const hashedPwd = await bcrypt.hash(nuevaContrasena, 12);
+        await db.query('UPDATE usuario SET contrasena = ? WHERE id_Usuario = ?', [hashedPwd, payload.id_Usuario]);
+
+        res.status(200).json({ message: 'Contraseña actualizada con éxito' });
+    } catch (error) {
+        console.error(error);
+        res.status(401).json({ error: 'Token inválido o expirado' });
+    }
 });
