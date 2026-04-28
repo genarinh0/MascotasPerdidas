@@ -116,6 +116,46 @@ async function cargarGuardados() {
             btnContactar.className = 'pub-card__btn pub-card__btn--secondary';
             btnContactar.textContent = 'Contactar';
 
+            btnContactar.addEventListener('click', async () => {
+                try {
+                    const pubResponse = await fetch(`http://localhost:1984/api/publicacion/${pub.id_Publicacion}`);
+                    const pubData = await pubResponse.json();
+                    const idDueno = pubData.publicacion.id_Usuario;
+
+                    const chatResponse = await fetch('http://localhost:1984/api/chats/crear', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            id_usuario_2: idDueno,
+                            id_publicacion: pub.id_Publicacion
+                        })
+                    });
+
+                    if (chatResponse.status === 401) {
+                        alert('Para usar esta función primero regístrate');
+                        return;
+                    }
+
+                    const chatData = await chatResponse.json();
+
+                    if (chatResponse.ok) {
+                        localStorage.setItem('chatSeleccionado', JSON.stringify({
+                            id_chat: chatData.id_chat,
+                            nombre_usuario: pubData.publicacion.email_usuario || 'Usuario'
+                        }));
+                        window.location.href = 'chats.html';
+                    } else {
+                        alert('Error al crear el chat: ' + (chatData.error || 'Intenta de nuevo'));
+                    }
+                } catch (error) {
+                    console.error('Error al crear el chat:', error);
+                    alert('Error de conexión al servidor.');
+                }
+            });
+
             tarjeta.appendChild(btnQuitar);
             tarjeta.appendChild(btnContactar);
 
