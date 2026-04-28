@@ -632,19 +632,17 @@ app.post('/api/chats/crear', verifyToken, async (req, res) => {
 });
 
 // Endpoint para obtener lista de chats del usuario autenticado
-// Endpoint para obtener lista de chats del usuario autenticado (sin columna leido)
 app.get('/api/chats/lista', verifyToken, async (req, res) => {
     const { id_Usuario } = req.user;
     
     try {
         const sql = `
             SELECT 
-                c.id_Chat,
+                c.id_Chat as id_chat,
                 u.id_Usuario as id_otro_usuario,
                 u.email as nombre_otro_usuario,
                 (SELECT texto_mensaje FROM mensaje WHERE id_Chat = c.id_Chat ORDER BY fecha_envio DESC LIMIT 1) as ultimo_mensaje,
-                (SELECT fecha_envio FROM mensaje WHERE id_Chat = c.id_Chat ORDER BY fecha_envio DESC LIMIT 1) as fecha_ultimo_mensaje,
-                0 as no_leidos
+                (SELECT fecha_envio FROM mensaje WHERE id_Chat = c.id_Chat ORDER BY fecha_envio DESC LIMIT 1) as fecha_ultimo_mensaje
             FROM chat c
             JOIN chat_usuario cu ON c.id_Chat = cu.id_Chat
             JOIN usuario u ON cu.id_Usuario = u.id_Usuario
@@ -663,25 +661,7 @@ app.get('/api/chats/lista', verifyToken, async (req, res) => {
     }
 });
 
-app.post('/api/chats/:id/leidos', verifyToken, async (req, res) => {
-    const { id } = req.params;
-    const { id_Usuario } = req.user;
-    
-    try {
-        await db.query(
-            'UPDATE mensaje SET leido = 1 WHERE id_Chat = ? AND id_Remitente != ?',
-            [id, id_Usuario]
-        );
-        res.status(200).json({ message: 'Mensajes marcados como leídos' });
-    } catch (error) {
-        console.error('Error al marcar mensajes como leídos:', error);
-        res.status(500).json({ error: 'Error al marcar mensajes' });
-    }
-});
 
-app.listen(1984, () => {
-    console.log("Servidor Corriendo en puerto 1984");
-});
 app.post('/api/recuperar-password', async (req, res) => {
     const { email } = req.body;
     if (!email) return res.status(400).json({ error: 'Email requerido' });
@@ -742,4 +722,8 @@ app.post('/api/reset-password', async (req, res) => {
         console.error(error);
         res.status(401).json({ error: 'Token inválido o expirado' });
     }
+});
+
+app.listen(1984, () => {
+    console.log("Servidor Corriendo en puerto 1984");
 });

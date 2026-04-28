@@ -63,7 +63,7 @@ ws.on('connection', (socket) => {
         if (tipo === 'join_chat') {
             const { id_chat } = datos;
 
-            if (!Number.isInteger(id_chat)) {
+            if (!Number.isFinite(Number(id_chat))) {
                 socket.close(1000, 'ID de chat invalido');
                 return;
             }

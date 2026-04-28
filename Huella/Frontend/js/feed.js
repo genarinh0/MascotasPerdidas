@@ -357,7 +357,7 @@ async function cargarPublicaciones() {
                         });
                         
                         if (chatResponse.status === 401) {
-                            window.location.href = 'login.html';
+                            alert('Para usar esta función primero regístrate');
                             return;
                         }
                         

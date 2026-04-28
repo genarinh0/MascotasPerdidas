@@ -33,7 +33,7 @@ const chatInput = document.getElementById('chatInput');
 const btnSend = document.getElementById('btnSend');
 const btnBack = document.getElementById('btnBack');
 const buscarChat = document.getElementById('buscarChat');
-const badgeNoLeidos = document.getElementById('badge-no-leidos');
+
 
 // ======================================================
 // 2. CONECTAR WEBSOCKET AUTOMÁTICAMENTE
@@ -95,16 +95,13 @@ function manejarMensajesServidor(event) {
 
             case 'historial':
                 mostrarHistorial(data.mensajes);
-                marcarMensajesComoLeidos(chatActual);
                 break;
 
             case 'nuevo_mensaje':
-                mostrarMensaje(data);
                 if (chatActual === data.id_chat) {
-                    marcarMensajesComoLeidos(chatActual);
+                    mostrarMensaje(data);
                 } else {
                     actualizarVistaPreviaChat(data.id_chat, data.contenido);
-                    incrementarNoLeidos(data.id_chat);
                 }
                 break;
         }
@@ -153,7 +150,6 @@ async function cargarListaChats() {
             const li = document.createElement('li');
             li.classList.add('chats-list__item');
             li.setAttribute('data-chat-id', chat.id_chat);
-            li.setAttribute('data-no-leidos', chat.no_leidos || 0);
 
             // Determinar texto de vista previa
             let previewText = chat.ultimo_mensaje || "Sin mensajes aún";
@@ -174,7 +170,6 @@ async function cargarListaChats() {
                     <p class="chats-list__preview">${escapeHtml(previewText)}</p>
                     <span class="chats-list__time">${fechaFormateada}</span>
                 </div>
-                ${chat.no_leidos > 0 ? `<span class="chats-list__badge">${chat.no_leidos}</span>` : ''}
             `;
 
             li.onclick = () => seleccionarChat(chat.id_chat, chat.nombre_otro_usuario);
@@ -194,7 +189,6 @@ async function cargarListaChats() {
             }
         }
         
-        actualizarContadorNoLeidos();
         
     } catch (error) {
         console.error('Error al cargar lista de chats:', error);
@@ -205,7 +199,7 @@ async function cargarListaChats() {
 // ======================================================
 // 5. CREAR O RECUPERAR CHAT CON ALGUIEN
 // ======================================================
-async function abrirChatCon(id_otro_usuario, nombreUsuario) {
+async function abrirChatCon(id_otro_usuario, nombreUsuario, id_publicacion) {
     try {
         const res = await fetch('http://localhost:1984/api/chats/crear', {
             method: 'POST',
@@ -214,8 +208,8 @@ async function abrirChatCon(id_otro_usuario, nombreUsuario) {
                 'Authorization': `Bearer ${token}`
             },
             body: JSON.stringify({
-                id_usuario_1: miID,
-                id_usuario_2: id_otro_usuario
+                id_usuario_2: id_otro_usuario,
+                id_publicacion
             })
         });
 
@@ -238,8 +232,8 @@ function seleccionarChat(id_chat, nombreUsuario) {
 
     // Mostrar elementos de conversación
     chatsPlaceholder.style.display = "none";
-    chatsMessages.style.display = "block";
-    chatsInputArea.style.display = "block";
+    chatsMessages.style.display = "flex";
+    chatsInputArea.style.display = "flex";
     convoHeader.style.display = "flex";
 
     document.getElementById('convoName').textContent = nombreUsuario;
@@ -254,7 +248,6 @@ function seleccionarChat(id_chat, nombreUsuario) {
             // Remover badge de no leídos
             const badge = item.querySelector('.chats-list__badge');
             if (badge) badge.remove();
-            item.setAttribute('data-no-leidos', '0');
         }
     });
 
@@ -279,8 +272,6 @@ function seleccionarChat(id_chat, nombreUsuario) {
         // Timeout por si nunca se conecta
         setTimeout(() => clearInterval(esperarWS), 10000);
     }
-    
-    actualizarContadorNoLeidos();
 }
 
 // ======================================================
@@ -300,6 +291,7 @@ chatInput.addEventListener('keypress', (e) => {
 function enviarMensaje() {
     if (!chatActual) {
         console.warn('No hay chat seleccionado');
+        alert('No has seleccionado un chat para mandar este mensaje!');
         return;
     }
 
@@ -389,25 +381,6 @@ function scrollToBottom() {
 }
 
 // ======================================================
-// 10. MARCAR MENSAJES COMO LEÍDOS
-// ======================================================
-async function marcarMensajesComoLeidos(id_chat) {
-    if (!id_chat) return;
-    
-    try {
-        await fetch(`http://localhost:1984/api/chats/${id_chat}/leidos`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            }
-        });
-    } catch (error) {
-        console.error('Error al marcar mensajes como leídos:', error);
-    }
-}
-
-// ======================================================
 // 11. ACTUALIZAR VISTA PREVIA DEL CHAT
 // ======================================================
 function actualizarVistaPreviaChat(id_chat, mensaje) {
@@ -435,51 +408,8 @@ function actualizarVistaPreviaChat(id_chat, mensaje) {
 }
 
 // ======================================================
-// 12. INCREMENTAR CONTADOR DE NO LEÍDOS
+// 13. ACTUALIZAR CONTADOR TOTAL DE NO LEÍDOS — REMOVED
 // ======================================================
-function incrementarNoLeidos(id_chat) {
-    const chatItem = document.querySelector(`.chats-list__item[data-chat-id="${id_chat}"]`);
-    if (chatItem && chatActual !== id_chat) {
-        let noLeidos = parseInt(chatItem.getAttribute('data-no-leidos') || '0');
-        noLeidos++;
-        chatItem.setAttribute('data-no-leidos', noLeidos);
-        
-        let badge = chatItem.querySelector('.chats-list__badge');
-        if (!badge) {
-            badge = document.createElement('span');
-            badge.classList.add('chats-list__badge');
-            chatItem.querySelector('.chats-list__info').appendChild(badge);
-        }
-        badge.textContent = noLeidos;
-        badge.style.display = noLeidos > 0 ? 'flex' : 'none';
-        
-        actualizarContadorNoLeidos();
-    }
-}
-
-// ======================================================
-// 13. ACTUALIZAR CONTADOR TOTAL DE NO LEÍDOS
-// ======================================================
-function actualizarContadorNoLeidos() {
-    let totalNoLeidos = 0;
-    document.querySelectorAll('.chats-list__item').forEach(item => {
-        const noLeidos = parseInt(item.getAttribute('data-no-leidos') || '0');
-        totalNoLeidos += noLeidos;
-    });
-    
-    if (badgeNoLeidos) {
-        if (totalNoLeidos > 0) {
-            badgeNoLeidos.textContent = totalNoLeidos > 99 ? '99+' : totalNoLeidos;
-            badgeNoLeidos.style.display = 'flex';
-        } else {
-            badgeNoLeidos.style.display = 'none';
-        }
-    }
-    
-    // Actualizar título de la página
-    document.title = totalNoLeidos > 0 ? `(${totalNoLeidos}) Huella - Chats` : 'Huella - Chats';
-}
-
 // ======================================================
 // 14. VERIFICAR CHAT SELECCIONADO DESDE REDIRECCIÓN
 // ======================================================
