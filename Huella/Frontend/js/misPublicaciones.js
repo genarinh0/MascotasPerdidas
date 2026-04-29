@@ -60,12 +60,15 @@ async function cargarMisPublicaciones() {
                 tarjeta.setAttribute('imagen', './imagenes/img_1.png');
             }
 
-            const btnEditar = document.createElement('button');
-            btnEditar.slot = 'header-action';
-            btnEditar.className = 'pub-card__icon-btn btn-editar';
-            btnEditar.setAttribute('data-id', pub.id_Publicacion);
-            btnEditar.title = 'Editar publicación';
-            btnEditar.innerHTML = '<img src="imagenes/iconos/icono_BtnEditarPublicacion.png" width="56" alt="Editar">';
+            if(pub.tipo !== 3){
+                const btnEditar = document.createElement('button');
+                btnEditar.slot = 'header-action';
+                btnEditar.className = 'pub-card__icon-btn btn-editar';
+                btnEditar.setAttribute('data-id', pub.id_Publicacion);
+                btnEditar.title = 'Editar publicación';
+                btnEditar.innerHTML = '<img src="imagenes/iconos/icono_BtnEditarPublicacion.png" width="56" alt="Editar">';
+                tarjeta.appendChild(btnEditar);
+            }
 
             const footerActions = document.createElement('div');
             footerActions.slot = 'footer-action';
@@ -74,18 +77,18 @@ async function cargarMisPublicaciones() {
             const btnEncontrado = document.createElement('button');
             btnEncontrado.className = 'pub-card__btn pub-card__btn--success btn-encontrado';
             btnEncontrado.setAttribute('data-id', pub.id_Publicacion);
-            btnEncontrado.textContent = pub.estatus === 1 ? 'Marcar como resuelto' : 'Resuelto'; 
-            if (pub.estatus === 1){
+            btnEncontrado.textContent = pub.tipo !== 3 ? 'Marcar como resuelto' : 'Resuelto';
+            if (pub.tipo !== 3){
                 btnEncontrado.addEventListener('click', async () => {
                     if (confirm("¿Estás seguro de marcar esta publicación como resuelta?")) {
                         try {
-                           const res = await fetch(`http://localhost:1984/api/publicaciones/${pub.id_Publicacion}/estatus`, {
+                           const res = await fetch(`http://localhost:1984/api/publicaciones/${pub.id_Publicacion}/tipo`, {
                                 method: 'PATCH',
-                                headers: { 
+                                headers: {
                                     'Authorization': 'Bearer ' + token,
                                     'Content-Type': 'application/json'
                                 },
-                                body: JSON.stringify({ estatus: 2 }) 
+                                body: JSON.stringify({ tipo: 3 })
                             });
 
                             if (res.ok) {
@@ -111,7 +114,6 @@ async function cargarMisPublicaciones() {
             footerActions.appendChild(btnEncontrado);
             footerActions.appendChild(btnEliminar);
 
-            tarjeta.appendChild(btnEditar);
             tarjeta.appendChild(footerActions);
 
             gridMisPubs.appendChild(tarjeta);

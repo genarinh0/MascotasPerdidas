@@ -123,7 +123,7 @@ app.get('/api/publicaciones', async (req, res) => {
             condiciones.push("p.fecha_suceso <= ?");
             valores.push(valor);
         }else {
-            const columnasValidas = ['tipo', 'especie', 'raza', 'tamanio', 'estatus'];
+            const columnasValidas = ['tipo', 'especie', 'raza', 'tamanio'];
             if (columnasValidas.includes(clave)) {
                 condiciones.push(`p.${clave} = ?`);
                 valores.push(valor);
@@ -131,8 +131,8 @@ app.get('/api/publicaciones', async (req, res) => {
         }
     });
 
-    if (!filtros.estatus) {
-        condiciones.push("p.estatus = 1");
+    if (!filtros.tipo) {
+        condiciones.push("p.tipo != 3");
     }
 
     const sqlWhere = condiciones.length > 0 ? ' WHERE ' + condiciones.join(' AND ') : '';
@@ -161,7 +161,6 @@ app.get('/api/publicaciones', async (req, res) => {
 app.post('/api/publicaciones', verifyToken, async (req, res) => {
     const nuevaPub = req.body;
     const fecha_creacion = new Date().toISOString().split('T')[0];
-    const estatus = 1;
     const conn = await db.getConnection();
 
     try {
@@ -169,8 +168,8 @@ app.post('/api/publicaciones', verifyToken, async (req, res) => {
 
         const { id_Usuario } = req.user;
 
-        const sqlPub = `INSERT INTO publicacion (id_Usuario, tipo, especie, raza, tamanio, descripcion, fecha_suceso, fecha_creacion, estatus, latitud, longitud, horario_contacto) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-        const parametrosPub = [id_Usuario, nuevaPub.tipo, nuevaPub.especie, nuevaPub.raza, nuevaPub.tamanio, nuevaPub.descripcion, nuevaPub.fecha_suceso, fecha_creacion, estatus, nuevaPub.latitud, nuevaPub.longitud, nuevaPub.horario_contacto];
+        const sqlPub = `INSERT INTO publicacion (id_Usuario, tipo, especie, raza, tamanio, descripcion, fecha_suceso, fecha_creacion, latitud, longitud, horario_contacto) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+        const parametrosPub = [id_Usuario, nuevaPub.tipo, nuevaPub.especie, nuevaPub.raza, nuevaPub.tamanio, nuevaPub.descripcion, nuevaPub.fecha_suceso, fecha_creacion, nuevaPub.latitud, nuevaPub.longitud, nuevaPub.horario_contacto];
         const [resultPub] = await conn.query(sqlPub, parametrosPub);
         const id_Publicacion = resultPub.insertId;
 
@@ -320,13 +319,13 @@ app.get('/api/mis-publicaciones', verifyToken, async (req, res) => {
     }
 });
 
-app.patch('/api/publicaciones/:id/estatus', verifyToken, async (req, res) => {
+app.patch('/api/publicaciones/:id/tipo', verifyToken, async (req, res) => {
     const { id } = req.params;
     const { id_Usuario } = req.user;
-    const { estatus } = req.body;
+    const { tipo } = req.body;
 
-    if (estatus === undefined) {
-        return res.status(400).json({ error: 'Falta el campo estatus' });
+    if (tipo === undefined) {
+        return res.status(400).json({ error: 'Falta el campo tipo' });
     }
 
     const conn = await db.getConnection();
@@ -346,8 +345,8 @@ app.patch('/api/publicaciones/:id/estatus', verifyToken, async (req, res) => {
         }
 
         await conn.query(
-            'UPDATE publicacion SET estatus = ? WHERE id_Publicacion = ?',
-            [estatus, id]
+            'UPDATE publicacion SET tipo = ? WHERE id_Publicacion = ?',
+            [tipo, id]
         );
 
         await conn.commit();
