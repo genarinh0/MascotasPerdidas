@@ -201,3 +201,65 @@ button:hover {
     color: white;
     font-weight: bold;
 }
+
+@media (max-width: 768px) {
+    .site-header {
+        padding: 0 12px;
+    }
+
+    .login-section {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        padding: 20px 12px 40px;
+    }
+
+    .login-section__welcome img {
+        max-width: 160px;
+        height: auto;
+    }
+
+    .welcome__title {
+        font-size: 26px;
+        padding: 12px 20px;
+        text-align: center;
+    }
+
+    .welcome__subtitle {
+        font-size: 15px;
+        text-align: center;
+    }
+
+    .login-section__card {
+        width: 90%;
+        box-sizing: border-box;
+    }
+
+    .card__input {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .card__btn--send {
+        width: 100%;
+        padding: 14px;
+    }
+}
+/* ---- RESPONSIVE ADICIONAL ---- */
+@media (max-width: 768px) {
+
+    .login-section__welcome {
+        display: none; /* ocultar imagen/bienvenida en móvil, igual que otras páginas */
+    }
+
+    .login-section__card {
+        padding: 24px 16px;
+        border-radius: 14px;
+        width: 100% !important;
+        box-sizing: border-box;
+    }
+
+    .card__btn--send {
+        margin-top: 10px;
+    }
+}

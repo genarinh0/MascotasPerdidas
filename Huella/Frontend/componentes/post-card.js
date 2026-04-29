@@ -3,19 +3,25 @@ template.innerHTML = `
     <link rel="stylesheet" href="css/styles.css">
     <style>
         :host {
-            display: block; /* Asegura que el componente ocupe su espacio */
+            display: block;
             margin-bottom: 1.5rem;
         }
             
         .pub-card {
             content-visibility: auto;
-
-            /* Reserva un tamaño estimado para que el scroll sea fluido */
             contain-intrinsic-size: auto 500px; 
         }
 
         ::slotted(button) {
             cursor: pointer;
+        }
+        .pub-card__badge--resolved {
+            background-color: #346739;
+            color: white;
+            display: none;
+        }
+        .pub-card__badge--resolved.visible {
+            display: inline-block;
         }
         #footer-actions {
             display: flex;
@@ -30,7 +36,10 @@ template.innerHTML = `
 
     <article class="pub-card" style="height: 100%;">
         <div class="pub-card__header" id="card-header">
-            <span class="pub-card__badge" id="badge"></span>
+            <div style="display:flex; flex-direction:column; gap:5px;">
+                <span class="pub-card__badge" id="badge"></span>
+                <span class="pub-card__badge pub-card__badge--resolved" id="badge-resolved">Resuelto</span>
+            </div>
             <slot name="header-action"></slot>
         </div>
 
@@ -69,15 +78,6 @@ class PostCard extends HTMLElement {
         super();
         const shadow = this.attachShadow({ mode: "open" });
         const templateContent = template.content.cloneNode(true);
-
-        this.badgeEl = templateContent.querySelector("#badge");
-        this.headerEl = templateContent.querySelector("#card-header");
-        this.imgEl = templateContent.querySelector("#pet-img");
-        this.titleEl = templateContent.querySelector("#pet-title");
-        this.razaEl = templateContent.querySelector("#pet-race");
-        this.tamanioEl = templateContent.querySelector("#pet-size");
-        this.fechaEl = templateContent.querySelector("#pet-date");
-
         shadow.append(templateContent);
     }
 
@@ -86,7 +86,7 @@ class PostCard extends HTMLElement {
     }
 
     static get observedAttributes() {
-        return ["especie", "raza", "tamaño", "fecha", "imagen", "badge-text", "badge-type"];
+        return ["especie", "raza", "tamaño", "fecha", "imagen", "badge-text", "badge-type", "resolved"];
     }
 
     attributeChangedCallback(name, oldVal, newVal) {
@@ -98,29 +98,41 @@ class PostCard extends HTMLElement {
     render() {
         if (!this.shadowRoot) return;
 
+        const badgeEl = this.shadowRoot.querySelector("#badge");
+        const badgeResolvedEl = this.shadowRoot.querySelector("#badge-resolved");
+        const headerEl = this.shadowRoot.querySelector("#card-header");
+        const imgEl = this.shadowRoot.querySelector("#pet-img");
+        const titleEl = this.shadowRoot.querySelector("#pet-title");
+        const razaEl = this.shadowRoot.querySelector("#pet-race");
+        const tamanioEl = this.shadowRoot.querySelector("#pet-size");
+        const fechaEl = this.shadowRoot.querySelector("#pet-date");
+
         const badgeText = this.getAttribute("badge-text");
         const badgeType = this.getAttribute("badge-type");
 
         if (badgeText) {
-            this.badgeEl.textContent = badgeText;
-            this.badgeEl.className = `pub-card__badge pub-card__badge--${badgeType || 'active'}`;
-            this.headerEl.style.display = 'flex';
+            badgeEl.textContent = badgeText;
+            badgeEl.className = `pub-card__badge pub-card__badge--${badgeType || 'active'}`;
+            headerEl.style.display = 'flex';
         } else {
-            this.headerEl.style.display = 'none';
+            headerEl.style.display = 'none';
         }
 
-        this.imgEl.src = this.getAttribute("imagen") || "./imagenes/img_1.png";
-        this.titleEl.textContent = this.getAttribute("especie") || "Mascota";
-        this.razaEl.textContent = this.getAttribute("raza") || "Mestizo";
-        this.tamanioEl.textContent = this.getAttribute("tamaño") || "No disponible";
-        this.fechaEl.textContent = this.getAttribute("fecha") || "No disponible";
-        
-        
-        this.imgEl.style.cursor = 'pointer';
+        // Badge resuelto — solo visible si resolved="true"
+        const isResolved = this.getAttribute("resolved") === "true";
+        badgeResolvedEl.classList.toggle('visible', isResolved);
+
+        imgEl.src = this.getAttribute("imagen") || "./imagenes/img_1.png";
+        titleEl.textContent = this.getAttribute("especie") || "Mascota";
+        razaEl.textContent = this.getAttribute("raza") || "Mestizo";
+        tamanioEl.textContent = this.getAttribute("tamaño") || "No disponible";
+        fechaEl.textContent = this.getAttribute("fecha") || "No disponible";
+
+        imgEl.style.cursor = 'pointer';
         const pubId = this.getAttribute('pub-id');
         if (pubId) {
-        this.imgEl.onclick = () => window.location.href = `publicacion.html?id=${pubId}`;
-}
+            imgEl.onclick = () => window.location.href = `publicacion.html?id=${pubId}`;
+        }
     }
 }
 
