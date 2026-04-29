@@ -46,8 +46,8 @@ async function cargarMisPublicaciones() {
                 year: 'numeric'
             });
 
-            tarjeta.setAttribute('especie', `${pub.especie}`);
-            tarjeta.setAttribute('raza', `${pub.raza}`);
+            tarjeta.setAttribute('especie', pub.especie.charAt(0).toUpperCase() + pub.especie.slice(1));
+            tarjeta.setAttribute('raza', pub.raza ? pub.raza.charAt(0).toUpperCase() + pub.raza.slice(1) : '');
             tarjeta.setAttribute('tamaño', tamaños[pub.tamanio]);
             tarjeta.setAttribute('fecha', fechaFormateada);
             tarjeta.setAttribute('badge-text', badgeText);
