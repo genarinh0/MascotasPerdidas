@@ -425,10 +425,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const myProfileBtn = document.querySelector(".site-header__profile-btn");
         myProfileBtn.removeAttribute('onclick');
 
+        const profileLabel = myProfileBtn.querySelector('.site-header__profile-label');
+        if (profileLabel) profileLabel.textContent = 'Iniciar Sesión';
+
         myProfileBtn.addEventListener('click', (event) => {
             event.preventDefault();
             event.stopPropagation(); // evita bubbling
-            alert('Para usar esta función primero regístrate');
+            window.location.href = 'login.html';
         });
 
         const navBarTags = document.querySelectorAll('a');
