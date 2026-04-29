@@ -978,3 +978,208 @@ a:hover {
 .fab-btn:hover {
     transform: scale(1.08) translateY(-2px);
 }
+
+
+/* =========================================
+   8. RESPONSIVE — TABLET & MOBILE
+   ========================================= */
+
+@media (max-width: 768px) {
+
+    /* ---- HEADER ---- */
+    .site-header {
+        padding: 0 14px !important;
+        min-height: 52px;
+    }
+
+    .site-header__brand-title {
+        font-size: 18px !important;
+    }
+
+    .site-header__heading {
+        font-size: 0.9rem !important;
+        padding: 5px 12px !important;
+    }
+
+    .site-header__profile-label {
+        display: none !important;
+    }
+
+    .site-header__profile-btn {
+        padding: 4px 8px !important;
+        gap: 0 !important;
+    }
+
+    .site-header__button {
+        font-size: 12px !important;
+        padding: 6px 10px !important;
+    }
+
+    /* ---- FILTER BAR (Feed) ---- */
+    .filter-bar {
+        padding: 8px 12px !important;
+        top: 52px !important;
+        overflow-x: auto !important;
+        overflow-y: visible !important;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+
+    .filter-bar::-webkit-scrollbar {
+        display: none;
+    }
+
+    .filter-bar__container {
+        gap: 8px !important;
+        flex-wrap: nowrap !important;
+        width: max-content;
+    }
+
+    /* Dropdowns por encima de todo en móvil */
+    .dropdown-options,
+    .dropdown-options--grid,
+    .dropdown-options--calendar {
+        z-index: 9999 !important;
+    }
+
+    .filter-button {
+        padding: 6px 11px !important;
+        white-space: nowrap;
+    }
+
+    .filter-button__text {
+        font-size: 12px !important;
+    }
+
+    .filter-button__icon {
+        width: 16px !important;
+        height: 16px !important;
+    }
+
+    /* ---- POST GRID (Feed, Guardados) ---- */
+    .post-grid {
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+        margin: 16px auto !important;
+        padding: 0 16px 120px !important;
+        max-width: 100% !important;
+    }
+
+    /* ---- MANAGEMENT (Mis Publicaciones) ---- */
+    .management-container {
+        padding: 14px 16px 120px !important;
+        max-width: 100% !important;
+    }
+
+    .management-header {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 10px !important;
+        padding-bottom: 14px !important;
+    }
+
+    .management-header__add-btn {
+        width: 100% !important;
+        justify-content: center !important;
+    }
+
+    /* ---- FORMULARIOS (Crear / Editar) ---- */
+    .login-section {
+        flex-direction: column !important;
+        align-items: center !important;
+        padding: 16px 14px 100px !important;
+    }
+
+    .login-section__welcome {
+        display: none !important;
+    }
+
+    .login-section__card {
+        width: 100% !important;
+        min-width: unset !important;
+        padding: 20px 14px !important;
+        border-radius: 14px !important;
+    }
+
+    .card__input,
+    .color-selector,
+    .file-upload {
+        width: 100% !important;
+    }
+
+    /* ---- BOTTOM NAV ---- */
+    .bottom-nav {
+        padding: 6px 2% 12px !important;
+    }
+
+    .bottom-nav__icon {
+        width: 58px !important;
+        height: 58px !important;
+    }
+
+    .bottom-nav__item {
+        flex-direction: column !important;
+        flex: 1;
+        justify-content: center !important;
+        align-items: center !important;
+    }
+
+    .bottom-nav__label {
+        display: block !important;
+        font-size: 10px !important;
+        font-family: var(--font-secondary);
+        color: var(--card-font-color);
+        text-align: center;
+        margin-top: 1px;
+    }
+
+    .bottom-nav__item--active .bottom-nav__label {
+        color: var(--color-primary) !important;
+        font-weight: 600;
+    }
+
+    /* ---- FAB ---- */
+    .fab-btn {
+        bottom: 82px !important;
+        left: 14px !important;
+        width: 52px !important;
+        height: 52px !important;
+        font-size: 26px !important;
+    }
+}
+
+
+    /* ---- SIGNUP ---- */
+    .guest-section {
+        margin: 20px auto 40px !important;
+        padding: 0 16px !important;
+    }
+
+    .guest-section__card {
+        width: 100% !important;
+        box-sizing: border-box !important;
+        padding: 20px 16px !important;
+        min-width: unset !important;
+    }
+
+    .site-footer {
+        font-size: 12px !important;
+        padding: 16px 0 !important;
+    }
+
+/* iPhone SE y pantallas muy pequeñas */
+@media (max-width: 390px) {
+    .site-header__heading {
+        font-size: 0.8rem !important;
+        padding: 4px 10px !important;
+    }
+
+    .post-grid {
+        padding: 0 10px 120px !important;
+    }
+
+    .bottom-nav__icon {
+        width: 50px !important;
+        height: 50px !important;
+    }
+}

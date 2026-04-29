@@ -123,7 +123,13 @@ function buildURL(){
 
     const nonEmptyFilters = [];
     Object.entries(filters).forEach(([key, value]) => {
-        if (value !== "") nonEmptyFilters.push(`${key}=${value}`);
+        if (value === "") return;
+        // "Resuelto" viene como tipo=3 del dropdown pero debe convertirse a estatus=2
+        if (key === 'tipo' && value === '3') {
+            nonEmptyFilters.push(`estatus=2`);
+        } else {
+            nonEmptyFilters.push(`${key}=${value}`);
+        }
     });
 
     const colores = getSelectedColors();
@@ -216,6 +222,7 @@ async function cargarPublicaciones() {
             tarjeta.setAttribute('badge-text', badgeText);
             tarjeta.setAttribute('badge-type', badgeType);
             tarjeta.setAttribute('pub-id', pub.id_Publicacion);
+            if (pub.estatus === 2) tarjeta.setAttribute('resolved', 'true');
 
             if (pub.imagenBase64) {
                 tarjeta.setAttribute('imagen', `data:image/jpeg;base64,${pub.imagenBase64}`);
@@ -440,6 +447,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 event.preventDefault();
                 event.stopPropagation(); // evita bubbling
                 if (tag.getAttribute('href') === 'feed.html') return;
+                if (tag.classList.contains('fab-btn')) return;
                 alert('Para usar esta función primero regístrate');
             });
         });
