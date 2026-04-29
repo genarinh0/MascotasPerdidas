@@ -125,11 +125,8 @@ function buildURL(){
     Object.entries(filters).forEach(([key, value]) => {
         if (value === "") return;
         // "Resuelto" viene como tipo=3 del dropdown pero debe convertirse a estatus=2
-        if (key === 'tipo' && value === '3') {
-            nonEmptyFilters.push(`estatus=2`);
-        } else {
-            nonEmptyFilters.push(`${key}=${value}`);
-        }
+        // NO ES CIERTO
+        nonEmptyFilters.push(`${key}=${value}`);
     });
 
     const colores = getSelectedColors();
@@ -201,8 +198,9 @@ async function cargarPublicaciones() {
         publicaciones.forEach(pub => {
             const tarjeta = document.createElement('post-card');
             const isPerdido = pub.tipo === 1;
-            const badgeText = isPerdido ? '¡Perdido!' : '¡Busca a su familia!';
-            const badgeType = isPerdido ? 'lost' : 'found';
+            const isResuelto = pub.tipo === 3;
+            const badgeText = isResuelto ? 'Resuelto' : isPerdido ? '¡Perdido!' : '¡Busca a su familia!';
+            const badgeType = isResuelto ? 'resolved' : isPerdido ? 'lost' : 'found';
             const tamaños = {
                 1: 'Pequeño',
                 2: 'Mediano',
@@ -222,7 +220,7 @@ async function cargarPublicaciones() {
             tarjeta.setAttribute('badge-text', badgeText);
             tarjeta.setAttribute('badge-type', badgeType);
             tarjeta.setAttribute('pub-id', pub.id_Publicacion);
-            if (pub.estatus === 2) tarjeta.setAttribute('resolved', 'true');
+            if (pub.tipo === 3) tarjeta.setAttribute('resolved', 'true');
 
             if (pub.imagenBase64) {
                 tarjeta.setAttribute('imagen', `data:image/jpeg;base64,${pub.imagenBase64}`);

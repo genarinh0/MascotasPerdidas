@@ -33,8 +33,9 @@ async function cargarGuardados() {
         publicaciones.forEach(pub => {
             const tarjeta = document.createElement('post-card');
             const isPerdido = pub.tipo === 1;
-            const badgeText = isPerdido ? '¡Perdido!' : '¡Busca a su familia!';
-            const badgeType = isPerdido ? 'lost' : 'found';
+            const isResuelto = pub.tipo === 3;
+            const badgeText = isResuelto ? 'Resuelto' : isPerdido ? '¡Perdido!' : '¡Busca a su familia!';
+            const badgeType = isResuelto ? 'resolved' : isPerdido ? 'lost' : 'found';
             const tamaños = {
                 1: 'Pequeño',
                 2: 'Mediano',
@@ -54,6 +55,7 @@ async function cargarGuardados() {
             tarjeta.setAttribute('badge-text', badgeText);
             tarjeta.setAttribute('badge-type', badgeType);
             tarjeta.setAttribute('pub-id', pub.id_Publicacion);
+            if (isResuelto) tarjeta.setAttribute('resolved', 'true');
 
             if (pub.imagenBase64) {
                 tarjeta.setAttribute('imagen', `data:image/jpeg;base64,${pub.imagenBase64}`);

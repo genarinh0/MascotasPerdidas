@@ -51,15 +51,15 @@ async function cargarPublicacion() {
 
         // Badge
         const esPerdido = pub.tipo === 1;
+        const esResuelto = pub.tipo === 3;
         const badge = document.getElementById('badge');
-        badge.textContent = esPerdido ? '¡Perdido!' : '¡Busca a su familia!';
-        badge.classList.add(esPerdido ? 'pub-detail__badge--lost' : 'pub-detail__badge--found');
-
+        badge.textContent = esResuelto ? 'Resuelto' : esPerdido ? '¡Perdido!' : '¡Busca a su familia!';
+        badge.classList.add(esResuelto ? 'pub-detail__badge--found' : esPerdido ? 'pub-detail__badge--lost' : 'pub-detail__badge--found');
         // Botón acción (guardar o editar)
         const contenedorAccion = document.getElementById('contenedor-accion');
         const esMia = pub.id_Usuario === idUsuarioActual;
 
-        if (esMia) {
+        if (esMia && !esResuelto) {
             const btnEditar = document.createElement('button');
             btnEditar.className = 'pub-detail__action-btn pub-detail__action-btn--edit';
             btnEditar.textContent = 'Editar';

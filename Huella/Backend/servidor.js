@@ -349,6 +349,15 @@ app.patch('/api/publicaciones/:id/tipo', verifyToken, async (req, res) => {
             [tipo, id]
         );
 
+/*
+        if (tipo === 3) {
+            await conn.query(
+                'DELETE FROM guardados WHERE id_Publicacion = ?',
+                [id]
+            );
+        }
+*/
+
         await conn.commit();
 
         res.status(200).json({ message: 'Estatus actualizado con éxito' });
@@ -530,7 +539,7 @@ app.get('/api/publicacion/:id', async (req, res) => {
         const [rows] = await db.query(
             `SELECT p.*, u.email as email_usuario,
             (SELECT TO_BASE64(fotografia) FROM fotografia f WHERE f.id_Publicacion = p.id_Publicacion LIMIT 1) as imagenBase64
-            FROM publicacion p 
+            FROM publicacion p
             JOIN usuario u ON p.id_Usuario = u.id_Usuario
             WHERE p.id_Publicacion = ?`,
             [id]
@@ -586,7 +595,14 @@ app.post('/api/publicaciones/:id/contactar', verifyToken, async (req, res) => {
 
         const dueno = rows[0];
         const correoDestino = dueno.email;
-        const tipoAlerta = dueno.tipo === 1 ? 'perdida' : 'encontrada';
+
+        if (dueno.tipo !==3){
+            if(dueno.tipo === 1){
+                const tipoAlerta = 'perdida';
+            }else{
+                const tipoAlerta = 'encontrada';
+            }
+        }
 
         // 2. Usar Resend para despachar el correo
         const { data, error } = await resend.emails.send({
@@ -647,27 +663,27 @@ app.post('/api/chats/crear', verifyToken, async (req, res) => {
             WHERE c.id_Publicacion = ?
             LIMIT 1
         `;
-        
+
         const [rows] = await db.query(sqlBuscar, [id_usuario_1, id_usuario_2, id_publicacion]);
-        
+
         if (rows.length > 0) {
             return res.json({ id_chat: rows[0].id_Chat, nuevo: false });
         }
-        
+
         // Crear nuevo chat
         const sqlCrearChat = `INSERT INTO chat (id_Publicacion, fecha_creacion) VALUES (?, NOW())`;
         const [resultChat] = await db.query(sqlCrearChat, [id_publicacion]);
         const id_chat = resultChat.insertId;
-        
+
         // Insertar usuarios en chat_usuario
         const sqlInsertUsuarios = `
             INSERT INTO chat_usuario (id_Chat, id_Usuario)
             VALUES (?, ?), (?, ?)
         `;
         await db.query(sqlInsertUsuarios, [id_chat, id_usuario_1, id_chat, id_usuario_2]);
-        
+
         return res.json({ id_chat, nuevo: true });
-        
+
     } catch (error) {
         console.error('Error al crear chat:', error);
         res.status(500).json({ error: 'Error al crear el chat' });
@@ -677,10 +693,10 @@ app.post('/api/chats/crear', verifyToken, async (req, res) => {
 // Endpoint para obtener lista de chats del usuario autenticado
 app.get('/api/chats/lista', verifyToken, async (req, res) => {
     const { id_Usuario } = req.user;
-    
+
     try {
         const sql = `
-            SELECT 
+            SELECT
                 c.id_Chat as id_chat,
                 u.id_Usuario as id_otro_usuario,
                 u.email as nombre_otro_usuario,
@@ -694,10 +710,10 @@ app.get('/api/chats/lista', verifyToken, async (req, res) => {
             ) AND u.id_Usuario != ?
             ORDER BY fecha_ultimo_mensaje DESC
         `;
-        
+
         const [rows] = await db.query(sql, [id_Usuario, id_Usuario]);
         res.json(rows);
-        
+
     } catch (error) {
         console.error('Error al obtener chats:', error);
         res.status(500).json({ error: 'Error al obtener chats' });
