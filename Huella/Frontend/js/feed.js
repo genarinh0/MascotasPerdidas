@@ -262,7 +262,7 @@ async function cargarPublicaciones() {
 
                                 if (res.ok) {
                                     btnEncontrado.textContent = 'Resuelto';
-                                    cargarMisPublicaciones();
+                                    cargarPublicaciones();
                                 } else if (res.status === 401) {
                                     window.location.href = 'login.html';
                                 } else {
