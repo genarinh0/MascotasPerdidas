@@ -320,6 +320,50 @@ app.get('/api/mis-publicaciones', verifyToken, async (req, res) => {
     }
 });
 
+app.patch('/api/publicaciones/:id/estatus', verifyToken, async (req, res) => {
+    const { id } = req.params;
+    const { id_Usuario } = req.user;
+    const { estatus } = req.body;
+
+    if (estatus === undefined) {
+        return res.status(400).json({ error: 'Falta el campo estatus' });
+    }
+
+    const conn = await db.getConnection();
+
+    try {
+        await conn.beginTransaction();
+
+        const [rows] = await conn.query(
+            'SELECT 1 FROM publicacion WHERE id_Publicacion = ? AND id_Usuario = ?',
+            [id, id_Usuario]
+        );
+
+        if (rows.length === 0) {
+            await conn.rollback();
+            conn.release();
+            return res.status(403).json({ error: 'No tienes autorización para editar esta publicación' });
+        }
+
+        await conn.query(
+            'UPDATE publicacion SET estatus = ? WHERE id_Publicacion = ?',
+            [estatus, id]
+        );
+
+        await conn.commit();
+
+        res.status(200).json({ message: 'Estatus actualizado con éxito' });
+
+    } catch (error) {
+        try { await conn.rollback(); } catch {}
+        console.error(error);
+        res.status(500).json({ error: 'Error al actualizar el estatus' });
+    } finally {
+        try { conn.release(); } catch {}
+    }
+});
+
+
 app.put('/api/publicaciones/:id', verifyToken, async (req, res) => {
     const { id } = req.params;
     const { id_Usuario } = req.user;

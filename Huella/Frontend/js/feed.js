@@ -246,7 +246,34 @@ async function cargarPublicaciones() {
                 const btnEncontrado = document.createElement('button');
                 btnEncontrado.className = 'pub-card__btn pub-card__btn--success btn-encontrado';
                 btnEncontrado.setAttribute('data-id', pub.id_Publicacion);
-                btnEncontrado.textContent = 'Marcar como resuelto';
+                btnEncontrado.textContent = pub.estatus === 1 ? 'Marcar como resuelto' : 'Resuelto'; 
+                if (pub.estatus === 1){
+                    btnEncontrado.addEventListener('click', async () => {
+                        if (confirm("¿Estás seguro de marcar esta publicación como resuelta?")) {
+                            try {
+                            const res = await fetch(`http://localhost:1984/api/publicaciones/${pub.id_Publicacion}/estatus`, {
+                                    method: 'PATCH',
+                                    headers: { 
+                                        'Authorization': 'Bearer ' + token,
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({ estatus: 2 }) 
+                                });
+
+                                if (res.ok) {
+                                    btnEncontrado.textContent = 'Resuelto';
+                                    cargarMisPublicaciones();
+                                } else if (res.status === 401) {
+                                    window.location.href = 'login.html';
+                                } else {
+                                    alert('Error al actualizar el estatus de la publicación.');
+                                }
+                            } catch (err) {
+                                console.error('Error interno al actualizar el estatus:', err);
+                            }
+                        }
+                    });
+                }
 
                 const btnEliminar = document.createElement('button');
                 btnEliminar.className = 'pub-card__btn pub-card__btn--danger btn-eliminar';
