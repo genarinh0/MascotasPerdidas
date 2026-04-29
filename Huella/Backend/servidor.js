@@ -571,71 +571,6 @@ app.get('/api/publicacion/:id', async (req, res) => {
     }
 });
 
-app.post('/api/publicaciones/:id/contactar', verifyToken, async (req, res) => {
-    const { id } = req.params; //ID de la publicación a contactar
-    const { mensaje } = req.body; //Mensaje escrito por el usuario interesado
-
-    if (!mensaje) {
-        return res.status(400).json({ error: 'El mensaje no puede estar vacío' });
-    }
-
-    try {
-        //Obtener el correo del dueño de la publicación
-        const [rows] = await db.query(
-            `SELECT u.email, p.especie, p.tipo
-             FROM usuario u
-             JOIN publicacion p ON u.id_Usuario = p.id_Usuario
-             WHERE p.id_Publicacion = ?`,
-            [id]
-        );
-
-        if (rows.length === 0) {
-            return res.status(404).json({ error: 'Publicación no encontrada' });
-        }
-
-        const dueno = rows[0];
-        const correoDestino = dueno.email;
-
-        if (dueno.tipo !==3){
-            if(dueno.tipo === 1){
-                const tipoAlerta = 'perdida';
-            }else{
-                const tipoAlerta = 'encontrada';
-            }
-        }
-
-        // 2. Usar Resend para despachar el correo
-        const { data, error } = await resend.emails.send({
-            from: 'Huella Notificaciones <onboarding@resend.dev>', //Correo por defecto de prueba de Resend
-            to: [EMAIL], //Correo por defecto en el .env porque no tenemos dominio
-            subject: `¡Alguien tiene información sobre tu mascota ${tipoAlerta}!`,
-            html: `
-                <div style="font-family: Arial, sans-serif; color: #333;">
-                    <h2>Hola,</h2>
-                    <p>Un miembro de la comunidad quiere contactarte respecto a tu publicación de un(a) <b>${dueno.especie}</b>.</p>
-                    <div style="background-color: #f4f4f4; padding: 15px; border-radius: 5px; margin: 20px 0;">
-                        <p style="margin: 0;"><strong>Mensaje:</strong></p>
-                        <p style="margin-top: 5px; font-style: italic;">"${mensaje}"</p>
-                    </div>
-                    <p>¡Inicia sesión en la plataforma para responder!</p>
-                </div>
-            `
-        });
-
-        if (error) {
-            console.error('Error al enviar el correo con Resend:', error);
-            return res.status(500).json({ error: 'No se pudo enviar la notificación' });
-        }
-
-        console.log('ID del correo enviado:', data.id);
-        res.status(200).json({ message: 'Correo enviado con éxito' });
-
-    } catch (error) {
-        console.error('Error en el servidor al contactar:', error);
-        res.status(500).json({ error: 'Error interno del servidor' });
-    }
-});
-
 app.post('/api/chats/crear', verifyToken, async (req, res) => {
     const { id_Usuario: id_usuario_1 } = req.user; // Del token
     const { id_usuario_2, id_publicacion } = req.body;
@@ -671,7 +606,7 @@ app.post('/api/chats/crear', verifyToken, async (req, res) => {
         }
 
         // Crear nuevo chat
-        const sqlCrearChat = `INSERT INTO chat (id_Publicacion, fecha_creacion) VALUES (?, NOW())`;
+        const sqlCrearChat = `INSERT INTO chat (id_Publicacion, fecha_creacion, ultima_actividad) VALUES (?, NOW(), NOW())`;
         const [resultChat] = await db.query(sqlCrearChat, [id_publicacion]);
         const id_chat = resultChat.insertId;
 
@@ -681,6 +616,37 @@ app.post('/api/chats/crear', verifyToken, async (req, res) => {
             VALUES (?, ?), (?, ?)
         `;
         await db.query(sqlInsertUsuarios, [id_chat, id_usuario_1, id_chat, id_usuario_2]);
+
+        // Enviar correo al dueño de la publicación
+        try {
+            const [pubRows] = await db.query(
+                `SELECT u.email, p.especie, p.tipo
+                 FROM usuario u
+                 JOIN publicacion p ON u.id_Usuario = p.id_Usuario
+                 WHERE p.id_Publicacion = ?`,
+                [id_publicacion]
+            );
+
+            if (pubRows.length > 0) {
+                const dueno = pubRows[0];
+                const tipoAlerta = dueno.tipo !== 3 ? 'perdida' : 'encontrada';
+
+                await resend.emails.send({
+                    from: 'Huella Notificaciones <onboarding@resend.dev>', //Correo por defecto de prueba de Resend
+                    to: [EMAIL], //Correo por defecto en el .env porque no tenemos dominio
+                    subject: `¡Alguien tiene información sobre tu mascota ${tipoAlerta}!`,
+                    html: `
+                        <div style="font-family: Arial, sans-serif; color: #333;">
+                            <h2>Hola,</h2>
+                            <p>Un miembro de la comunidad quiere contactarte respecto a tu publicación de un(a) <b>${dueno.especie}</b>.</p>
+                            <p>¡Inicia sesión en la plataforma para responder!</p>
+                        </div>
+                    `
+                });
+            }
+        } catch (mailError) {
+            console.error('Error al enviar correo de notificación:', mailError);
+        }
 
         return res.json({ id_chat, nuevo: true });
 
