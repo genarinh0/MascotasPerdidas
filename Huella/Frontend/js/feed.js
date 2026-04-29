@@ -496,7 +496,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const userLng = pos.coords.longitude;
             mapFiltro.setView([userLat, userLng], 13);
             markerFiltro.setLatLng([userLat, userLng]);
-            updateFilterCoords(userLat, userLng);
         });
     }
 
